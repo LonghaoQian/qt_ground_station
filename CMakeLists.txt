@@ -10,12 +10,52 @@ project(qt_ground_station)
 ##############################################################################
 
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
-find_package(catkin REQUIRED COMPONENTS qt_build roscpp)
+find_package(catkin REQUIRED COMPONENTS
+message_generation 
+qt_build 
+roscpp
+geometry_msgs
+sensor_msgs
+mavros
+nav_msgs
+std_msgs
+std_srvs
+tf2_ros
+tf2_eigen
+mavros_msgs
+)
+
+## Generate messages in the 'msg' folder
+add_message_files(
+  DIRECTORY msg
+  FILES
+  ControlCommand.msg
+  TrajectoryPoint.msg
+  Trajectory.msg
+  AttitudeReference.msg
+  DroneState.msg
+  Topic_for_log.msg
+  ControlOutput.msg
+  Mocap.msg
+)
+
+generate_messages(
+  DEPENDENCIES
+  geometry_msgs
+  sensor_msgs
+  std_msgs
+)
+
+catkin_package(
+  INCLUDE_DIRS include
+  CATKIN_DEPENDS  message_runtime
+)
+
 include_directories(${catkin_INCLUDE_DIRS})
 # Use this to define what the package will export (e.g. libs, headers).
 # Since the default here is to produce only a binary, we don't worry about
 # exporting anything. 
-catkin_package()
+# catkin_package()
 
 ##############################################################################
 # Qt Environment

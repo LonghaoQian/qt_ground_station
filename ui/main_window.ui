@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>944</width>
-    <height>704</height>
+    <width>1174</width>
+    <height>709</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -70,8 +70,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>944</width>
-     <height>25</height>
+     <width>1174</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -98,7 +98,7 @@
    <property name="minimumSize">
     <size>
      <width>339</width>
-     <height>451</height>
+     <height>586</height>
     </size>
    </property>
    <property name="allowedAreas">
@@ -265,6 +265,34 @@
          <widget class="QLabel" name="display_info">
           <property name="text">
            <string>----</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="UAV0_x">
+          <property name="text">
+           <string>---</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>---</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>TextLabel</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pushButton">
+          <property name="text">
+           <string>Send Move ENU</string>
           </property>
          </widget>
         </item>

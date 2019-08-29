@@ -49,6 +49,8 @@ bool QNode::init() {
 	ros::NodeHandle n;
 	// Add your ros communications here.
 	chatter_publisher = n.advertise<std_msgs::String>("chatter", 1000);
+        mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
+        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/UAV0/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
 	start();
 	return true;
 }
@@ -122,6 +124,16 @@ void QNode::log( const LogLevel &level, const std::string &msg) {
 	QVariant new_row(QString(logging_model_msg.str().c_str()));
 	logging_model.setData(logging_model.index(logging_model.rowCount()-1),new_row);
 	Q_EMIT loggingUpdated(); // used to readjust the scrollbar
+}
+
+void QNode::sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg) {
+
+
+   Q_EMIT mocapUAV0_label();
+}
+
+void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
+
 }
 
 }  // namespace qt_ground_station
