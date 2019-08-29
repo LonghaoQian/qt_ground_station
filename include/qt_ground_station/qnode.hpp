@@ -47,9 +47,7 @@ public:
 	QNode(int argc, char** argv );
 	virtual ~QNode();
 	bool init();
-	bool init(const std::string &master_url, const std::string &host_url);
 	void run();
-
 	/*********************
 	** Logging
 	**********************/
@@ -76,7 +74,7 @@ Q_SIGNALS:
 private:
 	int init_argc;
 	char** init_argv;
-	ros::Publisher chatter_publisher;
+        ros::Publisher moveUAV0;
         /*-------------------- Mocap ---------------------*/
         qt_ground_station::DroneState UAV0_state;
         qt_ground_station::Mocap UAV0_mocap;

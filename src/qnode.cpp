@@ -47,26 +47,12 @@ bool QNode::init() {
 	}
 	ros::start(); // explicitly needed since our nodehandle is going out of scope.
 	ros::NodeHandle n;
-	// Add your ros communications here.
-	chatter_publisher = n.advertise<std_msgs::String>("chatter", 1000);
+	// Add your ros communications here.       
+        moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/px4_command/control_command", 10);
         mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
-        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/UAV0/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
-	start();
-	return true;
-}
+        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
+        UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
 
-bool QNode::init(const std::string &master_url, const std::string &host_url) {
-	std::map<std::string,std::string> remappings;
-	remappings["__master"] = master_url;
-	remappings["__hostname"] = host_url;
-	ros::init(remappings,"qt_ground_station");
-	if ( ! ros::master::check() ) {
-		return false;
-	}
-	ros::start(); // explicitly needed since our nodehandle is going out of scope.
-	ros::NodeHandle n;
-	// Add your ros communications here.
-	chatter_publisher = n.advertise<std_msgs::String>("chatter", 1000);
 	start();
 	return true;
 }
@@ -75,13 +61,8 @@ void QNode::run() {
 	ros::Rate loop_rate(1);
 	int count = 0;
 	while ( ros::ok() ) {
+                //chatter_publisher.publish(msg);
 
-		std_msgs::String msg;
-		std::stringstream ss;
-		ss << "hello world " << count;
-		msg.data = ss.str();
-		chatter_publisher.publish(msg);
-		log(Info,std::string("I sent: ")+msg.data);
 		ros::spinOnce();
 		loop_rate.sleep();
 		++count;
@@ -139,7 +120,7 @@ qt_ground_station::Mocap QNode::GetMocapUAV0() {
 
 void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
 
-
+    UAV0_Topic_for_log = *msg;
 }
 
 void QNode::sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {

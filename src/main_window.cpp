@@ -30,18 +30,25 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 	: QMainWindow(parent)
 	, qnode(argc,argv)
 {
-	ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
+    ui.setupUi(this); // Calling this incidentally connects all ui's triggers to on_...() callbacks in this class.
     QObject::connect(ui.actionAbout_Qt, SIGNAL(triggered(bool)), qApp, SLOT(aboutQt())); // qApp is a global variable for the application
 
     ReadSettings();
-        setWindowIcon(QIcon(":/images/icon.png"));
-	ui.tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
+    setWindowIcon(QIcon(":/images/icon.png"));
+    ui.tab_manager->setCurrentIndex(0); // ensure the first tab is showing - qt-designer should have this already hardwired, but often loses it (settings?).
     QObject::connect(&qnode, SIGNAL(rosShutdown()), this, SLOT(close()));
+    /*------------init ros node -----------*/
+    bool init_ros_ok = qnode.init();
+    if ( !init_ros_ok ) {
+            showNoMasterMessage();
+    } else {
+        //ui.button_connect->setEnabled(false);
+    }
 
-	/*********************
-	** Logging
-	**********************/
-	ui.view_logging->setModel(qnode.loggingModel());
+    /*********************
+    ** Logging
+    **********************/
+    //ui.view_logging->setModel(qnode.loggingModel());
     //QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
     QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
     QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
@@ -60,9 +67,9 @@ MainWindow::~MainWindow() {}
 *****************************************************************************/
 
 void MainWindow::showNoMasterMessage() {
-	QMessageBox msgBox;
-	msgBox.setText("Couldn't find the ros master.");
-	msgBox.exec();
+    QMessageBox msgBox;
+    msgBox.setText("Couldn't find the ros master.");
+    msgBox.exec();
     close();
 }
 
@@ -72,23 +79,23 @@ void MainWindow::showNoMasterMessage() {
  */
 
 void MainWindow::on_button_connect_clicked(bool check ) {
-	if ( ui.checkbox_use_environment->isChecked() ) {
-		if ( !qnode.init() ) {
-			showNoMasterMessage();
-		} else {
-			ui.button_connect->setEnabled(false);
-		}
-	} else {
-		if ( ! qnode.init(ui.line_edit_master->text().toStdString(),
-				   ui.line_edit_host->text().toStdString()) ) {
-			showNoMasterMessage();
-		} else {
-			ui.button_connect->setEnabled(false);
-			ui.line_edit_master->setReadOnly(true);
-			ui.line_edit_host->setReadOnly(true);
-			ui.line_edit_topic->setReadOnly(true);
-		}
-	}
+        //if ( ui.checkbox_use_environment->isChecked() ) {
+                //if ( !qnode.init() ) {
+                        //showNoMasterMessage();
+                //} else {
+                //	ui.button_connect->setEnabled(false);
+                //}
+        //} else {
+                //if ( ! qnode.init(ui.line_edit_master->text().toStdString(),
+                //		   ui.line_edit_host->text().toStdString()) ) {
+                //	showNoMasterMessage();
+                //} else {
+                //	ui.button_connect->setEnabled(false);
+                //	ui.line_edit_master->setReadOnly(true);
+                //	ui.line_edit_host->setReadOnly(true);
+                //	ui.line_edit_topic->setReadOnly(true);
+                //}
+        //}
 }
 
 
