@@ -18,6 +18,7 @@
 
 // To workaround boost/qt4 problems that won't be bugfixed. Refer to
 //    https://bugreports.qt.io/browse/QTBUG-22829
+#pragma once
 #ifndef Q_MOC_RUN
 #include <ros/ros.h>
 #endif
@@ -29,6 +30,7 @@
 #include <qt_ground_station/Topic_for_log.h>
 #include <mavros_msgs/AttitudeTarget.h>
 #include <mavros_msgs/PositionTarget.h>
+#include <Eigen/Eigen>
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
@@ -61,17 +63,26 @@ public:
 
 	QStringListModel* loggingModel() { return &logging_model; }
 	void log( const LogLevel &level, const std::string &msg);
-
+        /*-------------------------------------------------------*/
+        qt_ground_station::Mocap GetMocapUAV0();
+        Eigen::Vector4d GetAttThrustCommandUAV0();
+        qt_ground_station::Topic_for_log GetDroneStateUAV0();
 Q_SIGNALS:
 	void loggingUpdated();
         void rosShutdown();
         void mocapUAV0_label();
+        void attReferenceUAV0_lable();
 
 private:
 	int init_argc;
 	char** init_argv;
 	ros::Publisher chatter_publisher;
         /*-------------------- Mocap ---------------------*/
+        qt_ground_station::DroneState UAV0_state;
+        qt_ground_station::Mocap UAV0_mocap;
+        qt_ground_station::Mocap UAV1_mocap;
+        qt_ground_station::Mocap UAV2_mocap;
+        qt_ground_station::Mocap UAV3_mocap;
 
         ros::Subscriber mocapUAV0;
         ros::Subscriber mocapUAV1;
@@ -79,8 +90,13 @@ private:
         ros::Subscriber mocapUAV3;
         ros::Subscriber mocapPayload;
         /*--------------------log_sub---------------------*/
-        ros::Subscriber UAV0_log_sub;// = nh.subscribe<px4_command::Topic_for_log>("/px4_command/topic_for_log", 100, log_cb)
-        ros::Subscriber UAV0_attitude_target_sub;//  = nh.subscribe<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/target_attitude", 100,att_target_cb);
+        qt_ground_station::Topic_for_log UAV0_Topic_for_log;
+        Eigen::Quaterniond               UAV0_q_fcu_target;
+        Eigen::Vector3d                  UAV0_euler_fcu_target;
+        float                            UAV0_Thrust_target;
+        ros::Subscriber                  UAV0_log_sub;
+        ros::Subscriber                  UAV0_attitude_target_sub;
+
         QStringListModel logging_model;
         void sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg);
         void sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg);

@@ -43,7 +43,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 	**********************/
 	ui.view_logging->setModel(qnode.loggingModel());
     //QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
-
+    QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
+    QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
     /*********************
     ** Auto Start
     **********************/
@@ -165,6 +166,31 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
 	WriteSettings();
 	QMainWindow::closeEvent(event);
+}
+
+void MainWindow::updateUAV0mocap() {
+    QString temp_string;
+    qt_ground_station::Mocap temp_mocap = qnode.GetMocapUAV0();
+
+    temp_string.setNum(temp_mocap.position[0]);
+    ui.UAV0_x->setText(temp_string);
+    temp_string.setNum(temp_mocap.position[1]);
+    ui.UAV0_y->setText(temp_string);
+    temp_string.setNum(temp_mocap.position[2]);
+    ui.UAV0_z->setText(temp_string);
+}
+
+void MainWindow::updateUAV0attReference() {
+    QString temp_string;
+    Eigen::Vector4d commad = qnode.GetAttThrustCommandUAV0();
+    temp_string.setNum(commad(0));
+    ui.UAV0_att_pitch->setText(temp_string);
+    temp_string.setNum(commad(1));
+    ui.UAV0_att_roll->setText(temp_string);
+    temp_string.setNum(commad(2));
+    ui.UAV0_att_yaw->setText(temp_string);
+    temp_string.setNum(commad(3));
+    ui.UAV0_thrust->setText(temp_string);
 }
 
 }  // namespace qt_ground_station

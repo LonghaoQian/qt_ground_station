@@ -16,7 +16,7 @@
 #include <std_msgs/String.h>
 #include <sstream>
 #include "../include/qt_ground_station/qnode.hpp"
-
+#include "../include/qt_ground_station/math_utils.h"
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
@@ -128,11 +128,37 @@ void QNode::log( const LogLevel &level, const std::string &msg) {
 
 void QNode::sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg) {
 
-
+   UAV0_mocap = *msg;
    Q_EMIT mocapUAV0_label();
 }
 
+qt_ground_station::Mocap QNode::GetMocapUAV0() {
+
+    return UAV0_mocap;
+}
+
 void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
+
+
+}
+
+void QNode::sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
+
+    UAV0_q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+
+    //Transform the Quaternion to euler Angles
+    UAV0_euler_fcu_target = quaternion_to_euler(UAV0_q_fcu_target);
+    UAV0_Thrust_target = msg->thrust;
+    Q_EMIT attReferenceUAV0_lable();
+}
+
+Eigen::Vector4d QNode::GetAttThrustCommandUAV0() {
+    Eigen::Vector4d command;
+    command(0) = UAV0_euler_fcu_target(0);
+    command(1) = UAV0_euler_fcu_target(1);
+    command(2) = UAV0_euler_fcu_target(2);
+    command(3) = (double) UAV0_Thrust_target;
+    return command;
 
 }
 
