@@ -49,15 +49,17 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ** Logging
     **********************/
     //ui.view_logging->setModel(qnode.loggingModel());
-    //QObject::connect(&qnode, SIGNAL(loggingUpdated()), this, SLOT(updateLoggingView()));
+    QObject::connect(&qnode, SIGNAL(UAV0_LogFromDrone_label()), this, SLOT(updateUAV0log()));
     QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
     QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
+    /*                */
+
     /*********************
     ** Auto Start
     **********************/
-    if ( ui.checkbox_remember_settings->isChecked() ) {
-        on_button_connect_clicked(true);
-    }
+    //if ( ui.checkbox_remember_settings->isChecked() ) {
+       // on_button_connect_clicked(true);
+   // }
 }
 
 MainWindow::~MainWindow() {}
@@ -78,38 +80,41 @@ void MainWindow::showNoMasterMessage() {
  * is already checked or not.
  */
 
-void MainWindow::on_button_connect_clicked(bool check ) {
-        //if ( ui.checkbox_use_environment->isChecked() ) {
-                //if ( !qnode.init() ) {
-                        //showNoMasterMessage();
-                //} else {
-                //	ui.button_connect->setEnabled(false);
-                //}
+void MainWindow::on_Button_Takeoff_clicked(bool check ) {
+
+}
+
+void MainWindow::on_Button_moveENU_clicked(bool check){
+    /* read values from line edit */
+    float target_state[4];
+
+    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[3] = 0;
+    /*  update the ENU target label */
+    ui.UAV0_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+    ui.UAV0_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+    ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+    /*-------------------- set move ENU to node --------------------------------*/
+    qnode.move_ENU_UAV0(target_state);
+}
+
+void MainWindow::on_Button_Land_clicked(bool check) {
+
+
+}
+//void MainWindow::on_checkbox_use_environment_stateChanged(int state) {
+        //bool enabled;
+        //if ( state == 0 ) {
+        //	enabled = true;
         //} else {
-                //if ( ! qnode.init(ui.line_edit_master->text().toStdString(),
-                //		   ui.line_edit_host->text().toStdString()) ) {
-                //	showNoMasterMessage();
-                //} else {
-                //	ui.button_connect->setEnabled(false);
-                //	ui.line_edit_master->setReadOnly(true);
-                //	ui.line_edit_host->setReadOnly(true);
-                //	ui.line_edit_topic->setReadOnly(true);
-                //}
+        //	enabled = false;
         //}
-}
-
-
-void MainWindow::on_checkbox_use_environment_stateChanged(int state) {
-	bool enabled;
-	if ( state == 0 ) {
-		enabled = true;
-	} else {
-		enabled = false;
-	}
-	ui.line_edit_master->setEnabled(enabled);
-	ui.line_edit_host->setEnabled(enabled);
+        //ui.line_edit_master->setEnabled(enabled);
+        //ui.line_edit_host->setEnabled(enabled);
 	//ui.line_edit_topic->setEnabled(enabled);
-}
+//}
 
 /*****************************************************************************
 ** Implemenation [Slots][manually connected]
@@ -140,33 +145,12 @@ void MainWindow::ReadSettings() {
     QSettings settings("Qt-Ros Package", "qt_ground_station");
     restoreGeometry(settings.value("geometry").toByteArray());
     restoreState(settings.value("windowState").toByteArray());
-    QString master_url = settings.value("master_url",QString("http://192.168.1.2:11311/")).toString();
-    QString host_url = settings.value("host_url", QString("192.168.1.3")).toString();
-    //QString topic_name = settings.value("topic_name", QString("/chatter")).toString();
-    ui.line_edit_master->setText(master_url);
-    ui.line_edit_host->setText(host_url);
-    //ui.line_edit_topic->setText(topic_name);
-    bool remember = settings.value("remember_settings", false).toBool();
-    ui.checkbox_remember_settings->setChecked(remember);
-    bool checked = settings.value("use_environment_variables", false).toBool();
-    ui.checkbox_use_environment->setChecked(checked);
-    if ( checked ) {
-    	ui.line_edit_master->setEnabled(false);
-    	ui.line_edit_host->setEnabled(false);
-    	//ui.line_edit_topic->setEnabled(false);
-    }
 }
 
 void MainWindow::WriteSettings() {
     QSettings settings("Qt-Ros Package", "qt_ground_station");
-    settings.setValue("master_url",ui.line_edit_master->text());
-    settings.setValue("host_url",ui.line_edit_host->text());
-    //settings.setValue("topic_name",ui.line_edit_topic->text());
-    settings.setValue("use_environment_variables",QVariant(ui.checkbox_use_environment->isChecked()));
     settings.setValue("geometry", saveGeometry());
     settings.setValue("windowState", saveState());
-    settings.setValue("remember_settings",QVariant(ui.checkbox_remember_settings->isChecked()));
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -175,29 +159,88 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	QMainWindow::closeEvent(event);
 }
 
+/******************************SLOT************************************/
 void MainWindow::updateUAV0mocap() {
-    QString temp_string;
     qt_ground_station::Mocap temp_mocap = qnode.GetMocapUAV0();
+    ui.UAV0_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
+    ui.UAV0_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
+    ui.UAV0_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
 
-    temp_string.setNum(temp_mocap.position[0]);
-    ui.UAV0_x->setText(temp_string);
-    temp_string.setNum(temp_mocap.position[1]);
-    ui.UAV0_y->setText(temp_string);
-    temp_string.setNum(temp_mocap.position[2]);
-    ui.UAV0_z->setText(temp_string);
+    ui.UAV0_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
+    ui.UAV0_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
+    ui.UAV0_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+
 }
 
 void MainWindow::updateUAV0attReference() {
-    QString temp_string;
-    Eigen::Vector4d commad = qnode.GetAttThrustCommandUAV0();
-    temp_string.setNum(commad(0));
-    ui.UAV0_att_pitch->setText(temp_string);
-    temp_string.setNum(commad(1));
-    ui.UAV0_att_roll->setText(temp_string);
-    temp_string.setNum(commad(2));
-    ui.UAV0_att_yaw->setText(temp_string);
-    temp_string.setNum(commad(3));
-    ui.UAV0_thrust->setText(temp_string);
+    Eigen::Vector4d command = qnode.GetAttThrustCommandUAV0();
+
+    ui.UAV0_att_roll->setText(QString::number(command(0)*57.3, 'f', 2));
+    ui.UAV0_att_pitch->setText(QString::number(command(1)*57.3, 'f', 2));
+    ui.UAV0_att_yaw->setText(QString::number(command(2)*57.3, 'f', 2));
+    ui.UAV0_thrust->setText(QString::number(command(3), 'f', 2));
+}
+
+void MainWindow::updateUAV0log() {
+
+    qt_ground_station::Topic_for_log topic = qnode.GetDroneStateUAV0();
+
+    if (topic.Drone_State.connected) {
+        ui.UAV0_connection->setText("CONNECTED");
+    } else {
+        ui.UAV0_connection->setText("UNCONNECTED");
+    }
+
+    if (topic.Drone_State.armed) {
+        ui.UAV0_arm->setText("ARMED");
+    } else {
+        ui.UAV0_arm->setText("DISARMED");
+    }
+    ui.UAV0_mode->setText(QString::fromStdString(topic.Drone_State.mode));
+    /*-------------------------- update command thrust --------------------------*/
+    ui.UAV0_Tx->setText(QString::number(topic.Control_Output.Throttle[0], 'f', 2));
+    ui.UAV0_Ty->setText(QString::number(topic.Control_Output.Throttle[1], 'f', 2));
+    ui.UAV0_Tz->setText(QString::number(topic.Control_Output.Throttle[2], 'f', 2));
+    /*----------------------------update command mode ---------------------------*/
+    switch(topic.Control_Command.Mode) {
+    case QNode::Idle:
+        ui.UAV0_commandmode->setText("Idle");
+        break;
+
+    case QNode::Takeoff:
+        ui.UAV0_commandmode->setText("Take Off");
+        break;
+
+    case QNode::Move_ENU:
+        ui.UAV0_commandmode->setText("Move ENU");
+        break;
+
+    case QNode::Move_Body:
+        ui.UAV0_commandmode->setText("Move Body");
+        break;
+
+    case QNode::Hold:
+        ui.UAV0_commandmode->setText("Hold");
+        break;
+
+    case QNode::Land:
+        ui.UAV0_commandmode->setText("Land");
+        break;
+
+    case QNode::Disarm:
+        ui.UAV0_commandmode->setText("Disarm");
+        break;
+    default:
+        ui.UAV0_commandmode->setText("UNDEFINED MODE");
+        break;
+
+    }
+    /*-------------------------update mocap feedback flag ----------------------------------*/
+    if(topic.Drone_State.mocapOK) {
+        ui.UAV0_mocapFlag->setText("OptiTrack OK");
+    } else {
+        ui.UAV0_mocapFlag->setText("No OptiTrack Feedback!!");
+    }
 }
 
 }  // namespace qt_ground_station

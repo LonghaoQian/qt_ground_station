@@ -46,14 +46,32 @@ public Q_SLOTS:
 	** Auto-connections (connectSlotsByName())
 	*******************************************/
 	void on_actionAbout_triggered();
-	void on_button_connect_clicked(bool check );
-	void on_checkbox_use_environment_stateChanged(int state);
+        void on_Button_Takeoff_clicked(bool check);
+        void on_Button_Land_clicked(bool check);
+        void on_Button_moveENU_clicked(bool check);
+        //void on_checkbox_use_environment_stateChanged(int state);
     /******************************************
     ** Manual connections
     *******************************************/
     void updateLoggingView(); // no idea why this can't connect automatically
     void updateUAV0mocap();
     void updateUAV0attReference();
+    void updateUAV0log();
+
+
+Q_SIGNALS:
+    void send_TakeoffUAV0();
+    void send_TakeoffUAV1();
+    void send_TakeoffUAV2();
+    void send_TakeoffUAV3();
+    void send_LandUAV0();
+    void send_LandUAV1();
+    void send_LandUAV2();
+    void send_LandUAV3();
+    void send_MoveENUUAV0();
+    void send_MoveENUUAV1();
+    void send_MoveENUUAV2();
+    void send_MoveENUUAV3();
 
 private:
 	Ui::MainWindowDesign ui;
