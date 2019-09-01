@@ -36,7 +36,7 @@
          <rect>
           <x>10</x>
           <y>10</y>
-          <width>301</width>
+          <width>321</width>
           <height>121</height>
          </rect>
         </property>
@@ -67,6 +67,11 @@
            <width>101</width>
            <height>17</height>
           </rect>
+         </property>
+         <property name="font">
+          <font>
+           <strikeout>false</strikeout>
+          </font>
          </property>
          <property name="text">
           <string>DISARMED</string>
@@ -103,12 +108,25 @@
           <rect>
            <x>0</x>
            <y>100</y>
-           <width>201</width>
+           <width>181</width>
            <height>17</height>
           </rect>
          </property>
          <property name="text">
           <string>No OptiTrack Feedback!!</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox_2">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>100</y>
+           <width>97</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Override</string>
          </property>
         </widget>
        </widget>
@@ -594,14 +612,14 @@
        <widget class="QPushButton" name="pushButton">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>580</y>
-          <width>281</width>
+          <x>10</x>
+          <y>520</y>
+          <width>321</width>
           <height>27</height>
          </rect>
         </property>
         <property name="text">
-         <string>Payload Stabilization</string>
+         <string>Activate Payload Stabilization</string>
         </property>
        </widget>
        <widget class="QPushButton" name="Button_moveENU">
@@ -642,6 +660,9 @@
        <attribute name="title">
         <string>Tab 1</string>
        </attribute>
+       <zorder>groupBox_8</zorder>
+       <zorder>tabWidget_4</zorder>
+       <zorder>tabWidget_4</zorder>
       </widget>
      </widget>
     </item>
@@ -652,8 +673,276 @@
       </property>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>Tab 1</string>
+        <string>Payload Info</string>
        </attribute>
+       <widget class="QGroupBox" name="groupBox_8">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>291</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Payload Position And Velocity (m), (m/s)</string>
+        </property>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>CPID</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>70</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>30</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>50</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_10">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>70</y>
+           <width>67</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>TextLabel</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_10">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>160</y>
+          <width>311</width>
+          <height>111</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Payload Attitude (DEG)</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_11">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>350</y>
+          <width>271</width>
+          <height>80</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Payload Angular Velocity (DEG/s)</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_13">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>460</y>
+          <width>311</width>
+          <height>171</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Payload Control</string>
+        </property>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>90</y>
+           <width>301</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Payload Target Attitude (DEG)</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>301</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set Payload Target Position (m)</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="checkBox">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>0</y>
+           <width>171</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Payload Control</string>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>60</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_2">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>60</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_3">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>60</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_4">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>120</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_5">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>120</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QLineEdit" name="lineEdit_6">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>120</y>
+           <width>41</width>
+           <height>27</height>
+          </rect>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="geometry">
+         <rect>
+          <x>28</x>
+          <y>430</y>
+          <width>291</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>PushButton</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_14">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>10</y>
+          <width>67</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>TextLabel</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_8">
+        <property name="geometry">
+         <rect>
+          <x>170</x>
+          <y>10</y>
+          <width>97</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>CheckBox</string>
+        </property>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -692,6 +981,41 @@
             <widget class="QListView" name="view_logging"/>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_7">
+          <property name="text">
+           <string>Record UAV0</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_6">
+          <property name="text">
+           <string>Record UAV1</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_5">
+          <property name="text">
+           <string>Record UAV2</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_4">
+          <property name="text">
+           <string>Record UAV3</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBox_3">
+          <property name="text">
+           <string>Payload</string>
+          </property>
          </widget>
         </item>
         <item>

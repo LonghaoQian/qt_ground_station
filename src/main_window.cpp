@@ -52,14 +52,10 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(&qnode, SIGNAL(UAV0_LogFromDrone_label()), this, SLOT(updateUAV0log()));
     QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
     QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
-    /*                */
-
-    /*********************
-    ** Auto Start
-    **********************/
-    //if ( ui.checkbox_remember_settings->isChecked() ) {
-       // on_button_connect_clicked(true);
-   // }
+    /* -----------------------------update labels --------------------------------*/
+    ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
+    ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
+    ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
 }
 
 MainWindow::~MainWindow() {}
@@ -186,15 +182,15 @@ void MainWindow::updateUAV0log() {
     qt_ground_station::Topic_for_log topic = qnode.GetDroneStateUAV0();
 
     if (topic.Drone_State.connected) {
-        ui.UAV0_connection->setText("CONNECTED");
+        ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
     } else {
-        ui.UAV0_connection->setText("UNCONNECTED");
+        ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
     }
 
     if (topic.Drone_State.armed) {
-        ui.UAV0_arm->setText("ARMED");
+        ui.UAV0_arm->setText("<font color='green'>ARMED</font>");
     } else {
-        ui.UAV0_arm->setText("DISARMED");
+        ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
     }
     ui.UAV0_mode->setText(QString::fromStdString(topic.Drone_State.mode));
     /*-------------------------- update command thrust --------------------------*/
@@ -237,9 +233,9 @@ void MainWindow::updateUAV0log() {
     }
     /*-------------------------update mocap feedback flag ----------------------------------*/
     if(topic.Drone_State.mocapOK) {
-        ui.UAV0_mocapFlag->setText("OptiTrack OK");
+        ui.UAV0_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
     } else {
-        ui.UAV0_mocapFlag->setText("No OptiTrack Feedback!!");
+        ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
     }
 }
 
