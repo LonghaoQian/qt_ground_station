@@ -55,12 +55,13 @@ bool QNode::init() {
 	ros::NodeHandle n;
         // Add ros publiser hand subscribers here
         /*-------------------------------------pubs-----------------------------------------------*/
-        moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/px4_command/control_command",100);
+        moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/uav0/px4_command/control_command",100);
+        moveUAV1 = n.advertise<qt_ground_station::ControlCommand>("/uav1/px4_command/control_command",100);
         mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
 
         /*-------------------------------------subs-----------------------------------------------*/
-        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
-        UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
+        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav0/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
+        UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
 
 
         /*---------------------------------------------------------------------------------------*/
@@ -86,7 +87,11 @@ void QNode::sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg) {
    UAV0_mocap = *msg;
    Q_EMIT mocapUAV0_label();
 }
+void QNode::sub_mocapUAV1(const qt_ground_station::Mocap::ConstPtr& msg) {
 
+   UAV1_mocap = *msg;
+   Q_EMIT mocapUAV1_label();
+}
 void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
 
     UAV0_Topic_for_log = *msg;

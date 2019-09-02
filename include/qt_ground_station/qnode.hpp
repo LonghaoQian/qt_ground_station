@@ -82,18 +82,19 @@ Q_SIGNALS:
         void rosShutdown();
 
         void mocapUAV0_label();
+        void mocapUAV1_label();
         void attReferenceUAV0_lable();
         void UAV0_LogFromDrone_label();
-
-
 
 private:
 	int init_argc;
 	char** init_argv;
         ros::Publisher moveUAV0;
+        ros::Publisher moveUAV1;
         bool commandFlagUAV0;
         void pub_commandUAV0();
         qt_ground_station::ControlCommand Command_UAV0;
+        qt_ground_station::ControlCommand Command_UAV1;
         /*-------------------- Mocap ---------------------*/
         qt_ground_station::DroneState UAV0_state;
         qt_ground_station::Mocap UAV0_mocap;
@@ -116,6 +117,7 @@ private:
 
         QStringListModel logging_model;
         void sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg);
+        void sub_mocapUAV1(const qt_ground_station::Mocap::ConstPtr& msg);
         void sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg);
         void sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
         void generate_com(int sub_mode, float state_desired[4],qt_ground_station::ControlCommand& Command_Now);
