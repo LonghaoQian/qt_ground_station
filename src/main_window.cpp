@@ -88,12 +88,35 @@ void MainWindow::on_Button_moveENU_clicked(bool check){
     target_state[1] =  ui.UAV0_Target_y->text().toFloat();
     target_state[2] =  ui.UAV0_Target_z->text().toFloat();
     target_state[3] = 0;
-    /*  update the ENU target label */
-    ui.UAV0_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
-    ui.UAV0_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
-    ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
-    /*-------------------- set move ENU to node --------------------------------*/
-    qnode.move_ENU_UAV0(target_state);
+    /*----------------determine whether the input is in safe range ------------------*/
+    bool input_is_valid = true;
+
+    if(target_state[0]<-1.2 || target_state[0]> 1.2) {
+        input_is_valid = false;
+    }
+
+    if(target_state[1]< -1 || target_state[1]> 1) {
+        input_is_valid = false;
+    }
+
+    if(target_state[2]< 0|| target_state[2]> 1.6) {
+        input_is_valid = false;
+    }
+
+    /*----------------send input ------------------*/
+
+    if(input_is_valid){
+        /*  update the ENU target label */
+        ui.UAV0_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+        ui.UAV0_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+        ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+        /*-------------------- set move ENU to node --------------------------------*/
+        qnode.move_ENU_UAV0(target_state);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Input position is out of range!!");
+        msgBox.exec();
+    };
 }
 
 void MainWindow::on_Button_Land_clicked(bool check) {
