@@ -11,7 +11,7 @@
 ***************************************************************************************************************************/
 #ifndef MATH_UTILS_H
 #define MATH_UTILS_H
-
+#pragma once
 #include <Eigen/Eigen>
 #include <math.h>
 

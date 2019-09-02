@@ -13,7 +13,6 @@
 #include <QMessageBox>
 #include <iostream>
 #include "../include/qt_ground_station/main_window.hpp"
-
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
@@ -50,12 +49,35 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     **********************/
     //ui.view_logging->setModel(qnode.loggingModel());
     QObject::connect(&qnode, SIGNAL(UAV0_LogFromDrone_label()), this, SLOT(updateUAV0log()));
+    QObject::connect(&qnode, SIGNAL(UAV1_LogFromDrone_label()), this, SLOT(updateUAV1log()));
+    QObject::connect(&qnode, SIGNAL(UAV2_LogFromDrone_label()), this, SLOT(updateUAV2log()));
+
     QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
+    QObject::connect(&qnode, SIGNAL(mocapUAV1_label()), this, SLOT(updateUAV1mocap()));
+    QObject::connect(&qnode, SIGNAL(mocapUAV2_label()), this, SLOT(updateUAV2mocap()));
+
     QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
+    QObject::connect(&qnode, SIGNAL(attReferenceUAV1_lable()), this, SLOT(updateUAV1attReference()));
+    QObject::connect(&qnode, SIGNAL(attReferenceUAV2_lable()), this, SLOT(updateUAV2attReference()));
+
+
     /* -----------------------------update labels --------------------------------*/
     ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
     ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
     ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
+    ui.UAV0_detection->setText("<font color='red'>UAV0 Undetected!</font>");
+
+    ui.UAV1_connection->setText("<font color='red'>UNCONNECTED</font>");
+    ui.UAV1_arm->setText("<font color='red'>DISARMED</font>");
+    ui.UAV1_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
+    ui.UAV1_detection->setText("<font color='red'>UAV1 Undetected!</font>");
+
+    ui.UAV2_connection->setText("<font color='red'>UNCONNECTED</font>");
+    ui.UAV2_arm->setText("<font color='red'>DISARMED</font>");
+    ui.UAV2_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
+    ui.UAV2_detection->setText("<font color='red'>UAV2 Undetected!</font>");
+
+    ui.Payload_detection->setText("<font color='red'>Payload Undetected!</font>");
 }
 
 MainWindow::~MainWindow() {}
@@ -76,11 +98,16 @@ void MainWindow::showNoMasterMessage() {
  * is already checked or not.
  */
 
-void MainWindow::on_Button_Takeoff_clicked(bool check ) {
-
+void MainWindow::on_UAV0_Button_Takeoff_clicked(bool check ) {
+    qnode.takeoff(0);
 }
-
-void MainWindow::on_Button_moveENU_clicked(bool check){
+void MainWindow::on_UAV1_Button_Takeoff_clicked(bool check ) {
+    qnode.takeoff(1);
+}
+void MainWindow::on_UAV2_Button_Takeoff_clicked(bool check ) {
+    qnode.takeoff(2);
+}
+void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
     /* read values from line edit */
     float target_state[4];
 
@@ -91,7 +118,7 @@ void MainWindow::on_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.2 || target_state[0]> 1.2) {
+    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
         input_is_valid = false;
     }
 
@@ -111,7 +138,8 @@ void MainWindow::on_Button_moveENU_clicked(bool check){
         ui.UAV0_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
         ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
-        qnode.move_ENU_UAV0(target_state);
+
+        qnode.move_ENU(0,target_state);
     } else {
         QMessageBox msgBox;
         msgBox.setText("Input position is out of range!!");
@@ -119,21 +147,115 @@ void MainWindow::on_Button_moveENU_clicked(bool check){
     };
 }
 
-void MainWindow::on_Button_Land_clicked(bool check) {
+void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
+    /* read values from line edit */
+    float target_state[4];
 
+    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[3] = 0;
+    /*----------------determine whether the input is in safe range ------------------*/
+    bool input_is_valid = true;
 
+    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
+        input_is_valid = false;
+    }
+
+    if(target_state[1]< -1 || target_state[1]> 1) {
+        input_is_valid = false;
+    }
+
+    if(target_state[2]< 0|| target_state[2]> 1.6) {
+        input_is_valid = false;
+    }
+
+    /*----------------send input ------------------*/
+
+    if(input_is_valid){
+        /*  update the ENU target label */
+        ui.UAV1_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+        ui.UAV1_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+        ui.UAV1_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+        /*-------------------- set move ENU to node --------------------------------*/
+
+        qnode.move_ENU(1,target_state);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Input position is out of range!!");
+        msgBox.exec();
+    };
 }
-//void MainWindow::on_checkbox_use_environment_stateChanged(int state) {
-        //bool enabled;
-        //if ( state == 0 ) {
-        //	enabled = true;
-        //} else {
-        //	enabled = false;
-        //}
-        //ui.line_edit_master->setEnabled(enabled);
-        //ui.line_edit_host->setEnabled(enabled);
-	//ui.line_edit_topic->setEnabled(enabled);
-//}
+
+void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
+    /* read values from line edit */
+    float target_state[4];
+
+    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[3] = 0;
+    /*----------------determine whether the input is in safe range ------------------*/
+    bool input_is_valid = true;
+
+    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
+        input_is_valid = false;
+    }
+
+    if(target_state[1]< -1 || target_state[1]> 1) {
+        input_is_valid = false;
+    }
+
+    if(target_state[2]< 0|| target_state[2]> 1.6) {
+        input_is_valid = false;
+    }
+
+    /*----------------send input ------------------*/
+
+    if(input_is_valid){
+        /*  update the ENU target label */
+        ui.UAV2_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+        ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+        ui.UAV2_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+        /*-------------------- set move ENU to node --------------------------------*/
+
+        qnode.move_ENU(2,target_state);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Input position is out of range!!");
+        msgBox.exec();
+    };
+}
+
+void MainWindow::on_UAV0_Button_Land_clicked(bool check) {
+    qnode.land(0);
+}
+
+void MainWindow::on_UAV1_Button_Land_clicked(bool check) {
+    qnode.land(1);
+}
+
+void MainWindow::on_UAV2_Button_Land_clicked(bool check) {
+    qnode.land(2);
+}
+
+void MainWindow::on_UAV0_Button_Disarm_clicked(bool check) {
+    qnode.disarm(0);
+}
+
+void MainWindow::on_UAV1_Button_Disarm_clicked(bool check) {
+    qnode.disarm(1);
+}
+
+void MainWindow::on_UAV2_Button_Disarm_clicked(bool check) {
+    qnode.disarm(2);
+}
+
+void MainWindow::on_Button_DisarmALL_clicked(bool check) {
+    qnode.disarm(0);
+    qnode.disarm(1);
+    qnode.disarm(2);
+}
 
 /*****************************************************************************
 ** Implemenation [Slots][manually connected]
@@ -178,9 +300,9 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	QMainWindow::closeEvent(event);
 }
 
-/******************************SLOT************************************/
+/******************************SLOTS************************************/
 void MainWindow::updateUAV0mocap() {
-    qt_ground_station::Mocap temp_mocap = qnode.GetMocapUAV0();
+    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(0);
     ui.UAV0_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
     ui.UAV0_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
     ui.UAV0_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
@@ -191,62 +313,133 @@ void MainWindow::updateUAV0mocap() {
 
 }
 
-void MainWindow::updateUAV0attReference() {
-    Eigen::Vector4d command = qnode.GetAttThrustCommandUAV0();
+void MainWindow::updateUAV1mocap() {
+    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(1);
+    ui.UAV1_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
+    ui.UAV1_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
+    ui.UAV1_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
 
-    ui.UAV0_att_roll->setText(QString::number(command(0)*57.3, 'f', 2));
-    ui.UAV0_att_pitch->setText(QString::number(command(1)*57.3, 'f', 2));
-    ui.UAV0_att_yaw->setText(QString::number(command(2)*57.3, 'f', 2));
-    ui.UAV0_thrust->setText(QString::number(command(3), 'f', 2));
+    ui.UAV1_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
+    ui.UAV1_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
+    ui.UAV1_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+
 }
+
+void MainWindow::updateUAV2mocap() {
+    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(2);
+    ui.UAV2_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
+    ui.UAV2_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
+    ui.UAV2_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+
+    ui.UAV2_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
+    ui.UAV2_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
+    ui.UAV2_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+
+}
+
+void MainWindow::updatePayloadmocap() {
+    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(-1);
+    ui.Payload_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
+    ui.Payload_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
+    ui.Payload_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+
+    ui.Payload_vx->setText(QString::number(temp_mocap.position[0], 'f', 2));
+    ui.Payload_vy->setText(QString::number(temp_mocap.position[1], 'f', 2));
+    ui.Payload_vz->setText(QString::number(temp_mocap.position[2], 'f', 2));
+
+    ui.Payload_omega_x->setText(QString::number(temp_mocap.angular_velocity[0]*57.3, 'f', 2));
+    ui.Payload_omega_y->setText(QString::number(temp_mocap.angular_velocity[1]*57.3, 'f', 2));
+    ui.Payload_omega_z->setText(QString::number(temp_mocap.angular_velocity[2]*57.3, 'f', 2));
+
+    Eigen::Quaterniond quaternion_temp;
+    quaternion_temp.w() = temp_mocap.quaternion[0];
+    quaternion_temp.x() = temp_mocap.quaternion[1];
+    quaternion_temp.y() = temp_mocap.quaternion[2];
+    quaternion_temp.z() = temp_mocap.quaternion[3];
+
+    Eigen::Vector3d euler_temp =  quaternion_to_euler_w(quaternion_temp);
+    ui.Payload_roll->setText(QString::number(euler_temp(0)*57.3, 'f', 2));
+    ui.Payload_pitch->setText(QString::number(euler_temp(1)*57.3, 'f', 2));
+    ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 2));
+
+}
+
+
+void MainWindow::updateUAV0attReference() {
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(0);
+
+    ui.UAV0_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
+    ui.UAV0_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
+    ui.UAV0_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
+    ui.UAV0_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+}
+
+void MainWindow::updateUAV1attReference() {
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(1);
+
+    ui.UAV1_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
+    ui.UAV1_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
+    ui.UAV1_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
+    ui.UAV1_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+}
+
+void MainWindow::updateUAV2attReference() {
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(2);
+
+    ui.UAV2_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
+    ui.UAV2_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
+    ui.UAV2_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
+    ui.UAV2_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+}
+
 
 void MainWindow::updateUAV0log() {
 
-    qt_ground_station::Topic_for_log topic = qnode.GetDroneStateUAV0();
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(0);
 
-    if (topic.Drone_State.connected) {
+    if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
     } else {
         ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
     }
 
-    if (topic.Drone_State.armed) {
+    if (log.log.Drone_State.armed) {
         ui.UAV0_arm->setText("<font color='green'>ARMED</font>");
     } else {
         ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
     }
-    ui.UAV0_mode->setText(QString::fromStdString(topic.Drone_State.mode));
+    ui.UAV0_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
     /*-------------------------- update command thrust --------------------------*/
-    ui.UAV0_Tx->setText(QString::number(topic.Control_Output.Throttle[0], 'f', 2));
-    ui.UAV0_Ty->setText(QString::number(topic.Control_Output.Throttle[1], 'f', 2));
-    ui.UAV0_Tz->setText(QString::number(topic.Control_Output.Throttle[2], 'f', 2));
+    ui.UAV0_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
+    ui.UAV0_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
+    ui.UAV0_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
     /*----------------------------update command mode ---------------------------*/
-    switch(topic.Control_Command.Mode) {
-    case QNode::Idle:
+    switch(log.log.Control_Command.Mode) {
+    case Idle:
         ui.UAV0_commandmode->setText("Idle");
         break;
 
-    case QNode::Takeoff:
+    case Takeoff:
         ui.UAV0_commandmode->setText("Take Off");
         break;
 
-    case QNode::Move_ENU:
+    case Move_ENU:
         ui.UAV0_commandmode->setText("Move ENU");
         break;
 
-    case QNode::Move_Body:
+    case Move_Body:
         ui.UAV0_commandmode->setText("Move Body");
         break;
 
-    case QNode::Hold:
+    case Hold:
         ui.UAV0_commandmode->setText("Hold");
         break;
 
-    case QNode::Land:
+    case Land:
         ui.UAV0_commandmode->setText("Land");
         break;
 
-    case QNode::Disarm:
+    case Disarm:
         ui.UAV0_commandmode->setText("Disarm");
         break;
     default:
@@ -255,11 +448,153 @@ void MainWindow::updateUAV0log() {
 
     }
     /*-------------------------update mocap feedback flag ----------------------------------*/
-    if(topic.Drone_State.mocapOK) {
+    if(log.log.Drone_State.mocapOK) {
         ui.UAV0_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
     } else {
         ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
     }
+
+}
+
+void MainWindow::updateUAV1log() {
+
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(1);
+
+    if (log.log.Drone_State.connected && log.isconnected) {
+        ui.UAV1_connection->setText("<font color='green'>CONNECTED</font>");
+    } else {
+        ui.UAV1_connection->setText("<font color='red'>UNCONNECTED</font>");
+    }
+
+    if (log.log.Drone_State.armed) {
+        ui.UAV1_arm->setText("<font color='green'>ARMED</font>");
+    } else {
+        ui.UAV1_arm->setText("<font color='red'>DISARMED</font>");
+    }
+    ui.UAV1_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
+    /*-------------------------- update command thrust --------------------------*/
+    ui.UAV1_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
+    ui.UAV1_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
+    ui.UAV1_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
+    /*----------------------------update command mode ---------------------------*/
+    switch(log.log.Control_Command.Mode) {
+    case Idle:
+        ui.UAV1_commandmode->setText("Idle");
+        break;
+
+    case Takeoff:
+        ui.UAV1_commandmode->setText("Take Off");
+        break;
+
+    case Move_ENU:
+        ui.UAV1_commandmode->setText("Move ENU");
+        break;
+
+    case Move_Body:
+        ui.UAV1_commandmode->setText("Move Body");
+        break;
+
+    case Hold:
+        ui.UAV1_commandmode->setText("Hold");
+        break;
+
+    case Land:
+        ui.UAV1_commandmode->setText("Land");
+        break;
+
+    case Disarm:
+        ui.UAV1_commandmode->setText("Disarm");
+        break;
+    default:
+        ui.UAV1_commandmode->setText("UNDEFINED MODE");
+        break;
+
+    }
+    /*-------------------------update mocap feedback flag ----------------------------------*/
+    if(log.log.Drone_State.mocapOK) {
+        ui.UAV1_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
+    } else {
+        ui.UAV1_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
+    }
+
+}
+
+void MainWindow::updateUAV2log() {
+
+    qt_ground_station::uav_log log = qnode.GetUAVLOG(2);
+
+    if (log.log.Drone_State.connected && log.isconnected) {
+        ui.UAV2_connection->setText("<font color='green'>CONNECTED</font>");
+    } else {
+        ui.UAV2_connection->setText("<font color='red'>UNCONNECTED</font>");
+    }
+
+    if (log.log.Drone_State.armed) {
+        ui.UAV2_arm->setText("<font color='green'>ARMED</font>");
+    } else {
+        ui.UAV2_arm->setText("<font color='red'>DISARMED</font>");
+    }
+    ui.UAV2_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
+    /*-------------------------- update command thrust --------------------------*/
+    ui.UAV2_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
+    ui.UAV2_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
+    ui.UAV2_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
+    /*----------------------------update command mode ---------------------------*/
+    switch(log.log.Control_Command.Mode) {
+    case Idle:
+        ui.UAV2_commandmode->setText("Idle");
+        break;
+
+    case Takeoff:
+        ui.UAV2_commandmode->setText("Take Off");
+        break;
+
+    case Move_ENU:
+        ui.UAV2_commandmode->setText("Move ENU");
+        break;
+
+    case Move_Body:
+        ui.UAV2_commandmode->setText("Move Body");
+        break;
+
+    case Hold:
+        ui.UAV2_commandmode->setText("Hold");
+        break;
+
+    case Land:
+        ui.UAV2_commandmode->setText("Land");
+        break;
+
+    case Disarm:
+        ui.UAV2_commandmode->setText("Disarm");
+        break;
+    default:
+        ui.UAV2_commandmode->setText("UNDEFINED MODE");
+        break;
+
+    }
+    /*-------------------------update mocap feedback flag ----------------------------------*/
+    if(log.log.Drone_State.mocapOK) {
+        ui.UAV2_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
+    } else {
+        ui.UAV2_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
+    }
+
+}
+
+Eigen::Vector3d MainWindow::quaternion_to_euler_w(const Eigen::Quaterniond &q)
+{
+    float quat[4];
+    quat[0] = q.w();
+    quat[1] = q.x();
+    quat[2] = q.y();
+    quat[3] = q.z();
+
+    Eigen::Vector3d ans;
+    ans[0] = atan2(2.0 * (quat[3] * quat[2] + quat[0] * quat[1]), 1.0 - 2.0 * (quat[1] * quat[1] + quat[2] * quat[2]));
+    ans[1] = asin(2.0 * (quat[2] * quat[0] - quat[3] * quat[1]));
+    ans[2] = atan2(2.0 * (quat[3] * quat[0] + quat[1] * quat[2]), 1.0 - 2.0 * (quat[2] * quat[2] + quat[3] * quat[3]));
+    return ans;
 }
 
 }  // namespace qt_ground_station

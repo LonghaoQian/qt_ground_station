@@ -34,7 +34,10 @@ QNode::QNode(int argc, char** argv ) :
 	init_argv(argv)
         {
 
-        commandFlagUAV0 = false;
+        commandFlag[0] = false;
+        commandFlag[1] = false;
+        commandFlag[2] = false;
+        DroneNumber = 3;
 }
 
 QNode::~QNode() {
@@ -57,11 +60,21 @@ bool QNode::init() {
         /*-------------------------------------pubs-----------------------------------------------*/
         moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/uav0/px4_command/control_command",100);
         moveUAV1 = n.advertise<qt_ground_station::ControlCommand>("/uav1/px4_command/control_command",100);
-        mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
+        moveUAV2 = n.advertise<qt_ground_station::ControlCommand>("/uav2/px4_command/control_command",100);
 
+        mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
+        mocapUAV1 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV1", 1000, &QNode::sub_mocapUAV1, this);
+        mocapUAV2 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV2", 1000, &QNode::sub_mocapUAV2, this);
+        mocapPayload = n.subscribe<qt_ground_station::Mocap>("/mocap/Payload", 1000, &QNode::sub_mocapPayload, this);
         /*-------------------------------------subs-----------------------------------------------*/
         UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav0/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
+        UAV1_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav1/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV1, this);
+        UAV2_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav2/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV2, this);
+
         UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
+        UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV1,this);
+        UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
+
 
 
         /*---------------------------------------------------------------------------------------*/
@@ -70,79 +83,150 @@ bool QNode::init() {
 }
 
 void QNode::run() {
-        ros::Rate loop_rate(2);
+        ros::Rate loop_rate(4);
         /*------------------------------------- ros loop ----------------------------------------*/
 	while ( ros::ok() ) {
-                pub_commandUAV0();
+                pub_command();
 		ros::spinOnce();
-		loop_rate.sleep();
+       /*---------------------emit signals to tigger label update --------------------------*/
 
+                for (int i = 0; i <DroneNumber; i++)
+                {
+                    if(UavLogList[i].islogreceived)
+                    {
+                        UavLogList[i].isconnected =true;
+                    } else{
+                        UavLogList[i].isconnected = false;
+                    }
+                    UavLogList[i].islogreceived = false;
+                }
+
+                /*--------------- update uav -------------------*/
+                Q_EMIT mocapUAV0_label();
+                Q_EMIT mocapUAV1_label();
+                Q_EMIT mocapUAV2_label();
+
+                Q_EMIT UAV0_LogFromDrone_label();
+                Q_EMIT UAV1_LogFromDrone_label();
+                Q_EMIT UAV2_LogFromDrone_label();
+
+                Q_EMIT attReferenceUAV0_lable();
+                Q_EMIT attReferenceUAV1_lable();
+                Q_EMIT attReferenceUAV2_lable();
+		loop_rate.sleep();
 	}
 	std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
 	Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
 }
 /*---------------------------------------sub callbacks   ------------------------------------------*/
 void QNode::sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg) {
-
-   UAV0_mocap = *msg;
-   Q_EMIT mocapUAV0_label();
+   mocap[0] = *msg;
 }
 void QNode::sub_mocapUAV1(const qt_ground_station::Mocap::ConstPtr& msg) {
-
-   UAV1_mocap = *msg;
-   Q_EMIT mocapUAV1_label();
+   mocap[1] = *msg;
+}
+void QNode::sub_mocapUAV2(const qt_ground_station::Mocap::ConstPtr& msg) {
+   mocap[2] = *msg;
+}
+void QNode::sub_mocapPayload(const qt_ground_station::Mocap::ConstPtr &msg) {
+    mocap_payload = *msg;
 }
 void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
 
-    UAV0_Topic_for_log = *msg;
-    Q_EMIT UAV0_LogFromDrone_label();
+    UavLogList[0].log = *msg;
+    UavLogList[0].islogreceived = true;
+}
+void QNode::sub_topic_for_logUpdateUAV1(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
+
+    UavLogList[1].log = *msg;
+    UavLogList[1].islogreceived = true;
+}
+void QNode::sub_topic_for_logUpdateUAV2(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
+
+    UavLogList[2].log = *msg;
+    UavLogList[2].islogreceived = true;
 }
 
 void QNode::sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
 
-    UAV0_q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-
+    UavLogList[0].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
     //Transform the Quaternion to euler Angles
-    UAV0_euler_fcu_target = quaternion_to_euler(UAV0_q_fcu_target);
-    UAV0_Thrust_target = msg->thrust;
-    Q_EMIT attReferenceUAV0_lable();
+    UavLogList[0].euler_fcu_target = quaternion_to_euler(UavLogList[0].q_fcu_target);
+    UavLogList[0].Thrust_target= msg->thrust;
+
+}
+void QNode::sub_setpoint_rawUpdateUAV1(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
+
+    UavLogList[1].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+    //Transform the Quaternion to euler Angles
+    UavLogList[1].euler_fcu_target = quaternion_to_euler(UavLogList[1].q_fcu_target);
+    UavLogList[1].Thrust_target= msg->thrust;
+
+}
+void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
+
+    UavLogList[2].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+    //Transform the Quaternion to euler Angles
+    UavLogList[2].euler_fcu_target = quaternion_to_euler(UavLogList[2].q_fcu_target);
+    UavLogList[2].Thrust_target= msg->thrust;
+
 }
 /*---------------------------------------pub functions -----------------------------------------*/
-void QNode::pub_commandUAV0() {
-    if (commandFlagUAV0) {
-        moveUAV0.publish(Command_UAV0);
-        commandFlagUAV0  = false;
+void QNode::pub_command() {
+
+    if (commandFlag[0]) {
+        moveUAV0.publish(Command_List[0]);
+        commandFlag[0] = false;
+    }
+    if (commandFlag[1]) {
+        moveUAV0.publish(Command_List[1]);
+        commandFlag[1] = false;
+    }
+    if (commandFlag[2]) {
+        moveUAV0.publish(Command_List[2]);
+        commandFlag[2] = false;
     }
 }
 /*---------------------------------get values --------------------------------*/
 
-qt_ground_station::Mocap QNode::GetMocapUAV0() {
+qt_ground_station::Mocap QNode::GetMocap(int ID) {
 
-    return UAV0_mocap;
+    if( ID == -1) {
+        return mocap_payload;
+    } else {
+        return mocap[ID];
+    };
 }
 
-Eigen::Vector4d QNode::GetAttThrustCommandUAV0() {
-    Eigen::Vector4d command;
-    command(0) = UAV0_euler_fcu_target(0);
-    command(1) = UAV0_euler_fcu_target(1);
-    command(2) = UAV0_euler_fcu_target(2);
-    command(3) = (double) UAV0_Thrust_target;
-    return command;
-
+qt_ground_station::uav_log QNode::GetUAVLOG(int ID) {
+    return UavLogList[ID];
+}
+/*--------------------------- sent commands ----------------------------------------*/
+void QNode::takeoff(int ID) {
+    commandFlag[ID] = true;
+    Command_List[ID].header.stamp = ros::Time::now();
+    Command_List[ID].Mode = Takeoff;
 }
 
-qt_ground_station::Topic_for_log QNode::GetDroneStateUAV0() {
+void QNode::move_ENU(int ID,
+                    float state_desired[4]) {
 
-    return UAV0_Topic_for_log;
+    commandFlag[ID] = true;
+    Command_List[ID].header.stamp = ros::Time::now();
+    Command_List[ID].Mode = Move_ENU;
+    generate_com(0, state_desired,Command_List[ID]);
+
+}
+void QNode::land(int ID) {
+    commandFlag[ID] = true;
+    Command_List[ID].header.stamp = ros::Time::now();
+    Command_List[ID].Mode = Land;
 }
 
-/*---------------------------set values ----------------------------------------*/
-
-void QNode::move_ENU_UAV0(float state_desired[4]) {
-    commandFlagUAV0  = true;
-    Command_UAV0.header.stamp = ros::Time::now();
-    Command_UAV0.Mode = Move_ENU;
-    generate_com(0, state_desired,Command_UAV0);
+void QNode::disarm(int ID){
+    commandFlag[ID] = true;
+    Command_List[ID].header.stamp = ros::Time::now();
+    Command_List[ID].Mode = Disarm;
 }
 /*------------------------------------- Utility Functions --------------------------------------*/
 void QNode::generate_com(int sub_mode,
