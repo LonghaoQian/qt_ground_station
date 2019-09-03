@@ -399,12 +399,22 @@ void MainWindow::updateUAV0log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
+        ui.UAV0_Button_Disarm->setEnabled(true);
+        ui.UAV0_Button_Takeoff->setEnabled(true);
+        ui.UAV0_Button_Land->setEnabled(true);
+        ui.UAV0_Button_moveENU->setEnabled(true);
+
     } else {
         ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
+        /*------------disable all the buttons -------------------*/
+        ui.UAV0_Button_Disarm->setEnabled(false);
+        ui.UAV0_Button_Takeoff->setEnabled(false);
+        ui.UAV0_Button_Land->setEnabled(false);
+        ui.UAV0_Button_moveENU->setEnabled(false);
     }
 
     if (log.log.Drone_State.armed) {
-        ui.UAV0_arm->setText("<font color='green'>ARMED</font>");
+        ui.UAV0_arm->setText("<font color='green'>ARMED</font>");    
     } else {
         ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
     }
@@ -462,8 +472,17 @@ void MainWindow::updateUAV1log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV1_connection->setText("<font color='green'>CONNECTED</font>");
+        ui.UAV1_Button_Disarm->setEnabled(true);
+        ui.UAV1_Button_Takeoff->setEnabled(true);
+        ui.UAV1_Button_Land->setEnabled(true);
+        ui.UAV1_Button_moveENU->setEnabled(true);
+
     } else {
         ui.UAV1_connection->setText("<font color='red'>UNCONNECTED</font>");
+        ui.UAV1_Button_Disarm->setEnabled(false);
+        ui.UAV1_Button_Takeoff->setEnabled(false);
+        ui.UAV1_Button_Land->setEnabled(false);
+        ui.UAV1_Button_moveENU->setEnabled(false);
     }
 
     if (log.log.Drone_State.armed) {
@@ -525,8 +544,16 @@ void MainWindow::updateUAV2log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV2_connection->setText("<font color='green'>CONNECTED</font>");
+        ui.UAV2_Button_Disarm->setEnabled(true);
+        ui.UAV2_Button_Takeoff->setEnabled(true);
+        ui.UAV2_Button_Land->setEnabled(true);
+        ui.UAV2_Button_moveENU->setEnabled(true);
     } else {
         ui.UAV2_connection->setText("<font color='red'>UNCONNECTED</font>");
+        ui.UAV2_Button_Disarm->setEnabled(false);
+        ui.UAV2_Button_Takeoff->setEnabled(false);
+        ui.UAV2_Button_Land->setEnabled(false);
+        ui.UAV0_Button_moveENU->setEnabled(false);
     }
 
     if (log.log.Drone_State.armed) {
