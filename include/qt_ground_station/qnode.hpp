@@ -91,19 +91,8 @@ public:
         void disarm(int ID);
 Q_SIGNALS:
 	void loggingUpdated();
+        void rosLoopUpdate();
         void rosShutdown();
-
-        void mocapUAV0_label();
-        void mocapUAV1_label();
-        void mocapUAV2_label();
-
-        void attReferenceUAV0_lable();
-        void attReferenceUAV1_lable();
-        void attReferenceUAV2_lable();
-
-        void UAV0_LogFromDrone_label();
-        void UAV1_LogFromDrone_label();
-        void UAV2_LogFromDrone_label();
 private:
         /*-------------------input arguments-----------------------*/
         int init_argc;

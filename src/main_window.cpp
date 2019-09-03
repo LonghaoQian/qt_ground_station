@@ -48,17 +48,17 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ** Logging
     **********************/
     //ui.view_logging->setModel(qnode.loggingModel());
-    QObject::connect(&qnode, SIGNAL(UAV0_LogFromDrone_label()), this, SLOT(updateUAV0log()));
-    QObject::connect(&qnode, SIGNAL(UAV1_LogFromDrone_label()), this, SLOT(updateUAV1log()));
-    QObject::connect(&qnode, SIGNAL(UAV2_LogFromDrone_label()), this, SLOT(updateUAV2log()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0log()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1log()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2log()));
 
-    QObject::connect(&qnode, SIGNAL(mocapUAV0_label()), this, SLOT(updateUAV0mocap()));
-    QObject::connect(&qnode, SIGNAL(mocapUAV1_label()), this, SLOT(updateUAV1mocap()));
-    QObject::connect(&qnode, SIGNAL(mocapUAV2_label()), this, SLOT(updateUAV2mocap()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0mocap()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1mocap()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2mocap()));
 
-    QObject::connect(&qnode, SIGNAL(attReferenceUAV0_lable()), this, SLOT(updateUAV0attReference()));
-    QObject::connect(&qnode, SIGNAL(attReferenceUAV1_lable()), this, SLOT(updateUAV1attReference()));
-    QObject::connect(&qnode, SIGNAL(attReferenceUAV2_lable()), this, SLOT(updateUAV2attReference()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0attReference()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1attReference()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2attReference()));
 
 
     /* -----------------------------update labels --------------------------------*/
@@ -458,7 +458,7 @@ void MainWindow::updateUAV0log() {
 
     }
     /*-------------------------update mocap feedback flag ----------------------------------*/
-    if(log.log.Drone_State.mocapOK) {
+    if(log.log.Drone_State.mocapOK && log.isconnected) {
         ui.UAV0_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
     } else {
         ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
@@ -530,7 +530,7 @@ void MainWindow::updateUAV1log() {
 
     }
     /*-------------------------update mocap feedback flag ----------------------------------*/
-    if(log.log.Drone_State.mocapOK) {
+    if(log.log.Drone_State.mocapOK && log.isconnected) {
         ui.UAV1_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
     } else {
         ui.UAV1_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
@@ -601,7 +601,7 @@ void MainWindow::updateUAV2log() {
 
     }
     /*-------------------------update mocap feedback flag ----------------------------------*/
-    if(log.log.Drone_State.mocapOK) {
+    if(log.log.Drone_State.mocapOK && log.isconnected) {
         ui.UAV2_mocapFlag->setText("<font color='green'>OptiTrack OK</font>");
     } else {
         ui.UAV2_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");

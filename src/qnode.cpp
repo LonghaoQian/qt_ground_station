@@ -101,18 +101,9 @@ void QNode::run() {
                     UavLogList[i].islogreceived = false;
                 }
 
-                /*--------------- update uav -------------------*/
-                Q_EMIT mocapUAV0_label();
-                Q_EMIT mocapUAV1_label();
-                Q_EMIT mocapUAV2_label();
+                /* signal a ros loop update  */
+                Q_EMIT rosLoopUpdate();
 
-                Q_EMIT UAV0_LogFromDrone_label();
-                Q_EMIT UAV1_LogFromDrone_label();
-                Q_EMIT UAV2_LogFromDrone_label();
-
-                Q_EMIT attReferenceUAV0_lable();
-                Q_EMIT attReferenceUAV1_lable();
-                Q_EMIT attReferenceUAV2_lable();
 		loop_rate.sleep();
 	}
 	std::cout << "Ros shutdown, proceeding to close the gui." << std::endl;
