@@ -397,6 +397,12 @@ void MainWindow::updateUAV0log() {
 
     qt_ground_station::uav_log log = qnode.GetUAVLOG(0);
 
+    if(log.isconnected) {
+        ui.UAV0_detection->setText("<font color='green'>UAV0 Detected</font>");
+    } else {
+        ui.UAV0_detection->setText("<font color='red'>UAV0 Undetected!</font>");
+     }
+
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV0_Button_Disarm->setEnabled(true);
@@ -470,6 +476,12 @@ void MainWindow::updateUAV1log() {
 
     qt_ground_station::uav_log log = qnode.GetUAVLOG(1);
 
+    if(log.isconnected) {
+        ui.UAV1_detection->setText("<font color='green'>UAV1 Detected</font>");
+    } else {
+        ui.UAV1_detection->setText("<font color='red'>UAV1 Undetected!</font>");
+     }
+
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV1_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV1_Button_Disarm->setEnabled(true);
@@ -542,6 +554,12 @@ void MainWindow::updateUAV2log() {
 
     qt_ground_station::uav_log log = qnode.GetUAVLOG(2);
 
+    if(log.isconnected) {
+        ui.UAV2_detection->setText("<font color='green'>UAV2 Detected</font>");
+    } else {
+        ui.UAV2_detection->setText("<font color='red'>UAV2 Undetected!</font>");
+     }
+
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV2_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV2_Button_Disarm->setEnabled(true);
@@ -553,7 +571,7 @@ void MainWindow::updateUAV2log() {
         ui.UAV2_Button_Disarm->setEnabled(false);
         ui.UAV2_Button_Takeoff->setEnabled(false);
         ui.UAV2_Button_Land->setEnabled(false);
-        ui.UAV0_Button_moveENU->setEnabled(false);
+        ui.UAV2_Button_moveENU->setEnabled(false);
     }
 
     if (log.log.Drone_State.armed) {
