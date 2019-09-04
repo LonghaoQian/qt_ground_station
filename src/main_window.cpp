@@ -151,9 +151,9 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
     /* read values from line edit */
     float target_state[4];
 
-    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
-    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
-    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[0] =  ui.UAV1_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV1_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV1_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
@@ -191,9 +191,9 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     /* read values from line edit */
     float target_state[4];
 
-    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
-    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
-    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[0] =  ui.UAV2_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV2_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV2_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;

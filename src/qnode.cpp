@@ -170,11 +170,11 @@ void QNode::pub_command() {
         commandFlag[0] = false;
     }
     if (commandFlag[1]) {
-        moveUAV0.publish(Command_List[1]);
+        moveUAV1.publish(Command_List[1]);
         commandFlag[1] = false;
     }
     if (commandFlag[2]) {
-        moveUAV0.publish(Command_List[2]);
+        moveUAV2.publish(Command_List[2]);
         commandFlag[2] = false;
     }
 }
