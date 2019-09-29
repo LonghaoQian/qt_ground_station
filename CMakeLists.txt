@@ -29,14 +29,14 @@ mavros_msgs
 add_message_files(
   DIRECTORY msg
   FILES
-  ControlCommand.msg
-  TrajectoryPoint.msg
-  Trajectory.msg
   AttitudeReference.msg
-  DroneState.msg
-  Topic_for_log.msg
+  ControlCommand.msg
   ControlOutput.msg
+  DroneState.msg
   Mocap.msg
+  Topic_for_log.msg
+  Trajectory.msg
+  TrajectoryPoint.msg
 )
 
 generate_messages(
@@ -88,6 +88,8 @@ file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINK
 ##############################################################################
 
 add_executable(qt_ground_station ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+add_dependencies(qt_ground_station qt_ground_station_generate_messages_cpp)
+
 target_link_libraries(qt_ground_station ${QT_LIBRARIES} ${catkin_LIBRARIES})
 install(TARGETS qt_ground_station RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
