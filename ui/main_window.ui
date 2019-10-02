@@ -635,17 +635,17 @@
          </property>
         </widget>
        </widget>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="Flush_MoveENU_Button">
         <property name="geometry">
          <rect>
           <x>10</x>
           <y>520</y>
-          <width>321</width>
-          <height>27</height>
+          <width>301</width>
+          <height>51</height>
          </rect>
         </property>
         <property name="text">
-         <string>Activate Payload Stabilization</string>
+         <string>Flush Move ENU Command (Caution)</string>
         </property>
        </widget>
        <widget class="QPushButton" name="UAV0_Button_moveENU">
@@ -1943,84 +1943,6 @@
         <property name="title">
          <string>Payload Position And Velocity</string>
         </property>
-        <widget class="QLabel" name="Payload_x">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>30</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="Payload_y">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>50</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="Payload_z">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>70</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="Payload_vx">
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>30</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="Payload_vy">
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>50</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="Payload_vz">
-         <property name="geometry">
-          <rect>
-           <x>150</x>
-           <y>70</y>
-           <width>67</width>
-           <height>17</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>---</string>
-         </property>
-        </widget>
         <widget class="QLabel" name="label">
          <property name="geometry">
           <rect>
@@ -2046,6 +1968,72 @@
          <property name="text">
           <string>(m/s)</string>
          </property>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>41</width>
+           <height>65</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QLabel" name="Payload_x">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="Payload_y">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="Payload_z">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>30</y>
+           <width>41</width>
+           <height>65</height>
+          </rect>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <widget class="QLabel" name="Payload_vx">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="Payload_vy">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="Payload_vz">
+            <property name="text">
+             <string>---</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
        <widget class="QGroupBox" name="groupBox_10">
@@ -2168,155 +2156,265 @@
        <widget class="QGroupBox" name="groupBox_13">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>310</y>
+          <x>10</x>
+          <y>280</y>
           <width>311</width>
-          <height>161</height>
+          <height>271</height>
          </rect>
         </property>
         <property name="title">
          <string>Payload Control</string>
         </property>
-        <widget class="QPushButton" name="pushButton_3">
+        <widget class="QPushButton" name="Payload_Pose_Button">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>90</y>
+           <y>190</y>
            <width>301</width>
            <height>27</height>
           </rect>
          </property>
          <property name="text">
-          <string>Set Payload Target Attitude (DEG)</string>
+          <string>Send Payload Target Pose</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_2">
+        <widget class="QPushButton" name="Payload_Activate_Button">
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>30</y>
+           <y>20</y>
            <width>301</width>
-           <height>27</height>
+           <height>31</height>
           </rect>
          </property>
          <property name="text">
-          <string>Set Payload Target Position (m)</string>
+          <string>Activate Payload Control</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="lineEdit">
+        <widget class="QPushButton" name="Payload_Land_Button">
          <property name="geometry">
           <rect>
-           <x>20</x>
+           <x>0</x>
+           <y>220</y>
+           <width>301</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Land</string>
+         </property>
+        </widget>
+        <widget class="QWidget" name="layoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
            <y>60</y>
-           <width>41</width>
-           <height>27</height>
+           <width>301</width>
+           <height>127</height>
           </rect>
          </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="label_32">
+              <property name="text">
+               <string>Position(m)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>30</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_33">
+              <property name="text">
+               <string>Attitude (DEG)</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_x">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_y">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_z">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>50</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_3">
+              <property name="spacing">
+               <number>6</number>
+              </property>
+              <property name="sizeConstraint">
+               <enum>QLayout::SetDefaultConstraint</enum>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_4">
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_roll">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_pitch">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLineEdit" name="Payload_Target_yaw">
+                <property name="text">
+                 <string>0</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Fixed</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>50</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_5">
+              <item>
+               <widget class="QLabel" name="label_14">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>----</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
         </widget>
-        <widget class="QLineEdit" name="lineEdit_2">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>60</y>
-           <width>41</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_3">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>60</y>
-           <width>41</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>0.1</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_4">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>120</y>
-           <width>41</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_5">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>120</y>
-           <width>41</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-        <widget class="QLineEdit" name="lineEdit_6">
-         <property name="geometry">
-          <rect>
-           <x>220</x>
-           <y>120</y>
-           <width>41</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>0</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QCheckBox" name="Check_Activate_Payload">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>270</y>
-          <width>271</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Activate Payload Control</string>
-        </property>
        </widget>
        <widget class="QLabel" name="Payload_detection">
         <property name="geometry">
          <rect>
-          <x>70</x>
+          <x>20</x>
           <y>10</y>
           <width>171</width>
           <height>17</height>
@@ -2329,14 +2427,14 @@
        <widget class="QPushButton" name="Button_DisarmALL">
         <property name="geometry">
          <rect>
-          <x>40</x>
-          <y>490</y>
-          <width>271</width>
-          <height>131</height>
+          <x>10</x>
+          <y>540</y>
+          <width>301</width>
+          <height>81</height>
          </rect>
         </property>
         <property name="text">
-         <string>Disarm ALL</string>
+         <string>Emergency Disarm ALL</string>
         </property>
        </widget>
       </widget>

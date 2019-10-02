@@ -37,7 +37,12 @@ QNode::QNode(int argc, char** argv ) :
         commandFlag[0] = false;
         commandFlag[1] = false;
         commandFlag[2] = false;
+        commandPayloadFlag = false;
         DroneNumber = 3;
+        ispayloaddetected = false;
+        ispayloadmocaprecieved = false;
+        ispayloadcontrolactivated = false;
+        comid = 1;
 }
 
 QNode::~QNode() {
@@ -76,7 +81,6 @@ bool QNode::init() {
         UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
 
 
-
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -101,6 +105,14 @@ void QNode::run() {
                     UavLogList[i].islogreceived = false;
                 }
 
+        /*----------------detect whether payload mocap is published --------------------------*/
+                if(ispayloadmocaprecieved) {
+                    ispayloaddetected = true;
+                } else {
+                    ispayloaddetected = false;
+                }
+                ispayloadmocaprecieved = false;
+
                 /* signal a ros loop update  */
                 Q_EMIT rosLoopUpdate();
 
@@ -121,6 +133,7 @@ void QNode::sub_mocapUAV2(const qt_ground_station::Mocap::ConstPtr& msg) {
 }
 void QNode::sub_mocapPayload(const qt_ground_station::Mocap::ConstPtr &msg) {
     mocap_payload = *msg;
+    ispayloadmocaprecieved = true;
 }
 void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
 
@@ -192,6 +205,14 @@ qt_ground_station::Mocap QNode::GetMocap(int ID) {
 qt_ground_station::uav_log QNode::GetUAVLOG(int ID) {
     return UavLogList[ID];
 }
+
+bool QNode::IsPayloadDetected() {
+    return ispayloaddetected;
+}
+
+bool QNode::IsPayloadControlSwitched() {
+    return ispayloadcontrolactivated;
+}
 /*--------------------------- sent commands ----------------------------------------*/
 void QNode::takeoff(int ID) {
     commandFlag[ID] = true;
@@ -219,14 +240,34 @@ void QNode::disarm(int ID){
     Command_List[ID].header.stamp = ros::Time::now();
     Command_List[ID].Mode = Disarm;
 }
+
+void QNode::payload_pose(float pose_desired[6]) {
+    // set mode to payload_stabilization to all quadrotors
+    for(int i = 0;i<DroneNumber; i++) {
+        commandFlag[i] = true;
+        Command_List[i].header.stamp = ros::Time::now();
+        Command_List[i].Mode = Payload_Stabilization;
+        generate_com_for_payload(pose_desired, Command_List[i]);
+    }
+    ispayloadcontrolactivated = true;
+}
+
+void QNode::payload_land() {
+    // set mode to payload_stabilization to all quadrotors
+    for(int i = 0;i<DroneNumber; i++) {
+        commandFlag[i] = true;
+        Command_List[i].header.stamp = ros::Time::now();
+        Command_List[i].Mode = Payload_Land;
+    }
+    ispayloadcontrolactivated = true;
+}
+
 /*------------------------------------- Utility Functions --------------------------------------*/
 void QNode::generate_com(int sub_mode,
                          float state_desired[4],
                          qt_ground_station::ControlCommand& Command_Now)
 {
-    static int comid = 1;
     Command_Now.Reference_State.Sub_mode  = sub_mode;
-
 //# sub_mode 2-bit value:
 //# 0 for position, 1 for vel, 1st for xy, 2nd for z.
 //#                   xy position     xy velocity
@@ -265,6 +306,24 @@ void QNode::generate_com(int sub_mode,
 
 
     Command_Now.Reference_State.yaw_ref = state_desired[3]/180.0*M_PI;
+    Command_Now.Command_ID = comid;
+    comid++;
+}
+
+void QNode::generate_com_for_payload(float state_desired[6],qt_ground_station::ControlCommand& Command_Now)
+{
+
+
+    Command_Now.header.stamp = ros::Time::now();
+    Command_Now.Reference_State.Sub_mode  = -1;
+    for(int i =0; i<3; i++) {
+        Command_Now.Reference_State.position_ref[i] = state_desired[i];
+    }
+
+    Command_Now.Reference_State.roll_ref  = state_desired[3]/57.3;
+    Command_Now.Reference_State.pitch_ref = state_desired[4]/57.3;
+    Command_Now.Reference_State.yaw_ref   = state_desired[5]/57.3;
+
     Command_Now.Command_ID = comid;
     comid++;
 }

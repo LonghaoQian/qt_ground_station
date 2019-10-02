@@ -60,6 +60,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1attReference()));
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2attReference()));
 
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updatePayloadmocap()));
+
 
     /* -----------------------------update labels --------------------------------*/
     ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
@@ -118,7 +120,7 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
         input_is_valid = false;
     }
 
@@ -126,7 +128,7 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.6) {
+    if(target_state[2]< 0|| target_state[2]> 1.8) {
         input_is_valid = false;
     }
 
@@ -158,7 +160,7 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
         input_is_valid = false;
     }
 
@@ -166,7 +168,7 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.6) {
+    if(target_state[2]< 0|| target_state[2]> 1.8) {
         input_is_valid = false;
     }
 
@@ -198,7 +200,7 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.2 || target_state[0]> 1.1) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
         input_is_valid = false;
     }
 
@@ -206,7 +208,7 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.6) {
+    if(target_state[2]< 0|| target_state[2]> 1.8) {
         input_is_valid = false;
     }
 
@@ -255,6 +257,76 @@ void MainWindow::on_Button_DisarmALL_clicked(bool check) {
     qnode.disarm(0);
     qnode.disarm(1);
     qnode.disarm(2);
+}
+
+void MainWindow::on_Payload_Activate_Button_clicked(bool check) {
+    // this turns on the button for payload stabilization command and turn off individual command
+
+}
+
+void MainWindow::on_Payload_Pose_Button_clicked(bool check) {
+    /* read values from line edit */
+    float pose_target[6];
+
+    pose_target[0] =  ui.Payload_Target_x->text().toFloat();
+    pose_target[1] =  ui.Payload_Target_y->text().toFloat();
+    pose_target[2] =  ui.Payload_Target_z->text().toFloat();
+
+    pose_target[3] =  ui.Payload_Target_roll->text().toFloat();
+    pose_target[4] =  ui.Payload_Target_pitch->text().toFloat();
+    pose_target[5] =  ui.Payload_Target_yaw->text().toFloat();
+
+
+    /*----------------determine whether the input is in safe range ------------------*/
+    bool input_is_valid = true;
+
+    /*-------position boundary--------*/
+
+    if(pose_target[0]<-0.8 || pose_target[0]> 0.8) {
+        input_is_valid = false;
+    }
+
+    if(pose_target[1]< -0.9 || pose_target[1]> 0.9) {
+        input_is_valid = false;
+    }
+
+    if(pose_target[2]< 0|| pose_target[2]> 1) {
+        input_is_valid = false;
+    }
+    /*-------angle boundary--------*/
+    if(pose_target[3]<-10 || pose_target[3]> 10) {
+        input_is_valid = false;
+    }
+
+    if(pose_target[4]< -10 || pose_target[4]> 10) {
+        input_is_valid = false;
+    }
+
+    /*----------------send input ------------------*/
+
+    if(input_is_valid){
+        /*  update the ENU target label */
+        //ui.UAV2_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+        //ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+        //ui.UAV2_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+        /*-------------------- send payload stabilization command --------------------------------*/
+
+        qnode.payload_pose(pose_target);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Input position is out of range!!");
+        msgBox.exec();
+    };
+}
+
+void MainWindow::on_Payload_Land_Button_clicked(bool check) {
+      qnode.payload_land();
+}
+
+void MainWindow::on_Flush_MoveENU_Button_clicked(bool check) {
+    on_UAV0_Button_moveENU_clicked(true);
+    on_UAV1_Button_moveENU_clicked(true);
+    on_UAV2_Button_moveENU_clicked(true);
 }
 
 /*****************************************************************************
@@ -338,29 +410,59 @@ void MainWindow::updateUAV2mocap() {
 }
 
 void MainWindow::updatePayloadmocap() {
-    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(-1);
-    ui.Payload_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
-    ui.Payload_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
-    ui.Payload_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
 
-    ui.Payload_vx->setText(QString::number(temp_mocap.position[0], 'f', 2));
-    ui.Payload_vy->setText(QString::number(temp_mocap.position[1], 'f', 2));
-    ui.Payload_vz->setText(QString::number(temp_mocap.position[2], 'f', 2));
+    bool ispayloaddetected = qnode.IsPayloadDetected();
 
-    ui.Payload_omega_x->setText(QString::number(temp_mocap.angular_velocity[0]*57.3, 'f', 2));
-    ui.Payload_omega_y->setText(QString::number(temp_mocap.angular_velocity[1]*57.3, 'f', 2));
-    ui.Payload_omega_z->setText(QString::number(temp_mocap.angular_velocity[2]*57.3, 'f', 2));
+    if(ispayloaddetected) {
+        ui.Payload_detection->setText("<font color='green'>Payload Mocap Detected!</font>");
+        qt_ground_station::Mocap temp_mocap = qnode.GetMocap(-1);
+        ui.Payload_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
+        ui.Payload_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
+        ui.Payload_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
 
-    Eigen::Quaterniond quaternion_temp;
-    quaternion_temp.w() = temp_mocap.quaternion[0];
-    quaternion_temp.x() = temp_mocap.quaternion[1];
-    quaternion_temp.y() = temp_mocap.quaternion[2];
-    quaternion_temp.z() = temp_mocap.quaternion[3];
+        ui.Payload_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
+        ui.Payload_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
+        ui.Payload_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
 
-    Eigen::Vector3d euler_temp =  quaternion_to_euler_w(quaternion_temp);
-    ui.Payload_roll->setText(QString::number(euler_temp(0)*57.3, 'f', 2));
-    ui.Payload_pitch->setText(QString::number(euler_temp(1)*57.3, 'f', 2));
-    ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 2));
+        ui.Payload_omega_x->setText(QString::number(temp_mocap.angular_velocity[0]*57.3, 'f', 2));
+        ui.Payload_omega_y->setText(QString::number(temp_mocap.angular_velocity[1]*57.3, 'f', 2));
+        ui.Payload_omega_z->setText(QString::number(temp_mocap.angular_velocity[2]*57.3, 'f', 2));
+
+        Eigen::Quaterniond quaternion_temp;
+        quaternion_temp.w() = temp_mocap.quaternion[0];
+        quaternion_temp.x() = temp_mocap.quaternion[1];
+        quaternion_temp.y() = temp_mocap.quaternion[2];
+        quaternion_temp.z() = temp_mocap.quaternion[3];
+
+        Eigen::Vector3d euler_temp =  quaternion_to_euler_w(quaternion_temp);
+        ui.Payload_roll->setText(QString::number(euler_temp(0)*57.3, 'f', 2));
+        ui.Payload_pitch->setText(QString::number(euler_temp(1)*57.3, 'f', 2));
+        ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 2));
+
+        /*----turn on button----------------*/
+        ui.Payload_Activate_Button->setEnabled(true);
+        ui.Payload_Pose_Button->setEnabled(true);
+    } else {
+        ui.Payload_detection->setText("<font color='red'>Payload Undetected!</font>");
+        ui.Payload_x->setText("----");
+        ui.Payload_y->setText("----");
+        ui.Payload_z->setText("----");
+
+        ui.Payload_vx->setText("----");
+        ui.Payload_vy->setText("----");
+        ui.Payload_vz->setText("----");
+
+        ui.Payload_omega_x->setText("----");
+        ui.Payload_omega_y->setText("----");
+        ui.Payload_omega_z->setText("----");
+
+        ui.Payload_roll->setText("----");
+        ui.Payload_pitch->setText("----");
+        ui.Payload_yaw->setText("----");
+        /*----turn off button--------------*/
+        ui.Payload_Activate_Button->setEnabled(false);
+        ui.Payload_Pose_Button->setEnabled(false);
+    }
 
 }
 
@@ -455,9 +557,17 @@ void MainWindow::updateUAV0log() {
         ui.UAV0_commandmode->setText("Land");
         break;
 
+    case Payload_Stabilization:
+        ui.UAV2_commandmode->setText("Payload");
+        break;
+
+    case Payload_Land:
+        ui.UAV2_commandmode->setText("Payload/Landing");
+
     case Disarm:
         ui.UAV0_commandmode->setText("Disarm");
         break;
+
     default:
         ui.UAV0_commandmode->setText("UNDEFINED MODE");
         break;
@@ -532,7 +642,12 @@ void MainWindow::updateUAV1log() {
     case Land:
         ui.UAV1_commandmode->setText("Land");
         break;
+    case Payload_Stabilization:
+        ui.UAV2_commandmode->setText("Payload");
+        break;
 
+    case Payload_Land:
+        ui.UAV2_commandmode->setText("Payload/Landing");
     case Disarm:
         ui.UAV1_commandmode->setText("Disarm");
         break;
@@ -610,6 +725,13 @@ void MainWindow::updateUAV2log() {
         ui.UAV2_commandmode->setText("Land");
         break;
 
+    case Payload_Stabilization:
+        ui.UAV2_commandmode->setText("Payload");
+        break;
+
+    case Payload_Land:
+        ui.UAV2_commandmode->setText("Payload/Landing");
+        break;
     case Disarm:
         ui.UAV2_commandmode->setText("Disarm");
         break;

@@ -28,6 +28,7 @@
 #include <QStringListModel>
 #include <qt_ground_station/Mocap.h>
 #include <qt_ground_station/Topic_for_log.h>
+#include <qt_ground_station/ControlCommand.h>
 #include <mavros_msgs/AttitudeTarget.h>
 #include <mavros_msgs/PositionTarget.h>
 #include <Eigen/Eigen>
@@ -48,6 +49,7 @@ enum LogLevel {
          Error,
          Fatal
  };
+
 enum Command_Type
 {
     Idle,
@@ -59,6 +61,8 @@ enum Command_Type
     Disarm,
     PPN_land,
     Trajectory_Tracking,
+    Payload_Stabilization,
+    Payload_Land,
 };
 
 struct uav_log {
@@ -84,11 +88,18 @@ public:
 /*----------------------------Get states---------------------------------*/
         qt_ground_station::Mocap GetMocap(int ID);
         qt_ground_station::uav_log GetUAVLOG(int ID);
+        bool IsPayloadDetected();
+        bool IsPayloadControlSwitched();
+        bool ispayloaddetected;
+        bool ispayloadmocaprecieved;
+        bool ispayloadcontrolactivated;
 /*----------------------------Send commands------------------------------*/
         void move_ENU(int ID,float state_desired[4]);
         void takeoff(int ID);
         void land(int ID);
         void disarm(int ID);
+        void payload_pose(float pose_desired[6]);
+        void payload_land();
 Q_SIGNALS:
 	void loggingUpdated();
         void rosLoopUpdate();
@@ -99,8 +110,10 @@ private:
 	char** init_argv;
         /*-----------------------------------------------------------*/
         int DroneNumber;
+        int comid;
         uav_log UavLogList[3];
         bool commandFlag[3];
+        bool commandPayloadFlag;
         qt_ground_station::ControlCommand Command_List[3];
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
@@ -142,7 +155,7 @@ private:
 
         /*---------------------------utility functions ---------------------------*/
         void generate_com(int sub_mode, float state_desired[4],qt_ground_station::ControlCommand& Command_Now);
-
+        void generate_com_for_payload(float state_desired[6],qt_ground_station::ControlCommand& Command_Now);
 };
 
 }  // namespace qt_ground_station

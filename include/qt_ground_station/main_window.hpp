@@ -62,6 +62,12 @@ public Q_SLOTS:
         void on_UAV2_Button_moveENU_clicked(bool check);
         void on_UAV2_Button_Disarm_clicked(bool check);
 
+        void on_Payload_Activate_Button_clicked(bool check);
+        void on_Payload_Pose_Button_clicked(bool check);
+        void on_Payload_Land_Button_clicked(bool check);
+
+        void on_Flush_MoveENU_Button_clicked(bool check);
+
     /******************************************
     ** Manual connections
     *******************************************/
@@ -95,7 +101,6 @@ Q_SIGNALS:
     void send_DisarmUAV0();
     void send_DisarmUAV1();
     void send_DisarmUAV2();
-
 
 
 private:
