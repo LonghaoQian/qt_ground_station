@@ -558,11 +558,11 @@ void MainWindow::updateUAV0log() {
         break;
 
     case Payload_Stabilization:
-        ui.UAV2_commandmode->setText("Payload");
+        ui.UAV0_commandmode->setText("Payload");
         break;
 
     case Payload_Land:
-        ui.UAV2_commandmode->setText("Payload/Landing");
+        ui.UAV0_commandmode->setText("Payload Land");
 
     case Disarm:
         ui.UAV0_commandmode->setText("Disarm");
@@ -622,15 +622,12 @@ void MainWindow::updateUAV1log() {
     case Idle:
         ui.UAV1_commandmode->setText("Idle");
         break;
-
     case Takeoff:
         ui.UAV1_commandmode->setText("Take Off");
         break;
-
     case Move_ENU:
         ui.UAV1_commandmode->setText("Move ENU");
         break;
-
     case Move_Body:
         ui.UAV1_commandmode->setText("Move Body");
         break;
@@ -643,11 +640,10 @@ void MainWindow::updateUAV1log() {
         ui.UAV1_commandmode->setText("Land");
         break;
     case Payload_Stabilization:
-        ui.UAV2_commandmode->setText("Payload");
+        ui.UAV1_commandmode->setText("Payload");
         break;
-
     case Payload_Land:
-        ui.UAV2_commandmode->setText("Payload/Landing");
+        ui.UAV1_commandmode->setText("Payload Land");
     case Disarm:
         ui.UAV1_commandmode->setText("Disarm");
         break;
@@ -730,7 +726,7 @@ void MainWindow::updateUAV2log() {
         break;
 
     case Payload_Land:
-        ui.UAV2_commandmode->setText("Payload/Landing");
+        ui.UAV2_commandmode->setText("Payload Land");
         break;
     case Disarm:
         ui.UAV2_commandmode->setText("Disarm");
