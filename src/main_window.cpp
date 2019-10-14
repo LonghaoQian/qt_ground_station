@@ -563,6 +563,7 @@ void MainWindow::updateUAV0log() {
 
     case Payload_Land:
         ui.UAV0_commandmode->setText("Payload Land");
+        break;
 
     case Disarm:
         ui.UAV0_commandmode->setText("Disarm");
@@ -644,6 +645,7 @@ void MainWindow::updateUAV1log() {
         break;
     case Payload_Land:
         ui.UAV1_commandmode->setText("Payload Land");
+        break;
     case Disarm:
         ui.UAV1_commandmode->setText("Disarm");
         break;
