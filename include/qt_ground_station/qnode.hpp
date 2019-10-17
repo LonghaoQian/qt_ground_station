@@ -76,6 +76,7 @@ struct uav_log {
 };
 
 struct uav_para {
+    std::string controllername;
     float dronemass;
     float cablelength;
     float a_j;

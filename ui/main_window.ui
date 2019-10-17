@@ -657,6 +657,13 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_14">
           <item>
+           <widget class="QLabel" name="UAV0_controllername">
+            <property name="text">
+             <string>Controller: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV0_Quadmass">
             <property name="text">
              <string>Quad Mass (kg): ----</string>
@@ -915,14 +922,6 @@
           <string>Disarm</string>
          </property>
         </widget>
-        <zorder>UAV1_connection</zorder>
-        <zorder>UAV1_arm</zorder>
-        <zorder>UAV1_mode</zorder>
-        <zorder>UAV1_commandmode</zorder>
-        <zorder>UAV1_mocapFlag</zorder>
-        <zorder>UAV1_detection</zorder>
-        <zorder>UAV1_Button_Disarm</zorder>
-        <zorder>tabWidget</zorder>
        </widget>
        <widget class="QGroupBox" name="groupBox_9">
         <property name="geometry">
@@ -1144,15 +1143,6 @@
           <string>Thrust </string>
          </property>
         </widget>
-        <zorder>UAV1_thrust</zorder>
-        <zorder>UAV1_att_pitch</zorder>
-        <zorder>UAV1_att_roll</zorder>
-        <zorder>UAV1_att_yaw</zorder>
-        <zorder>label_15</zorder>
-        <zorder>label_16</zorder>
-        <zorder>label_17</zorder>
-        <zorder>label_18</zorder>
-        <zorder>tabWidget</zorder>
        </widget>
        <widget class="QGroupBox" name="groupBox_17">
         <property name="geometry">
@@ -1434,6 +1424,13 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_15">
           <item>
+           <widget class="QLabel" name="UAV1_controllername">
+            <property name="text">
+             <string>Controller: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV1_Quadmass">
             <property name="text">
              <string>Quad Mass (kg): ----</string>
@@ -1569,8 +1566,6 @@
          </layout>
         </item>
        </layout>
-       <zorder>tabWidget</zorder>
-       <zorder>layoutWidget_2</zorder>
       </widget>
      </widget>
     </item>
@@ -2195,6 +2190,13 @@
        <layout class="QHBoxLayout" name="horizontalLayout_11">
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="UAV2_controllername">
+            <property name="text">
+             <string>Controller: ----</string>
+            </property>
+           </widget>
+          </item>
           <item>
            <widget class="QLabel" name="UAV2_Quadmass">
             <property name="text">

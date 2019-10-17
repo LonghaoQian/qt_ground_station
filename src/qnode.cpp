@@ -181,6 +181,7 @@ void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstP
 void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {
 
     /*
+    string controllername
     float dronemass;
     float cablelength;
     float a_j;
@@ -208,6 +209,7 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
     float fp_max_y;
     float fp_max_z;
     */
+    UavParaList[ID].controllername = req.controllername;
     UavParaList[ID].dronemass = req.dronemass;
     UavParaList[ID].cablelength = req.cablelength;
     UavParaList[ID].a_j = req.a_j;

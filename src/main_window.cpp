@@ -413,6 +413,7 @@ void MainWindow::updateUAV2mocap() {
 
 void MainWindow::updateUAV0Param() {
     qt_ground_station::uav_para param = qnode.GetUAVPARA(0);
+    ui.UAV0_controllername->setText("Controller: " + QString::fromStdString(param.controllername));
     ui.UAV0_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV0_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV0_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
@@ -432,10 +433,12 @@ void MainWindow::updateUAV0Param() {
     ui.UAV0_fp_max->setText("fp_max: " + QString::number(param.fp_max_x, 'f', 2) + ", " + QString::number(param.fp_max_y, 'f', 2) + ", " +  QString::number(param.fp_max_z, 'f', 2 ));
     ui.UAV0_int_start_error->setText("int_start_error : " + QString::number(param.int_start_error, 'f', 2));
 
+
 }
 
 void MainWindow::updateUAV1Param() {
     qt_ground_station::uav_para param = qnode.GetUAVPARA(1);
+    ui.UAV1_controllername->setText("Controller: " + QString::fromStdString(param.controllername));
     ui.UAV1_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV1_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV1_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
@@ -458,6 +461,7 @@ void MainWindow::updateUAV1Param() {
 
 void MainWindow::updateUAV2Param() {
     qt_ground_station::uav_para param = qnode.GetUAVPARA(2);
+    ui.UAV2_controllername->setText("Controller: " + QString::fromStdString(param.controllername));
     ui.UAV2_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV2_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV2_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
