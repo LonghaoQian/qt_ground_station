@@ -62,7 +62,9 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updatePayloadmocap()));
 
-
+    QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV0()), this, SLOT(updateUAV0Param()));
+    QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV1()), this, SLOT(updateUAV1Param()));
+    QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV2()), this, SLOT(updateUAV2Param()));
     /* -----------------------------update labels --------------------------------*/
     ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
     ui.UAV0_arm->setText("<font color='red'>DISARMED</font>");
@@ -407,6 +409,73 @@ void MainWindow::updateUAV2mocap() {
     ui.UAV2_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
     ui.UAV2_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
 
+}
+
+void MainWindow::updateUAV0Param() {
+    qt_ground_station::uav_para param = qnode.GetUAVPARA(0);
+    ui.UAV0_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
+    ui.UAV0_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
+    ui.UAV0_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV0_a_j->setText("a_0 : " + QString::number(param.a_j, 'f', 2));
+    ui.UAV0_t_jx->setText("t_0x(m) : " + QString::number(param.t_jx, 'f', 2));
+    ui.UAV0_t_jy->setText("t_0y(m) : " + QString::number(param.t_jy, 'f', 2));
+    ui.UAV0_t_jz->setText("t_0z(m) : " + QString::number(param.t_jz, 'f', 2));
+    ui.UAV0_Numofdrones->setText("Num of Drones : " + QString::number(param.num_drone));
+    ui.UAV0_kv ->setText("kv: " + QString::number(param.kv_xy, 'f', 2) + ", " + QString::number(param.kv_xy, 'f', 2) + ", " +  QString::number(param.kv_z, 'f', 2 ));
+    ui.UAV0_kvi->setText("kvi: " + QString::number(param.kvi_xy ,'f', 2) + ", " + QString::number(param.kvi_xy, 'f', 2) + ", " +  QString::number(param.kvi_z, 'f', 2 ));
+    ui.UAV0_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " + QString::number(param.kR_xy, 'f', 2) + ", " +  QString::number(param.kR_z, 'f', 2 ));
+    ui.UAV0_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
+    ui.UAV0_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
+    ui.UAV0_p_error_max->setText("p_error_max: " + QString::number(param.pxy_error_max, 'f', 2) + ", " + QString::number(param.pxy_error_max, 'f', 2) + ", " +  QString::number(param.pz_error_max, 'f', 2 ));
+    ui.UAV0_p_int_max->setText("p_int_max: " + QString::number(param.pxy_int_max, 'f', 2) + ", " + QString::number(param.pxy_int_max, 'f', 2) + ", " +  QString::number(param.pz_int_max, 'f', 2 ));
+    ui.UAV0_tilt_max->setText("tilt_max : " + QString::number(param.tilt_max, 'f', 2));
+    ui.UAV0_fp_max->setText("fp_max: " + QString::number(param.fp_max_x, 'f', 2) + ", " + QString::number(param.fp_max_y, 'f', 2) + ", " +  QString::number(param.fp_max_z, 'f', 2 ));
+    ui.UAV0_int_start_error->setText("int_start_error : " + QString::number(param.int_start_error, 'f', 2));
+
+}
+
+void MainWindow::updateUAV1Param() {
+    qt_ground_station::uav_para param = qnode.GetUAVPARA(1);
+    ui.UAV1_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
+    ui.UAV1_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
+    ui.UAV1_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV1_a_j->setText("a_1 : " + QString::number(param.a_j, 'f', 2));
+    ui.UAV1_t_jx->setText("t_1x(m) : " + QString::number(param.t_jx, 'f', 2));
+    ui.UAV1_t_jy->setText("t_1y(m) : " + QString::number(param.t_jy, 'f', 2));
+    ui.UAV1_t_jz->setText("t_1z(m) : " + QString::number(param.t_jz, 'f', 2));
+    ui.UAV1_Numofdrones->setText("Num of Drones : " + QString::number(param.num_drone));
+    ui.UAV1_kv ->setText("kv: " + QString::number(param.kv_xy, 'f', 2) + ", " + QString::number(param.kv_xy, 'f', 2) + ", " +  QString::number(param.kv_z, 'f', 2 ));
+    ui.UAV1_kvi->setText("kvi: " + QString::number(param.kvi_xy ,'f', 2) + ", " + QString::number(param.kvi_xy, 'f', 2) + ", " +  QString::number(param.kvi_z, 'f', 2 ));
+    ui.UAV1_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " + QString::number(param.kR_xy, 'f', 2) + ", " +  QString::number(param.kR_z, 'f', 2 ));
+    ui.UAV1_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
+    ui.UAV1_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
+    ui.UAV1_p_error_max->setText("p_error_max: " + QString::number(param.pxy_error_max, 'f', 2) + ", " + QString::number(param.pxy_error_max, 'f', 2) + ", " +  QString::number(param.pz_error_max, 'f', 2 ));
+    ui.UAV1_p_int_max->setText("p_int_max: " + QString::number(param.pxy_int_max, 'f', 2) + ", " + QString::number(param.pxy_int_max, 'f', 2) + ", " +  QString::number(param.pz_int_max, 'f', 2 ));
+    ui.UAV1_tilt_max->setText("tilt_max : " + QString::number(param.tilt_max, 'f', 2));
+    ui.UAV1_fp_max->setText("fp_max: " + QString::number(param.fp_max_x, 'f', 2) + ", " + QString::number(param.fp_max_y, 'f', 2) + ", " +  QString::number(param.fp_max_z, 'f', 2 ));
+    ui.UAV1_int_start_error->setText("int_start_error : " + QString::number(param.int_start_error, 'f', 2));
+}
+
+void MainWindow::updateUAV2Param() {
+    qt_ground_station::uav_para param = qnode.GetUAVPARA(2);
+    ui.UAV2_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
+    ui.UAV2_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
+    ui.UAV2_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV2_a_j->setText("a_2 : " + QString::number(param.a_j, 'f', 2));
+    ui.UAV2_t_jx->setText("t_2x(m) : " + QString::number(param.t_jx, 'f', 2));
+    ui.UAV2_t_jy->setText("t_2y(m) : " + QString::number(param.t_jy, 'f', 2));
+    ui.UAV2_t_jz->setText("t_2z(m) : " + QString::number(param.t_jz, 'f', 2));
+    ui.UAV2_Numofdrones->setText("Num of Drones : " + QString::number(param.num_drone));
+    ui.UAV2_kv ->setText("kv: " + QString::number(param.kv_xy, 'f', 2) + ", " + QString::number(param.kv_xy, 'f', 2) + ", " +  QString::number(param.kv_z, 'f', 2 ));
+    ui.UAV2_kvi->setText("kvi: " + QString::number(param.kvi_xy ,'f', 2) + ", " + QString::number(param.kvi_xy, 'f', 2) + ", " +  QString::number(param.kvi_z, 'f', 2 ));
+    ui.UAV2_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " + QString::number(param.kR_xy, 'f', 2) + ", " +  QString::number(param.kR_z, 'f', 2 ));
+    ui.UAV2_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
+    ui.UAV2_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
+    ui.UAV2_p_error_max->setText("p_error_max: " + QString::number(param.pxy_error_max, 'f', 2) + ", " + QString::number(param.pxy_error_max, 'f', 2) + ", " +  QString::number(param.pz_error_max, 'f', 2 ));
+    ui.UAV2_p_int_max->setText("p_int_max: " + QString::number(param.pxy_int_max, 'f', 2) + ", " + QString::number(param.pxy_int_max, 'f', 2) + ", " +  QString::number(param.pz_int_max, 'f', 2 ));
+    ui.UAV2_tilt_max->setText("tilt_max : " + QString::number(param.tilt_max, 'f', 2));
+    ui.UAV2_fp_max->setText("fp_max: " + QString::number(param.fp_max_x, 'f', 2) + ", " + QString::number(param.fp_max_y, 'f', 2) + ", " +  QString::number(param.fp_max_z, 'f', 2 ));
+    ui.UAV2_int_start_error->setText("int_start_error : " + QString::number(param.int_start_error, 'f', 2));
 }
 
 void MainWindow::updatePayloadmocap() {

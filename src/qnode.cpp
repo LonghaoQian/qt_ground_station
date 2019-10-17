@@ -80,7 +80,9 @@ bool QNode::init() {
         UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV1,this);
         UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
 
-
+        serUpdateParameterUAV0 = n.advertiseService("/uav0/px4_command/parameters", &QNode::loadUAV0para, this);
+        serUpdateParameterUAV1 = n.advertiseService("/uav1/px4_command/parameters", &QNode::loadUAV1para, this);
+        serUpdateParameterUAV2 = n.advertiseService("/uav2/px4_command/parameters", &QNode::loadUAV2para, this);
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -175,6 +177,87 @@ void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstP
     UavLogList[2].Thrust_target= msg->thrust;
 
 }
+
+void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {
+
+    /*
+    float dronemass;
+    float cablelength;
+    float a_j;
+    float payloadmass;
+    int num_drone;
+    float t_jx;
+    float t_jy;
+    float t_jz;
+    float kv_xy;
+    float Kv_z;
+    float kvi_xy;
+    float kvi_z;
+    float kR_xy;
+    float kR_z;
+    float kL;
+    float Kphi_xy;
+    float Kphi_z;
+    float pxy_error_max;
+    float pz_error_max;
+    float pxy_int_max;
+    float pz_int_max;
+    float tilt_max;
+    float int_start_error;
+    float fp_max_x;
+    float fp_max_y;
+    float fp_max_z;
+    */
+    UavParaList[ID].dronemass = req.dronemass;
+    UavParaList[ID].cablelength = req.cablelength;
+    UavParaList[ID].a_j = req.a_j;
+    UavParaList[ID].payloadmass = req.payloadmass;
+    UavParaList[ID].num_drone = req.num_drone;
+    UavParaList[ID].t_jx = req.t_jx;
+    UavParaList[ID].t_jy = req.t_jy;
+    UavParaList[ID].t_jz = req.t_jz;
+    UavParaList[ID].kv_xy = req.kv_xy;
+    UavParaList[ID].kv_z = req.Kv_z;
+    UavParaList[ID].kvi_xy = req.kvi_xy;
+    UavParaList[ID].kvi_z = req.kvi_z;
+    UavParaList[ID].kR_xy = req.kR_xy;
+    UavParaList[ID].kR_z = req.kR_z;
+    UavParaList[ID].kL = req.kL;
+    UavParaList[ID].Kphi_xy = req.Kphi_xy;
+    UavParaList[ID].Kphi_z = req.Kphi_z;
+    UavParaList[ID].pxy_error_max = req.pxy_error_max;
+    UavParaList[ID].pz_error_max  = req.pz_error_max;
+    UavParaList[ID].pxy_int_max = req.pxy_int_max;
+    UavParaList[ID].pz_int_max  = req.pz_int_max;
+    UavParaList[ID].tilt_max = req.tilt_max;
+    UavParaList[ID].int_start_error = req.int_start_error;
+    UavParaList[ID].fp_max_x = req.fp_max_x;
+    UavParaList[ID].fp_max_y = req.fp_max_y;
+    UavParaList[ID].fp_max_z = req.fp_max_z;
+    res.oktostart = true;
+}
+
+bool QNode::loadUAV0para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
+
+    loadUAVXpara(req,res,0);
+    Q_EMIT rosParamServiceCallUAV0();
+    return true;
+}
+
+bool QNode::loadUAV1para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
+
+    loadUAVXpara(req,res,1);
+    Q_EMIT rosParamServiceCallUAV1();
+    return true;
+}
+
+bool QNode::loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
+
+    loadUAVXpara(req,res,2);
+    Q_EMIT rosParamServiceCallUAV2();
+    return true;
+}
+
 /*---------------------------------------pub functions -----------------------------------------*/
 void QNode::pub_command() {
 
@@ -204,6 +287,12 @@ qt_ground_station::Mocap QNode::GetMocap(int ID) {
 
 qt_ground_station::uav_log QNode::GetUAVLOG(int ID) {
     return UavLogList[ID];
+}
+
+
+qt_ground_station::uav_para QNode::GetUAVPARA(int ID) {
+
+   return UavParaList[ID];
 }
 
 bool QNode::IsPayloadDetected() {

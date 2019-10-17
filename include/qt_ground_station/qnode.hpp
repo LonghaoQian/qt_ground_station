@@ -27,6 +27,7 @@
 #include <QThread>
 #include <QStringListModel>
 #include <qt_ground_station/Mocap.h>
+#include <qt_ground_station/ControlParameter.h>
 #include <qt_ground_station/Topic_for_log.h>
 #include <qt_ground_station/ControlCommand.h>
 #include <mavros_msgs/AttitudeTarget.h>
@@ -74,6 +75,35 @@ struct uav_log {
     float              Thrust_target;
 };
 
+struct uav_para {
+    float dronemass;
+    float cablelength;
+    float a_j;
+    float payloadmass;
+    int num_drone;
+    float t_jx;
+    float t_jy;
+    float t_jz;
+    float kv_xy;
+    float kv_z;
+    float kvi_xy;
+    float kvi_z;
+    float kR_xy;
+    float kR_z;
+    float kL;
+    float Kphi_xy;
+    float Kphi_z;
+    float pxy_error_max;
+    float pz_error_max;
+    float pxy_int_max;
+    float pz_int_max;
+    float tilt_max;
+    float int_start_error;
+    float fp_max_x;
+    float fp_max_y;
+    float fp_max_z;
+};
+
 class QNode : public QThread {
     Q_OBJECT
 public:
@@ -87,7 +117,9 @@ public:
 	void log( const LogLevel &level, const std::string &msg);
 /*----------------------------Get states---------------------------------*/
         qt_ground_station::Mocap GetMocap(int ID);
-        qt_ground_station::uav_log GetUAVLOG(int ID);
+        qt_ground_station::uav_log  GetUAVLOG(int ID);
+        qt_ground_station::uav_para GetUAVPARA(int ID);
+
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
         bool ispayloaddetected;
@@ -104,6 +136,9 @@ Q_SIGNALS:
 	void loggingUpdated();
         void rosLoopUpdate();
         void rosShutdown();
+        void rosParamServiceCallUAV0();
+        void rosParamServiceCallUAV1();
+        void rosParamServiceCallUAV2();
 private:
         /*-------------------input arguments-----------------------*/
         int init_argc;
@@ -117,10 +152,14 @@ private:
         qt_ground_station::ControlCommand Command_List[3];
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
+        uav_para UavParaList[3];
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
         ros::Publisher moveUAV1;
         ros::Publisher moveUAV2;
+        ros::ServiceServer serUpdateParameterUAV0;
+        ros::ServiceServer serUpdateParameterUAV1;
+        ros::ServiceServer serUpdateParameterUAV2;
         void pub_command();
         /*-------------------- Mocap from motive ---------------------*/
         ros::Subscriber mocapUAV0;
@@ -156,6 +195,13 @@ private:
         /*---------------------------utility functions ---------------------------*/
         void generate_com(int sub_mode, float state_desired[4],qt_ground_station::ControlCommand& Command_Now);
         void generate_com_for_payload(float state_desired[6],qt_ground_station::ControlCommand& Command_Now);
+
+        /*-----------UAV para serive callbacks --------*/
+
+        bool loadUAV0para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
+        bool loadUAV1para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
+        bool loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
+        void loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res, int ID);
 };
 
 }  // namespace qt_ground_station

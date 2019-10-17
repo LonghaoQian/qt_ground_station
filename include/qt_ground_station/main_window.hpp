@@ -86,6 +86,9 @@ public Q_SLOTS:
     void updateUAV1log();
     void updateUAV2log();
 
+    void updateUAV0Param();
+    void updateUAV1Param();
+    void updateUAV2Param();
     Eigen::Vector3d  quaternion_to_euler_w(const Eigen::Quaterniond &q);
 
 Q_SIGNALS:

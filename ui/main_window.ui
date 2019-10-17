@@ -653,6 +653,145 @@
        <attribute name="title">
         <string>Parameter</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <widget class="QLabel" name="UAV0_Quadmass">
+            <property name="text">
+             <string>Quad Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_Payloadmass">
+            <property name="text">
+             <string>Payload Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_Cablelength">
+            <property name="text">
+             <string>Cable Length (m): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_a_j">
+            <property name="text">
+             <string>a_0: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_t_jx">
+            <property name="text">
+             <string>t_0x(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_t_jy">
+            <property name="text">
+             <string>t_0y(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_t_jz">
+            <property name="text">
+             <string>t_0z(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_Numofdrones">
+            <property name="text">
+             <string>Num of Drones : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kv">
+            <property name="text">
+             <string>kv: ---- , ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kvi">
+            <property name="text">
+             <string>kvi : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kR">
+            <property name="text">
+             <string>kR : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kL">
+            <property name="text">
+             <string>kL: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kphi">
+            <property name="text">
+             <string>kphi: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_p_error_max">
+            <property name="text">
+             <string>p_error_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_p_int_max">
+            <property name="text">
+             <string>p_int_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_tilt_max">
+            <property name="text">
+             <string>tilt_max : -----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_int_start_error">
+            <property name="text">
+             <string>int_start_error : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_fp_max">
+            <property name="text">
+             <string>fp_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_3">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -776,6 +915,14 @@
           <string>Disarm</string>
          </property>
         </widget>
+        <zorder>UAV1_connection</zorder>
+        <zorder>UAV1_arm</zorder>
+        <zorder>UAV1_mode</zorder>
+        <zorder>UAV1_commandmode</zorder>
+        <zorder>UAV1_mocapFlag</zorder>
+        <zorder>UAV1_detection</zorder>
+        <zorder>UAV1_Button_Disarm</zorder>
+        <zorder>tabWidget</zorder>
        </widget>
        <widget class="QGroupBox" name="groupBox_9">
         <property name="geometry">
@@ -997,6 +1144,15 @@
           <string>Thrust </string>
          </property>
         </widget>
+        <zorder>UAV1_thrust</zorder>
+        <zorder>UAV1_att_pitch</zorder>
+        <zorder>UAV1_att_roll</zorder>
+        <zorder>UAV1_att_yaw</zorder>
+        <zorder>label_15</zorder>
+        <zorder>label_16</zorder>
+        <zorder>label_17</zorder>
+        <zorder>label_18</zorder>
+        <zorder>tabWidget</zorder>
        </widget>
        <widget class="QGroupBox" name="groupBox_17">
         <property name="geometry">
@@ -1274,6 +1430,147 @@
        <attribute name="title">
         <string>Parameter</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_15">
+          <item>
+           <widget class="QLabel" name="UAV1_Quadmass">
+            <property name="text">
+             <string>Quad Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_Payloadmass">
+            <property name="text">
+             <string>Payload Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_Cablelength">
+            <property name="text">
+             <string>Cable Length (m): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_a_j">
+            <property name="text">
+             <string>a_1: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_t_jx">
+            <property name="text">
+             <string>t_1x(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_t_jy">
+            <property name="text">
+             <string>t_1y(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_t_jz">
+            <property name="text">
+             <string>t_1z(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_Numofdrones">
+            <property name="text">
+             <string>Num of Drones : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kv">
+            <property name="text">
+             <string>kv: ---- , ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kvi">
+            <property name="text">
+             <string>kvi : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kR">
+            <property name="text">
+             <string>kR : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kL">
+            <property name="text">
+             <string>kL: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kphi">
+            <property name="text">
+             <string>kphi: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_p_error_max">
+            <property name="text">
+             <string>p_error_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_p_int_max">
+            <property name="text">
+             <string>p_int_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_tilt_max">
+            <property name="text">
+             <string>tilt_max : -----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_int_start_error">
+            <property name="text">
+             <string>int_start_error : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_fp_max">
+            <property name="text">
+             <string>fp_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_4">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+       <zorder>tabWidget</zorder>
+       <zorder>layoutWidget_2</zorder>
       </widget>
      </widget>
     </item>
@@ -1895,6 +2192,145 @@
        <attribute name="title">
         <string>Parameter</string>
        </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_17">
+          <item>
+           <widget class="QLabel" name="UAV2_Quadmass">
+            <property name="text">
+             <string>Quad Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_Payloadmass">
+            <property name="text">
+             <string>Payload Mass (kg): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_Cablelength">
+            <property name="text">
+             <string>Cable Length (m): ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_a_j">
+            <property name="text">
+             <string>a_2: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_t_jx">
+            <property name="text">
+             <string>t_2x(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_t_jy">
+            <property name="text">
+             <string>t_2y(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_t_jz">
+            <property name="text">
+             <string>t_2z(m) : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_Numofdrones">
+            <property name="text">
+             <string>Num of Drones : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kv">
+            <property name="text">
+             <string>kv: ---- , ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kvi">
+            <property name="text">
+             <string>kvi : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kR">
+            <property name="text">
+             <string>kR : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kL">
+            <property name="text">
+             <string>kL: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kphi">
+            <property name="text">
+             <string>kphi: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_p_error_max">
+            <property name="text">
+             <string>p_error_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_p_int_max">
+            <property name="text">
+             <string>p_int_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_tilt_max">
+            <property name="text">
+             <string>tilt_max : -----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_int_start_error">
+            <property name="text">
+             <string>int_start_error : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_fp_max">
+            <property name="text">
+             <string>fp_max : ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="pushButton_5">
+            <property name="text">
+             <string>PushButton</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -2159,13 +2595,13 @@
           <attribute name="title">
            <string>Trajectory</string>
           </attribute>
-          <widget class="QWidget" name="">
+          <widget class="QWidget" name="layoutWidget">
            <property name="geometry">
             <rect>
              <x>10</x>
              <y>11</y>
              <width>311</width>
-             <height>121</height>
+             <height>138</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2182,7 +2618,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>117</width>
-                   <height>56</height>
+                   <height>73</height>
                   </rect>
                  </property>
                 </widget>
@@ -2274,7 +2710,7 @@
           </widget>
          </widget>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -2316,7 +2752,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="">
+        <widget class="QWidget" name="layoutWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -2359,7 +2795,7 @@
          <string>Payload Undetected</string>
         </property>
        </widget>
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -2374,7 +2810,7 @@
            <property name="title">
             <string>Payload Position And Velocity</string>
            </property>
-           <widget class="QWidget" name="">
+           <widget class="QWidget" name="layoutWidget">
             <property name="geometry">
              <rect>
               <x>10</x>
@@ -2457,7 +2893,7 @@
            <property name="title">
             <string>Payload  Roll Pitch Yaw And Angular Velocity </string>
            </property>
-           <widget class="QWidget" name="">
+           <widget class="QWidget" name="layoutWidget">
             <property name="geometry">
              <rect>
               <x>10</x>
@@ -2533,15 +2969,6 @@
              </item>
             </layout>
            </widget>
-           <zorder>Payload_roll</zorder>
-           <zorder>label_8</zorder>
-           <zorder>Payload_pitch</zorder>
-           <zorder>Payload_yaw</zorder>
-           <zorder>Payload_omega_x</zorder>
-           <zorder>Payload_omega_y</zorder>
-           <zorder>Payload_omega_z</zorder>
-           <zorder>label_31</zorder>
-           <zorder>label_31</zorder>
           </widget>
          </item>
         </layout>

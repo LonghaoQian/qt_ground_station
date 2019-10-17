@@ -39,6 +39,11 @@ add_message_files(
   TrajectoryPoint.msg
 )
 
+add_service_files(
+  FILES
+  ControlParameter.srv
+)
+
 generate_messages(
   DEPENDENCIES
   geometry_msgs
