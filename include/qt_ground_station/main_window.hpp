@@ -67,7 +67,7 @@ public Q_SLOTS:
         void on_Payload_Land_Button_clicked(bool check);
 
         void on_Flush_MoveENU_Button_clicked(bool check);
-
+        void on_Payload_Move_to_Start_clicked(bool check);
     /******************************************
     ** Manual connections
     *******************************************/

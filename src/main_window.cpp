@@ -331,6 +331,32 @@ void MainWindow::on_Flush_MoveENU_Button_clicked(bool check) {
     on_UAV2_Button_moveENU_clicked(true);
 }
 
+void MainWindow::on_Payload_Move_to_Start_clicked(bool check) {
+
+    // obtain the target position for each drone
+
+    Eigen::Vector3f temp_position;
+    float target_state[4];
+    float height = ui.Payload_Hovering_Height->text().toFloat();
+
+    if(height >= 1.2) {
+        QMessageBox msgBox;
+        msgBox.setText("Hovering Point Too High !!");
+        msgBox.exec();
+    } else {
+        for(int i = 0; i < 3 ; i++) {
+            temp_position = qnode.UpdateHoverPosition(i,  height);
+            target_state[0] =  temp_position(0);
+            target_state[1] =  temp_position(1);
+            target_state[2] =  temp_position(2);
+            target_state[3] = 0;
+            qnode.move_ENU(i,target_state);
+        }
+
+
+    }
+}
+
 /*****************************************************************************
 ** Implemenation [Slots][manually connected]
 *****************************************************************************/
@@ -515,30 +541,52 @@ void MainWindow::updatePayloadmocap() {
         /*----turn on button----------------*/
         ui.Payload_Activate_Button->setEnabled(true);
         ui.Payload_Pose_Button->setEnabled(true);
-
+        ui.Payload_Move_to_Start->setEnabled(true);
         // update the hovering place
 
         qt_ground_station::uav_para param = qnode.GetUAVPARA(0);
         int num_of_drones = param.num_drone;
 
-        Eigen::Vector3f pos_temp = qnode.UpdateHoverPosition(0, 0.7);
+        float height = ui.Payload_Hovering_Height->text().toFloat();
 
-        ui.UAV0_payload_hovering->setText("UAV0 : " + QString::number(pos_temp(0), 'f', 2)
-                                             + ", " + QString::number(pos_temp(1), 'f', 2)
-                                             + ", " + QString::number(pos_temp(2), 'f', 2));
-        if(num_of_drones>=2){
-            pos_temp = qnode.UpdateHoverPosition(1, 0.7);
-            ui.UAV1_payload_hovering->setText("UAV1 : " + QString::number(pos_temp(0), 'f', 2)
+        Eigen::Vector3f pos_temp = qnode.UpdateHoverPosition(0,  height);
+
+        if( height>=1.2 ) {
+            ui.UAV0_payload_hovering->setText("<font color='red'>UAV0 : " + QString::number(pos_temp(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(2), 'f', 2) + "</font>");
+            if(num_of_drones>=2){
+                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
+                ui.UAV1_payload_hovering->setText("<font color='red'>UAV1 : " + QString::number(pos_temp(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+            }
+            if(num_of_drones>=3) {
+                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
+                ui.UAV2_payload_hovering->setText("<font color='red'>UAV2 : " + QString::number(pos_temp(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+            }
+
+        } else {
+
+            ui.UAV0_payload_hovering->setText("UAV0 : " + QString::number(pos_temp(0), 'f', 2)
                                                  + ", " + QString::number(pos_temp(1), 'f', 2)
                                                  + ", " + QString::number(pos_temp(2), 'f', 2));
-        }
-        if(num_of_drones>=3) {
-            pos_temp = qnode.UpdateHoverPosition(2, 0.7);
-            ui.UAV2_payload_hovering->setText("UAV2 : " + QString::number(pos_temp(0), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(2), 'f', 2));
-        }
+            if(num_of_drones>=2){
+                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
+                ui.UAV1_payload_hovering->setText("UAV1 : " + QString::number(pos_temp(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+            }
+            if(num_of_drones>=3) {
+                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
+                ui.UAV2_payload_hovering->setText("UAV2 : " + QString::number(pos_temp(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+            }
 
+        }
     } else {
         ui.Payload_detection->setText("<font color='red'>Payload Undetected!</font>");
         ui.Payload_x->setText("----");
@@ -559,6 +607,7 @@ void MainWindow::updatePayloadmocap() {
         /*----turn off button--------------*/
         ui.Payload_Activate_Button->setEnabled(false);
         ui.Payload_Pose_Button->setEnabled(false);
+        ui.Payload_Move_to_Start->setEnabled(false);
     }
 
 }
