@@ -133,6 +133,7 @@ public:
         void disarm(int ID);
         void payload_pose(float pose_desired[6]);
         void payload_land();
+        Eigen::Vector3f UpdateHoverPosition(int ID, float height);
 Q_SIGNALS:
 	void loggingUpdated();
         void rosLoopUpdate();
@@ -203,6 +204,8 @@ private:
         bool loadUAV1para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
         bool loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
         void loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res, int ID);
+
+
 };
 
 }  // namespace qt_ground_station

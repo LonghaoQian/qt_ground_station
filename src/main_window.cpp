@@ -515,6 +515,30 @@ void MainWindow::updatePayloadmocap() {
         /*----turn on button----------------*/
         ui.Payload_Activate_Button->setEnabled(true);
         ui.Payload_Pose_Button->setEnabled(true);
+
+        // update the hovering place
+
+        qt_ground_station::uav_para param = qnode.GetUAVPARA(0);
+        int num_of_drones = param.num_drone;
+
+        Eigen::Vector3f pos_temp = qnode.UpdateHoverPosition(0, 0.7);
+
+        ui.UAV0_payload_hovering->setText("UAV0 : " + QString::number(pos_temp(0), 'f', 2)
+                                             + ", " + QString::number(pos_temp(1), 'f', 2)
+                                             + ", " + QString::number(pos_temp(2), 'f', 2));
+        if(num_of_drones>=2){
+            pos_temp = qnode.UpdateHoverPosition(1, 0.7);
+            ui.UAV1_payload_hovering->setText("UAV1 : " + QString::number(pos_temp(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(2), 'f', 2));
+        }
+        if(num_of_drones>=3) {
+            pos_temp = qnode.UpdateHoverPosition(2, 0.7);
+            ui.UAV2_payload_hovering->setText("UAV2 : " + QString::number(pos_temp(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp(2), 'f', 2));
+        }
+
     } else {
         ui.Payload_detection->setText("<font color='red'>Payload Undetected!</font>");
         ui.Payload_x->setText("----");

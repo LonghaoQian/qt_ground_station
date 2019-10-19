@@ -353,6 +353,32 @@ void QNode::payload_land() {
     ispayloadcontrolactivated = true;
 }
 
+Eigen::Vector3f QNode::UpdateHoverPosition(int ID, float height) {
+
+    Eigen::Vector3f output;
+    Eigen::Vector3f t_j;
+    t_j(0) = UavParaList[ID].t_jx;
+    t_j(1) = UavParaList[ID].t_jy;
+    t_j(2) = UavParaList[ID].t_jz;
+    Eigen::Vector3f Xp;
+    Eigen::Vector4f quaternion;
+    for(int i =0 ; i < 3 ; i++) {
+        Xp(i) = mocap_payload.position[i];
+    }
+    for (int i =0; i <4 ; i ++) {
+        quaternion(i) = mocap_payload.quaternion[i];
+    }
+    Eigen::Matrix3f R_IP =  QuaterionToRotationMatrix(quaternion);
+    Eigen::Vector3f h;
+    h<< 0,
+        0,
+        height;
+
+    output = h + R_IP * t_j + Xp;
+
+    return output;
+}
+
 /*------------------------------------- Utility Functions --------------------------------------*/
 void QNode::generate_com(int sub_mode,
                          float state_desired[4],

@@ -136,5 +136,58 @@ float min(float data1,float data2)
     }
 }
 
+Eigen::Matrix3f QuaterionToRotationMatrix(const Eigen::Vector4f& quaternion) {
+    Eigen::Matrix3f R_IB;
+
+    /* take a special note at the order of the quaterion
+    pose[1].q0 = OptiTrackdata.pose.orientation.w;
+    pose[1].q1 = OptiTrackdata.pose.orientation.x;
+    pose[1].q2 = OptiTrackdata.pose.orientation.y;
+    pose[1].q3 = OptiTrackdata.pose.orientation.z;
+
+    //update the auxiliary matrix
+    /*
+    L = [-q1 q0 q3 -q2;
+         -q2 -q3 q0 q1;
+         -q3 q2 -q1 q0]
+    R = [-q1 q0 -q3 q2;
+         -q2 q3 q0 -q1;
+         -q3 -q2 q1 q0]
+    R_IB = RL^T
+    */
+    Eigen::Matrix<float,3,4> L,R;
+    L(0,0) = - quaternion(1);
+    L(1,0) = - quaternion(2);
+    L(2,0) = - quaternion(3);
+
+    L(0,1) = quaternion(0);
+    L(1,2) = quaternion(0);
+    L(2,3) = quaternion(0);
+
+    L(0,2) = quaternion(3);
+    L(0,3) = - quaternion(2);
+    L(1,1) = - quaternion(3);
+    L(1,3) = quaternion(1);
+    L(2,1) = quaternion(2);
+    L(2,2) = - quaternion(1);
+
+    R(0,0) = - quaternion(1);
+    R(1,0) = - quaternion(2);
+    R(2,0) = - quaternion(3);
+
+    R(0,1) = quaternion(0);
+    R(1,2) = quaternion(0);
+    R(2,3) = quaternion(0);
+
+    R(0,2) = - quaternion(3);
+    R(0,3) =  quaternion(2);
+    R(1,1) =  quaternion(3);
+    R(1,3) = -quaternion(1);
+    R(2,1) = -quaternion(2);
+    R(2,2) =  quaternion(1);
+
+    R_IB = R * L.transpose();
+    return R_IB;
+}
 
 #endif
