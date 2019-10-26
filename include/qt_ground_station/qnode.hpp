@@ -81,6 +81,8 @@ struct uav_para {
     float cablelength;
     float a_j;
     float payloadmass;
+    float motor_slope;
+    float motor_intercept;
     int num_drone;
     float t_jx;
     float t_jy;

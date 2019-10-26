@@ -443,6 +443,7 @@ void MainWindow::updateUAV0Param() {
     ui.UAV0_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV0_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV0_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV0_motor_para->setText("Motor slop : " + QString::number(param.motor_slope, 'f', 2) + ", Intercept: " +  QString::number(param.motor_intercept, 'f', 2));
     ui.UAV0_a_j->setText("a_0 : " + QString::number(param.a_j, 'f', 2));
     ui.UAV0_t_jx->setText("t_0x(m) : " + QString::number(param.t_jx, 'f', 2));
     ui.UAV0_t_jy->setText("t_0y(m) : " + QString::number(param.t_jy, 'f', 2));
@@ -468,6 +469,7 @@ void MainWindow::updateUAV1Param() {
     ui.UAV1_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV1_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV1_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV1_motor_para->setText("Motor slop : " + QString::number(param.motor_slope, 'f', 2) + ", Intercept: " +  QString::number(param.motor_intercept, 'f', 2));
     ui.UAV1_a_j->setText("a_1 : " + QString::number(param.a_j, 'f', 2));
     ui.UAV1_t_jx->setText("t_1x(m) : " + QString::number(param.t_jx, 'f', 2));
     ui.UAV1_t_jy->setText("t_1y(m) : " + QString::number(param.t_jy, 'f', 2));
@@ -491,6 +493,7 @@ void MainWindow::updateUAV2Param() {
     ui.UAV2_Quadmass->setText("Quad Mass (kg): " + QString::number(param.dronemass, 'f', 2));
     ui.UAV2_Payloadmass->setText("Payload Mass (kg): " + QString::number(param.payloadmass, 'f', 2));
     ui.UAV2_Cablelength->setText("Cable Length (m): " + QString::number(param.cablelength, 'f', 2));
+    ui.UAV2_motor_para->setText("Motor slop : " + QString::number(param.motor_slope, 'f', 2) + ", Intercept: " +  QString::number(param.motor_intercept, 'f', 2));
     ui.UAV2_a_j->setText("a_2 : " + QString::number(param.a_j, 'f', 2));
     ui.UAV2_t_jx->setText("t_2x(m) : " + QString::number(param.t_jx, 'f', 2));
     ui.UAV2_t_jy->setText("t_2y(m) : " + QString::number(param.t_jy, 'f', 2));

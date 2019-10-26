@@ -214,6 +214,8 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
     UavParaList[ID].cablelength = req.cablelength;
     UavParaList[ID].a_j = req.a_j;
     UavParaList[ID].payloadmass = req.payloadmass;
+    UavParaList[ID].motor_slope = req.motor_slope;
+    UavParaList[ID].motor_intercept = req.motor_intercept;
     UavParaList[ID].num_drone = req.num_drone;
     UavParaList[ID].t_jx = req.t_jx;
     UavParaList[ID].t_jy = req.t_jy;
