@@ -357,6 +357,27 @@ void MainWindow::on_Payload_Move_to_Start_clicked(bool check) {
     }
 }
 
+void MainWindow::on_Payload_Prelift_clicked(bool check){
+    // move to lift payload
+}
+
+void MainWindow::on_UAV0_Copypos_clicked(bool check) {
+    ui.UAV0_Target_x->setText(ui.UAV0_x->text());
+    ui.UAV0_Target_y->setText(ui.UAV0_y->text());
+    ui.UAV0_Target_z->setText(ui.UAV0_z->text());
+}
+
+void MainWindow::on_UAV1_Copypos_clicked(bool check) {
+    ui.UAV1_Target_x->setText(ui.UAV1_x->text());
+    ui.UAV1_Target_y->setText(ui.UAV1_y->text());
+    ui.UAV1_Target_z->setText(ui.UAV1_z->text());
+}
+
+void MainWindow::on_UAV2_Copypos_clicked(bool check) {
+    ui.UAV2_Target_x->setText(ui.UAV2_x->text());
+    ui.UAV2_Target_y->setText(ui.UAV2_y->text());
+    ui.UAV2_Target_z->setText(ui.UAV2_z->text());
+}
 /*****************************************************************************
 ** Implemenation [Slots][manually connected]
 *****************************************************************************/
@@ -542,7 +563,7 @@ void MainWindow::updatePayloadmocap() {
         ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 2));
 
         /*----turn on button----------------*/
-        ui.Payload_Activate_Button->setEnabled(true);
+        ui.Payload_Prelift->setEnabled(true);
         ui.Payload_Pose_Button->setEnabled(true);
         ui.Payload_Move_to_Start->setEnabled(true);
         // update the hovering place
@@ -608,7 +629,7 @@ void MainWindow::updatePayloadmocap() {
         ui.Payload_pitch->setText("----");
         ui.Payload_yaw->setText("----");
         /*----turn off button--------------*/
-        ui.Payload_Activate_Button->setEnabled(false);
+        ui.Payload_Prelift->setEnabled(false);
         ui.Payload_Pose_Button->setEnabled(false);
         ui.Payload_Move_to_Start->setEnabled(false);
     }
