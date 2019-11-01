@@ -2360,7 +2360,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget_4">
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
@@ -3005,6 +3005,13 @@
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_18">
           <item>
+           <widget class="QLabel" name="Payload_Number_Drones">
+            <property name="text">
+             <string>Number of Drones: ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="label_43">
             <property name="text">
              <string>Payload Hovering Height (m) :</string>
@@ -3169,7 +3176,7 @@
      <x>0</x>
      <y>0</y>
      <width>1786</width>
-     <height>22</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">

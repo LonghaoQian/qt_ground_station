@@ -65,11 +65,10 @@ public Q_SLOTS:
         void on_UAV2_Button_Disarm_clicked(bool check);
         void on_UAV2_Copypos_clicked(bool check);
 
-        void on_Payload_Activate_Button_clicked(bool check);
+        void on_Flush_MoveENU_Button_clicked(bool check);
+
         void on_Payload_Pose_Button_clicked(bool check);
         void on_Payload_Land_Button_clicked(bool check);
-
-        void on_Flush_MoveENU_Button_clicked(bool check);
         void on_Payload_Move_to_Start_clicked(bool check);
         void on_Payload_Prelift_clicked(bool check);
     /******************************************

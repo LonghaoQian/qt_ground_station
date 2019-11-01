@@ -261,31 +261,6 @@ void MainWindow::on_Button_DisarmALL_clicked(bool check) {
     qnode.disarm(2);
 }
 
-void MainWindow::on_Payload_Activate_Button_clicked(bool check) {
-    // this turns on the button for payload stabilization command and turn off individual command
-
-    Eigen::Vector3f temp_position;
-    float target_state[4];
-    float height = ui.Payload_Prelift_Height->text().toFloat();
-
-    if(height >= 1.7) {
-        QMessageBox msgBox;
-        msgBox.setText("Prelift Point Too High !!");
-        msgBox.exec();
-    } else {
-        for(int i = 0; i < 3 ; i++) {
-            temp_position = qnode.UpdateHoverPosition(i,  height);
-            target_state[0] =  temp_position(0);
-            target_state[1] =  temp_position(1);
-            target_state[2] =  temp_position(2);
-            target_state[3] = 0;
-            qnode.move_ENU(i,target_state);
-        }
-
-
-    }
-}
-
 void MainWindow::on_Payload_Pose_Button_clicked(bool check) {
     /* read values from line edit */
     float pose_target[6];
@@ -379,6 +354,30 @@ void MainWindow::on_Payload_Move_to_Start_clicked(bool check) {
 
 void MainWindow::on_Payload_Prelift_clicked(bool check){
     // move to lift payload
+
+    // obtain the target position for each drone
+
+    Eigen::Vector3f temp_position;
+    float target_state[4];
+    float height = ui.Payload_Prelift_Height ->text().toFloat();
+
+    if(height >= 1.2) {
+        QMessageBox msgBox;
+        msgBox.setText("Hovering Point Too High !!");
+        msgBox.exec();
+    } else {
+        for(int i = 0; i < 3 ; i++) {
+            temp_position = qnode.UpdateHoverPosition(i,  height);
+            target_state[0] =  temp_position(0);
+            target_state[1] =  temp_position(1);
+            target_state[2] =  temp_position(2);
+            target_state[3] = 0;
+            qnode.move_ENU(i,target_state);
+        }
+
+
+    }
+
 }
 
 void MainWindow::on_UAV0_Copypos_clicked(bool check) {
@@ -591,84 +590,85 @@ void MainWindow::updatePayloadmocap() {
         qt_ground_station::uav_para param = qnode.GetUAVPARA(0);
         int num_of_drones = param.num_drone;
 
-        float height = ui.Payload_Hovering_Height->text().toFloat();
+        ui.Payload_Number_Drones->setText("Number of Drones: " + QString::number(num_of_drones));
 
-        Eigen::Vector3f pos_temp = qnode.UpdateHoverPosition(0,  height);
+        float hover_height   = ui.Payload_Hovering_Height->text().toFloat();
+        float prelift_height = ui.Payload_Prelift_Height ->text().toFloat();
 
-        if( height>=1.2 ) {
-            ui.UAV0_payload_hovering->setText("<font color='red'>UAV0 : " + QString::number(pos_temp(0), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(2), 'f', 2) + "</font>");
+
+        Eigen::Vector3f pos_temp_hover   = qnode.UpdateHoverPosition(0,  hover_height);
+        Eigen::Vector3f pos_temp_prelift = qnode.UpdateHoverPosition(0,  prelift_height);
+
+
+        if(  hover_height >=1.2 ) {
+            ui.UAV0_payload_hovering->setText("<font color='red'>UAV0 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_hover(2), 'f', 2) + "</font>");
             if(num_of_drones>=2){
-                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
-                ui.UAV1_payload_hovering->setText("<font color='red'>UAV1 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+                pos_temp_hover  = qnode.UpdateHoverPosition(1, hover_height);
+                ui.UAV1_payload_hovering->setText("<font color='red'>UAV1 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                                       + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                                       + ", " + QString::number(pos_temp_hover(2), 'f', 2)+ "</font>");
             }
             if(num_of_drones>=3) {
-                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
-                ui.UAV2_payload_hovering->setText("<font color='red'>UAV2 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+                pos_temp_hover = qnode.UpdateHoverPosition(2, hover_height);
+                ui.UAV2_payload_hovering->setText("<font color='red'>UAV2 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                                       + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                                       + ", " + QString::number(pos_temp_hover(2), 'f', 2)+ "</font>");
             }
 
         } else {
 
-            ui.UAV0_payload_hovering->setText("UAV0 : " + QString::number(pos_temp(0), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(2), 'f', 2));
+            ui.UAV0_payload_hovering->setText("UAV0 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_hover(2), 'f', 2));
             if(num_of_drones>=2){
-                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
-                ui.UAV1_payload_hovering->setText("UAV1 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+                pos_temp_hover = qnode.UpdateHoverPosition(1, hover_height);
+                ui.UAV1_payload_hovering->setText("UAV1 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_hover(2), 'f', 2));
             }
             if(num_of_drones>=3) {
-                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
-                ui.UAV2_payload_hovering->setText("UAV2 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+                pos_temp_hover = qnode.UpdateHoverPosition(2, hover_height);
+                ui.UAV2_payload_hovering->setText("UAV2 : " + QString::number(pos_temp_hover(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_hover(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_hover(2), 'f', 2));
             }
-
         }
 
-        // get the prelift height
-        height = ui.Payload_Prelift_Height->text().toFloat();
-        pos_temp = qnode.UpdateHoverPosition(0,  height);
-
-        if( height>=1.7 ) {
-            ui.UAV0_payload_prelift->setText("<font color='red'>UAV0 : " + QString::number(pos_temp(0), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(2), 'f', 2) + "</font>");
+        if( prelift_height >=1.7 ) {
+            ui.UAV0_payload_prelift->setText("<font color='red'>UAV0 : " + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_prelift(2), 'f', 2) + "</font>");
             if(num_of_drones>=2){
-                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
-                ui.UAV1_payload_prelift->setText("<font color='red'>UAV1 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+                pos_temp_prelift = qnode.UpdateHoverPosition(1, prelift_height);
+                ui.UAV1_payload_prelift->setText("<font color='red'>UAV1 : " + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(2), 'f', 2)+ "</font>");
             }
             if(num_of_drones>=3) {
-                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
-                ui.UAV2_payload_prelift->setText("<font color='red'>UAV2 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2)+ "</font>");
+                pos_temp_prelift = qnode.UpdateHoverPosition(2, prelift_height);
+                ui.UAV2_payload_prelift->setText("<font color='red'>UAV2 : " + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(2), 'f', 2)+ "</font>");
             }
 
         } else {
 
-            ui.UAV0_payload_prelift->setText("UAV0 : " + QString::number(pos_temp(0), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                 + ", " + QString::number(pos_temp(2), 'f', 2));
+            ui.UAV0_payload_prelift->setText("UAV0 : "  + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                 + ", " + QString::number(pos_temp_prelift(2), 'f', 2));
             if(num_of_drones>=2){
-                pos_temp = qnode.UpdateHoverPosition(1, 0.7);
-                ui.UAV1_payload_prelift->setText("UAV1 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+                pos_temp_prelift = qnode.UpdateHoverPosition(1, prelift_height);
+                ui.UAV1_payload_prelift->setText("UAV1 : "  + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(2), 'f', 2));
             }
             if(num_of_drones>=3) {
-                pos_temp = qnode.UpdateHoverPosition(2, 0.7);
-                ui.UAV2_payload_prelift->setText("UAV2 : " + QString::number(pos_temp(0), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(1), 'f', 2)
-                                                     + ", " + QString::number(pos_temp(2), 'f', 2));
+                pos_temp_prelift = qnode.UpdateHoverPosition(2, prelift_height);
+                ui.UAV2_payload_prelift->setText("UAV2 : " + QString::number(pos_temp_prelift(0), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
+                                                     + ", " + QString::number(pos_temp_prelift(2), 'f', 2));
             }
 
         }
