@@ -361,9 +361,9 @@ void MainWindow::on_Payload_Prelift_clicked(bool check){
     float target_state[4];
     float height = ui.Payload_Prelift_Height ->text().toFloat();
 
-    if(height >= 1.2) {
+    if(height >= 1.3) {
         QMessageBox msgBox;
-        msgBox.setText("Hovering Point Too High !!");
+        msgBox.setText("Prelift Point Too High !!");
         msgBox.exec();
     } else {
         for(int i = 0; i < 3 ; i++) {
@@ -443,37 +443,37 @@ void MainWindow::closeEvent(QCloseEvent *event)
 /******************************SLOTS************************************/
 void MainWindow::updateUAV0mocap() {
     qt_ground_station::Mocap temp_mocap = qnode.GetMocap(0);
-    ui.UAV0_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
-    ui.UAV0_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
-    ui.UAV0_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+    ui.UAV0_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
+    ui.UAV0_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
+    ui.UAV0_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
 
-    ui.UAV0_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
-    ui.UAV0_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
-    ui.UAV0_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+    ui.UAV0_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
+    ui.UAV0_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
+    ui.UAV0_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
 
 }
 
 void MainWindow::updateUAV1mocap() {
     qt_ground_station::Mocap temp_mocap = qnode.GetMocap(1);
-    ui.UAV1_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
-    ui.UAV1_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
-    ui.UAV1_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+    ui.UAV1_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
+    ui.UAV1_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
+    ui.UAV1_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
 
-    ui.UAV1_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
-    ui.UAV1_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
-    ui.UAV1_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+    ui.UAV1_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
+    ui.UAV1_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
+    ui.UAV1_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
 
 }
 
 void MainWindow::updateUAV2mocap() {
     qt_ground_station::Mocap temp_mocap = qnode.GetMocap(2);
-    ui.UAV2_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
-    ui.UAV2_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
-    ui.UAV2_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+    ui.UAV2_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
+    ui.UAV2_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
+    ui.UAV2_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
 
-    ui.UAV2_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
-    ui.UAV2_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
-    ui.UAV2_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+    ui.UAV2_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
+    ui.UAV2_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
+    ui.UAV2_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
 
 }
 
@@ -558,17 +558,17 @@ void MainWindow::updatePayloadmocap() {
     if(ispayloaddetected) {
         ui.Payload_detection->setText("<font color='green'>Payload Mocap Detected!</font>");
         qt_ground_station::Mocap temp_mocap = qnode.GetMocap(-1);
-        ui.Payload_x->setText(QString::number(temp_mocap.position[0], 'f', 2));
-        ui.Payload_y->setText(QString::number(temp_mocap.position[1], 'f', 2));
-        ui.Payload_z->setText(QString::number(temp_mocap.position[2], 'f', 2));
+        ui.Payload_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
+        ui.Payload_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
+        ui.Payload_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
 
-        ui.Payload_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 2));
-        ui.Payload_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 2));
-        ui.Payload_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 2));
+        ui.Payload_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
+        ui.Payload_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
+        ui.Payload_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
 
-        ui.Payload_omega_x->setText(QString::number(temp_mocap.angular_velocity[0]*57.3, 'f', 2));
-        ui.Payload_omega_y->setText(QString::number(temp_mocap.angular_velocity[1]*57.3, 'f', 2));
-        ui.Payload_omega_z->setText(QString::number(temp_mocap.angular_velocity[2]*57.3, 'f', 2));
+        ui.Payload_omega_x->setText(QString::number(temp_mocap.angular_velocity[0]*57.3, 'f', 3));
+        ui.Payload_omega_y->setText(QString::number(temp_mocap.angular_velocity[1]*57.3, 'f', 3));
+        ui.Payload_omega_z->setText(QString::number(temp_mocap.angular_velocity[2]*57.3, 'f', 3));
 
         Eigen::Quaterniond quaternion_temp;
         quaternion_temp.w() = temp_mocap.quaternion[0];
@@ -577,9 +577,9 @@ void MainWindow::updatePayloadmocap() {
         quaternion_temp.z() = temp_mocap.quaternion[3];
 
         Eigen::Vector3d euler_temp =  quaternion_to_euler_w(quaternion_temp);
-        ui.Payload_roll->setText(QString::number(euler_temp(0)*57.3, 'f', 2));
-        ui.Payload_pitch->setText(QString::number(euler_temp(1)*57.3, 'f', 2));
-        ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 2));
+        ui.Payload_roll->setText(QString::number(euler_temp(0)*57.3, 'f', 3));
+        ui.Payload_pitch->setText(QString::number(euler_temp(1)*57.3, 'f', 3));
+        ui.Payload_yaw->setText(QString::number(euler_temp(2)*57.3, 'f', 3));
 
         /*----turn on button----------------*/
         ui.Payload_Prelift->setEnabled(true);
@@ -636,7 +636,7 @@ void MainWindow::updatePayloadmocap() {
             }
         }
 
-        if( prelift_height >=1.7 ) {
+        if( prelift_height >=1.4 ) {
             ui.UAV0_payload_prelift->setText("<font color='red'>UAV0 : " + QString::number(pos_temp_prelift(0), 'f', 2)
                                                  + ", " + QString::number(pos_temp_prelift(1), 'f', 2)
                                                  + ", " + QString::number(pos_temp_prelift(2), 'f', 2) + "</font>");
@@ -761,9 +761,9 @@ void MainWindow::updateUAV0log() {
     }
     ui.UAV0_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
     /*-------------------------- update command thrust --------------------------*/
-    ui.UAV0_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
-    ui.UAV0_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
-    ui.UAV0_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
+    ui.UAV0_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 4));
+    ui.UAV0_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 4));
+    ui.UAV0_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 4));
     /*----------------------------update command mode ---------------------------*/
     switch(log.log.Control_Command.Mode) {
     case Idle:
@@ -848,9 +848,9 @@ void MainWindow::updateUAV1log() {
     }
     ui.UAV1_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
     /*-------------------------- update command thrust --------------------------*/
-    ui.UAV1_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
-    ui.UAV1_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
-    ui.UAV1_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
+    ui.UAV1_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 4));
+    ui.UAV1_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 4));
+    ui.UAV1_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 4));
     /*----------------------------update command mode ---------------------------*/
     switch(log.log.Control_Command.Mode) {
     case Idle:
@@ -927,9 +927,9 @@ void MainWindow::updateUAV2log() {
     }
     ui.UAV2_mode->setText(QString::fromStdString(log.log.Drone_State.mode));
     /*-------------------------- update command thrust --------------------------*/
-    ui.UAV2_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 2));
-    ui.UAV2_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 2));
-    ui.UAV2_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 2));
+    ui.UAV2_Tx->setText(QString::number(log.log.Control_Output.Throttle[0], 'f', 4));
+    ui.UAV2_Ty->setText(QString::number(log.log.Control_Output.Throttle[1], 'f', 4));
+    ui.UAV2_Tz->setText(QString::number(log.log.Control_Output.Throttle[2], 'f', 4));
     /*----------------------------update command mode ---------------------------*/
     switch(log.log.Control_Command.Mode) {
     case Idle:
