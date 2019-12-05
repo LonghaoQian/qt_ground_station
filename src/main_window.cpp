@@ -122,15 +122,15 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
         input_is_valid = false;
     }
 
-    if(target_state[1]< -1 || target_state[1]> 1) {
+    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.8) {
+    if(target_state[2]< 0|| target_state[2]> 2) {
         input_is_valid = false;
     }
 
@@ -162,15 +162,15 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
         input_is_valid = false;
     }
 
-    if(target_state[1]< -1 || target_state[1]> 1) {
+    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.8) {
+    if(target_state[2]< 0|| target_state[2]> 2) {
         input_is_valid = false;
     }
 
@@ -202,15 +202,15 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
     bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.3) {
+    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
         input_is_valid = false;
     }
 
-    if(target_state[1]< -1 || target_state[1]> 1) {
+    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
         input_is_valid = false;
     }
 
-    if(target_state[2]< 0|| target_state[2]> 1.8) {
+    if(target_state[2]< 0|| target_state[2]> 2) {
         input_is_valid = false;
     }
 
@@ -703,28 +703,28 @@ void MainWindow::updatePayloadmocap() {
 void MainWindow::updateUAV0attReference() {
     qt_ground_station::uav_log log = qnode.GetUAVLOG(0);
 
-    ui.UAV0_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
-    ui.UAV0_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
-    ui.UAV0_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
-    ui.UAV0_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+    ui.UAV0_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 4));
+    ui.UAV0_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 4));
+    ui.UAV0_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 4));
+    ui.UAV0_thrust->setText(QString::number(log.Thrust_target, 'f', 4));
 }
 
 void MainWindow::updateUAV1attReference() {
     qt_ground_station::uav_log log = qnode.GetUAVLOG(1);
 
-    ui.UAV1_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
-    ui.UAV1_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
-    ui.UAV1_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
-    ui.UAV1_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+    ui.UAV1_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 4));
+    ui.UAV1_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 4));
+    ui.UAV1_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 4));
+    ui.UAV1_thrust->setText(QString::number(log.Thrust_target, 'f', 4));
 }
 
 void MainWindow::updateUAV2attReference() {
     qt_ground_station::uav_log log = qnode.GetUAVLOG(2);
 
-    ui.UAV2_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 2));
-    ui.UAV2_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 2));
-    ui.UAV2_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 2));
-    ui.UAV2_thrust->setText(QString::number(log.Thrust_target, 'f', 2));
+    ui.UAV2_att_roll->setText(QString::number(log.euler_fcu_target(0)*57.3, 'f', 4));
+    ui.UAV2_att_pitch->setText(QString::number(log.euler_fcu_target(1)*57.3, 'f', 4));
+    ui.UAV2_att_yaw->setText(QString::number(log.euler_fcu_target(2)*57.3, 'f', 4));
+    ui.UAV2_thrust->setText(QString::number(log.Thrust_target, 'f', 4));
 }
 
 
