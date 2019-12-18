@@ -64,6 +64,8 @@ public Q_SLOTS:
         void on_UAV2_Button_moveENU_clicked(bool check);
         void on_UAV2_Button_Disarm_clicked(bool check);
         void on_UAV2_Copypos_clicked(bool check);
+        void on_UAV2_Move_with_payload_clicked(bool check);
+        void on_UAV2_Back_to_ENU_clicked(bool check);
 
         void on_Flush_MoveENU_Button_clicked(bool check);
 

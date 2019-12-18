@@ -231,6 +231,52 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     };
 }
 
+void  MainWindow::on_UAV2_Move_with_payload_clicked(bool check) {
+    /*Enter Single UAV mode*/
+    /* read values from line edit */
+    float target_state[4];
+
+    target_state[0] =  ui.UAV2_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV2_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV2_Target_z->text().toFloat();
+    target_state[3] = 0;
+    /*----------------determine whether the input is in safe range ------------------*/
+    bool input_is_valid = true;
+
+    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
+        input_is_valid = false;
+    }
+
+    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
+        input_is_valid = false;
+    }
+
+    if(target_state[2]< 0|| target_state[2]> 2) {
+        input_is_valid = false;
+    }
+
+    /*----------------send input ------------------*/
+
+    if(input_is_valid){
+        /*  update the ENU target label */
+        ui.UAV2_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
+        ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
+        ui.UAV2_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
+        /*------------- set drone into single UAV payload mode ----------------------*/
+        qnode.payload_singleUAV(2,target_state);
+    } else {
+        QMessageBox msgBox;
+        msgBox.setText("Input position is out of range!!");
+        msgBox.exec();
+    };
+}
+
+
+void MainWindow::on_UAV2_Back_to_ENU_clicked(bool check) {
+    /*bounce back to moveENU mode*/
+     qnode.payload_land();
+}
+
 void MainWindow::on_UAV0_Button_Land_clicked(bool check) {
     qnode.land(0);
 }
@@ -789,7 +835,9 @@ void MainWindow::updateUAV0log() {
     case Land:
         ui.UAV0_commandmode->setText("Land");
         break;
-
+    case Payload_Stabilization_SingleUAV:
+        ui.UAV0_commandmode->setText("Single UAV Payload");
+        break;
     case Payload_Stabilization:
         ui.UAV0_commandmode->setText("Payload");
         break;
@@ -873,6 +921,9 @@ void MainWindow::updateUAV1log() {
     case Land:
         ui.UAV1_commandmode->setText("Land");
         break;
+    case Payload_Stabilization_SingleUAV:
+        ui.UAV1_commandmode->setText("Single UAV Payload");
+        break;
     case Payload_Stabilization:
         ui.UAV1_commandmode->setText("Payload");
         break;
@@ -955,7 +1006,9 @@ void MainWindow::updateUAV2log() {
     case Land:
         ui.UAV2_commandmode->setText("Land");
         break;
-
+    case Payload_Stabilization_SingleUAV:
+        ui.UAV2_commandmode->setText("Single UAV Payload");
+        break;
     case Payload_Stabilization:
         ui.UAV2_commandmode->setText("Payload");
         break;

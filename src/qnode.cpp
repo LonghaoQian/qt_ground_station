@@ -355,6 +355,13 @@ void QNode::payload_land() {
     ispayloadcontrolactivated = true;
 }
 
+void QNode::payload_singleUAV(int ID,float pose_desired[4]) {
+    commandFlag[ID] = true;
+    Command_List[ID].header.stamp = ros::Time::now();
+    Command_List[ID].Mode = Payload_Stabilization_SingleUAV;
+    generate_com(0, pose_desired,Command_List[ID]);
+}
+
 Eigen::Vector3f QNode::UpdateHoverPosition(int ID, float height) {
 
     Eigen::Vector3f output;

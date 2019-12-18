@@ -60,7 +60,7 @@ enum Command_Type
     Hold,
     Land,
     Disarm,
-    PPN_land,
+    Payload_Stabilization_SingleUAV,
     Trajectory_Tracking,
     Payload_Stabilization,
     Payload_Land,
@@ -135,6 +135,7 @@ public:
         void disarm(int ID);
         void payload_pose(float pose_desired[6]);
         void payload_land();
+        void payload_singleUAV(int ID,float pose_desired[4]);
         Eigen::Vector3f UpdateHoverPosition(int ID, float height);
 Q_SIGNALS:
 	void loggingUpdated();
