@@ -142,6 +142,19 @@
           <string>Disarm</string>
          </property>
         </widget>
+        <widget class="QLabel" name="UAV0_voltage">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>100</y>
+           <width>121</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Voltage: 16.4V</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="groupBox_3">
         <property name="geometry">
@@ -421,9 +434,9 @@
          <property name="geometry">
           <rect>
            <x>170</x>
-           <y>110</y>
-           <width>131</width>
-           <height>27</height>
+           <y>100</y>
+           <width>141</width>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
@@ -929,6 +942,19 @@
           <string>Disarm</string>
          </property>
         </widget>
+        <widget class="QLabel" name="UAV1_voltage">
+         <property name="geometry">
+          <rect>
+           <x>180</x>
+           <y>100</y>
+           <width>121</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Voltage: 16.4V</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="groupBox_9">
         <property name="geometry">
@@ -1322,10 +1348,10 @@
         <widget class="QPushButton" name="UAV1_Button_moveENU">
          <property name="geometry">
           <rect>
-           <x>150</x>
-           <y>90</y>
-           <width>111</width>
-           <height>27</height>
+           <x>170</x>
+           <y>70</y>
+           <width>141</width>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
@@ -1336,7 +1362,7 @@
          <property name="geometry">
           <rect>
            <x>110</x>
-           <y>60</y>
+           <y>30</y>
            <width>201</width>
            <height>29</height>
           </rect>
@@ -1378,7 +1404,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>60</y>
+           <y>30</y>
            <width>99</width>
            <height>27</height>
           </rect>
@@ -1701,6 +1727,19 @@
          </property>
          <property name="text">
           <string>UAV2 Undetected</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="UAV2_voltage">
+         <property name="geometry">
+          <rect>
+           <x>190</x>
+           <y>100</y>
+           <width>121</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Voltage: 16.4V</string>
          </property>
         </widget>
        </widget>
@@ -2100,7 +2139,7 @@
           <x>10</x>
           <y>450</y>
           <width>321</width>
-          <height>121</height>
+          <height>131</height>
          </rect>
         </property>
         <property name="title">
@@ -2109,10 +2148,10 @@
         <widget class="QPushButton" name="UAV2_Button_moveENU">
          <property name="geometry">
           <rect>
-           <x>80</x>
-           <y>90</y>
-           <width>111</width>
-           <height>27</height>
+           <x>170</x>
+           <y>80</y>
+           <width>131</width>
+           <height>51</height>
           </rect>
          </property>
          <property name="text">
@@ -2123,7 +2162,7 @@
          <property name="geometry">
           <rect>
            <x>100</x>
-           <y>60</y>
+           <y>50</y>
            <width>201</width>
            <height>29</height>
           </rect>
@@ -2165,7 +2204,7 @@
          <property name="geometry">
           <rect>
            <x>0</x>
-           <y>60</y>
+           <y>50</y>
            <width>99</width>
            <height>27</height>
           </rect>

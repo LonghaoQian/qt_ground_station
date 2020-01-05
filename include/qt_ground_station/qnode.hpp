@@ -128,6 +128,7 @@ public:
         bool ispayloaddetected;
         bool ispayloadmocaprecieved;
         bool ispayloadcontrolactivated;
+        bool isMultiDroneMode;
 /*----------------------------Send commands------------------------------*/
         void move_ENU(int ID,float state_desired[4]);
         void takeoff(int ID);

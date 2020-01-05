@@ -787,9 +787,10 @@ void MainWindow::updateUAV0log() {
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV0_Button_Disarm->setEnabled(true);
-        ui.UAV0_Button_Takeoff->setEnabled(true);
-        ui.UAV0_Button_Land->setEnabled(true);
+        //ui.UAV0_Button_Takeoff->setEnabled(true);
+        //ui.UAV0_Button_Land->setEnabled(true);
         ui.UAV0_Button_moveENU->setEnabled(true);
+        ui.UAV0_voltage->setText(GenerateBatteryInfo(log, 16.8, 14.4));
 
     } else {
         ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
@@ -798,6 +799,7 @@ void MainWindow::updateUAV0log() {
         ui.UAV0_Button_Takeoff->setEnabled(false);
         ui.UAV0_Button_Land->setEnabled(false);
         ui.UAV0_Button_moveENU->setEnabled(false);
+        ui.UAV0_voltage->setText("Voltage: --- V");
     }
 
     if (log.log.Drone_State.armed) {
@@ -877,9 +879,10 @@ void MainWindow::updateUAV1log() {
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV1_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV1_Button_Disarm->setEnabled(true);
-        ui.UAV1_Button_Takeoff->setEnabled(true);
-        ui.UAV1_Button_Land->setEnabled(true);
+        //ui.UAV1_Button_Takeoff->setEnabled(true);
+        //ui.UAV1_Button_Land->setEnabled(true);
         ui.UAV1_Button_moveENU->setEnabled(true);
+        ui.UAV1_voltage->setText(GenerateBatteryInfo(log, 16.8, 14.4));
 
     } else {
         ui.UAV1_connection->setText("<font color='red'>UNCONNECTED</font>");
@@ -887,6 +890,7 @@ void MainWindow::updateUAV1log() {
         ui.UAV1_Button_Takeoff->setEnabled(false);
         ui.UAV1_Button_Land->setEnabled(false);
         ui.UAV1_Button_moveENU->setEnabled(false);
+        ui.UAV1_voltage->setText("Voltage: --- V");
     }
 
     if (log.log.Drone_State.armed) {
@@ -960,15 +964,17 @@ void MainWindow::updateUAV2log() {
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV2_connection->setText("<font color='green'>CONNECTED</font>");
         ui.UAV2_Button_Disarm->setEnabled(true);
-        ui.UAV2_Button_Takeoff->setEnabled(true);
-        ui.UAV2_Button_Land->setEnabled(true);
+        //ui.UAV2_Button_Takeoff->setEnabled(true);
+        //ui.UAV2_Button_Land->setEnabled(true);
         ui.UAV2_Button_moveENU->setEnabled(true);
+        ui.UAV2_voltage->setText(GenerateBatteryInfo(log, 16.8, 14.4));
     } else {
         ui.UAV2_connection->setText("<font color='red'>UNCONNECTED</font>");
         ui.UAV2_Button_Disarm->setEnabled(false);
         ui.UAV2_Button_Takeoff->setEnabled(false);
         ui.UAV2_Button_Land->setEnabled(false);
         ui.UAV2_Button_moveENU->setEnabled(false);
+        ui.UAV2_voltage->setText("Voltage: --- V");
     }
 
     if (log.log.Drone_State.armed) {
@@ -1031,6 +1037,23 @@ void MainWindow::updateUAV2log() {
         ui.UAV2_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
     }
 
+}
+
+QString MainWindow::GenerateBatteryInfo(qt_ground_station::uav_log& log, float Voltage_High, float Voltage_Low)
+{
+    QString TX;
+
+    float percent = (log.log.Drone_State.battery_voltage - Voltage_Low)/(Voltage_High - Voltage_Low);
+
+    if (percent > 0.75) {
+        TX = "<font color='green'> Voltage: "  + QString::number(log.log.Drone_State.battery_voltage,'f', 1) + "V </font>";
+    } else if (percent > 0.65) {
+        TX = "<font color='yellow'> Voltage: " + QString::number(log.log.Drone_State.battery_voltage,'f', 1) + "V </font>";
+    } else {
+        TX = "<font color='red'> Voltage: "    + QString::number(log.log.Drone_State.battery_voltage,'f', 1) + "V </font>";
+    }
+
+    return TX;
 }
 
 Eigen::Vector3d MainWindow::quaternion_to_euler_w(const Eigen::Quaterniond &q)

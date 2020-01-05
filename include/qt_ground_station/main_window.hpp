@@ -95,7 +95,7 @@ public Q_SLOTS:
     void updateUAV1Param();
     void updateUAV2Param();
     Eigen::Vector3d  quaternion_to_euler_w(const Eigen::Quaterniond &q);
-
+    QString GenerateBatteryInfo(qt_ground_station::uav_log& log, float Voltage_High, float Voltage_Low);
 Q_SIGNALS:
     void send_TakeoffUAV0();
     void send_TakeoffUAV1();
