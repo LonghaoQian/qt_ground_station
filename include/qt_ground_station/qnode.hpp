@@ -41,6 +41,7 @@ namespace qt_ground_station {
 
 /*****************************************************************************
 ** Class
+
 *****************************************************************************/
 
 enum LogLevel {
@@ -84,18 +85,37 @@ struct uav_para {
     float motor_slope;
     float motor_intercept;
     int num_drone;
+    bool isPubAuxiliaryState;
+    bool isAddonForcedUsed;
+    bool isCrossFeedingTermsUsed;
     float t_jx;
     float t_jy;
     float t_jz;
     float kv_xy;
     float kv_z;
-    float kvi_xy;
-    float kvi_z;
     float kR_xy;
     float kR_z;
     float kL;
     float Kphi_xy;
     float Kphi_z;
+    float kr1_x;
+    float kr1_y;
+    float kr1_z;
+    float kr2_x;
+    float kr2_y;
+    float kr2_z;
+    float kp_x;
+    float kp_y;
+    float kp_z;
+    float komega_x;
+    float komega_y;
+    float komega_z;
+    float lambda1_x;
+    float lambda1_y;
+    float lambda1_z;
+    float lambda2_x;
+    float lambda2_y;
+    float lambda2_z;
     float pxy_error_max;
     float pz_error_max;
     float pxy_int_max;

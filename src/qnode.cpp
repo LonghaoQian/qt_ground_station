@@ -181,24 +181,45 @@ void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstP
 void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {
 
     /*
-    string controllername
+    std::string controllername;
     float dronemass;
     float cablelength;
     float a_j;
     float payloadmass;
+    float motor_slope;
+    float motor_intercept;
     int num_drone;
+    bool isPubAuxiliaryState;
+    bool isAddonForcedUsed;
+    bool isCrossFeedingTermsUsed;
     float t_jx;
     float t_jy;
     float t_jz;
     float kv_xy;
-    float Kv_z;
-    float kvi_xy;
-    float kvi_z;
+    float kv_z;
     float kR_xy;
     float kR_z;
     float kL;
     float Kphi_xy;
     float Kphi_z;
+    float kr1_x;
+    float kr1_y;
+    float kr1_z;
+    float kr2_x;
+    float kr2_y;
+    float kr2_z;
+    float kp_x;
+    float kp_y;
+    float kp_z;
+    float komega_x;
+    float komega_y;
+    float komega_z;
+    float lambda1_x;
+    float lambda1_y;
+    float lambda1_z;
+    float lambda2_x;
+    float lambda2_y;
+    float lambda2_z;
     float pxy_error_max;
     float pz_error_max;
     float pxy_int_max;
@@ -217,18 +238,37 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
     UavParaList[ID].motor_slope = req.motor_slope;
     UavParaList[ID].motor_intercept = req.motor_intercept;
     UavParaList[ID].num_drone = req.num_drone;
+    UavParaList[ID].isPubAuxiliaryState  = req.isPubAuxiliaryState;
+    UavParaList[ID].isAddonForcedUsed = req.isAddonForcedUsed;
+    UavParaList[ID].isCrossFeedingTermsUsed = req.isCrossFeedingTermsUsed;
     UavParaList[ID].t_jx = req.t_jx;
     UavParaList[ID].t_jy = req.t_jy;
     UavParaList[ID].t_jz = req.t_jz;
     UavParaList[ID].kv_xy = req.kv_xy;
-    UavParaList[ID].kv_z = req.Kv_z;
-    UavParaList[ID].kvi_xy = req.kvi_xy;
-    UavParaList[ID].kvi_z = req.kvi_z;
+    UavParaList[ID].kv_z = req.kv_z;
     UavParaList[ID].kR_xy = req.kR_xy;
     UavParaList[ID].kR_z = req.kR_z;
     UavParaList[ID].kL = req.kL;
     UavParaList[ID].Kphi_xy = req.Kphi_xy;
     UavParaList[ID].Kphi_z = req.Kphi_z;
+    UavParaList[ID].kr1_x  =req.kr1_x;
+    UavParaList[ID].kr1_y  =req.kr1_y;
+    UavParaList[ID].kr1_z  =req.kr1_z;
+    UavParaList[ID].kr2_x  =req.kr2_x;
+    UavParaList[ID].kr2_y  =req.kr2_y;
+    UavParaList[ID].kr2_z  =req.kr2_z;
+    UavParaList[ID].kp_x   =req.kp_x;
+    UavParaList[ID].kp_y   =req.kp_y;
+    UavParaList[ID].kp_z   =req.kp_z;
+    UavParaList[ID].komega_x  =req.komega_x;
+    UavParaList[ID].komega_y  =req.komega_y;
+    UavParaList[ID].komega_z  =req.komega_z;
+    UavParaList[ID].lambda1_x  =req.lambda1_x;
+    UavParaList[ID].lambda1_y  =req.lambda1_y;
+    UavParaList[ID].lambda1_z  =req.lambda1_z;
+    UavParaList[ID].lambda2_x  =req.lambda2_x;
+    UavParaList[ID].lambda2_y  =req.lambda2_y;
+    UavParaList[ID].lambda2_z  =req.lambda2_z;
     UavParaList[ID].pxy_error_max = req.pxy_error_max;
     UavParaList[ID].pz_error_max  = req.pz_error_max;
     UavParaList[ID].pxy_int_max = req.pxy_int_max;
@@ -238,7 +278,7 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
     UavParaList[ID].fp_max_x = req.fp_max_x;
     UavParaList[ID].fp_max_y = req.fp_max_y;
     UavParaList[ID].fp_max_z = req.fp_max_z;
-    res.oktostart = true;
+    res.oktostart = true; // reply true back to quadrotor
 }
 
 bool QNode::loadUAV0para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){

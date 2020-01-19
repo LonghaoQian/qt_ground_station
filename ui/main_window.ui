@@ -25,7 +25,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -712,6 +712,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="UAV0_control_option">
+            <property name="text">
+             <string>Addon Force, Cross Feeding term</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV0_a_j">
             <property name="text">
              <string>a_0: ----</string>
@@ -754,9 +761,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="UAV0_kvi">
+           <widget class="QLabel" name="UAV0_kr">
             <property name="text">
-             <string>kvi : ----, ----, ----</string>
+             <string>kr1 : ----, ----, ----  kr2 : -----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_lambda">
+            <property name="text">
+             <string>Lambda 1: ----, ----, ----  Lambda 2: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_kp">
+            <property name="text">
+             <string>kp : ----, ----, ---- komega: ----, ----, ----</string>
             </property>
            </widget>
           </item>
@@ -825,7 +846,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget_2">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="UAV1">
        <attribute name="title">
@@ -1499,6 +1520,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="UAV1_control_option">
+            <property name="text">
+             <string>Addon Force, Cross Feeding term</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV1_a_j">
             <property name="text">
              <string>a_1: ----</string>
@@ -1541,9 +1569,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="UAV1_kvi">
+           <widget class="QLabel" name="UAV1_kr">
             <property name="text">
-             <string>kvi : ----, ----, ----</string>
+             <string>kr1 : ----, ----, ----  kr2 : -----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_lambda">
+            <property name="text">
+             <string>Lambda 1: ----, ----, ----  Lambda 2: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_kp">
+            <property name="text">
+             <string>kp : ----, ----, ---- komega: ----, ----, ----</string>
             </property>
            </widget>
           </item>
@@ -1612,7 +1654,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget_3">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_4">
        <attribute name="title">
@@ -2312,6 +2354,13 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="UAV2_control_option">
+            <property name="text">
+             <string>Addon Force, Cross Feeding term</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV2_a_j">
             <property name="text">
              <string>a_2: ----</string>
@@ -2354,9 +2403,23 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="UAV2_kvi">
+           <widget class="QLabel" name="UAV2_kr">
             <property name="text">
-             <string>kvi : ----, ----, ----</string>
+             <string>kr1 : ----, ----, ----  kr2 : -----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_lambda">
+            <property name="text">
+             <string>Lambda 1: ----, ----, ----  Lambda 2: ----, ----, ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_kp">
+            <property name="text">
+             <string>kp : ----, ----, ---- komega: ----, ----, ----</string>
             </property>
            </widget>
           </item>
