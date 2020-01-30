@@ -542,7 +542,7 @@ void MainWindow::updateUAV0Param() {
         isAddonForce       = "Addon Force ON!";
     }
     if (param.isCrossFeedingTermsUsed) {
-        isCrossFeedingTerm = "Cross Feeding Term NO!";
+        isCrossFeedingTerm = "Cross Feeding Term ON!";
     }
 
     ui.UAV0_control_option->setText(isAddonForce + ", " + isCrossFeedingTerm);
@@ -554,6 +554,16 @@ void MainWindow::updateUAV0Param() {
     ui.UAV0_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " +
                                   QString::number(param.kR_xy, 'f', 2) + ", " +
                                   QString::number(param.kR_z, 'f', 2 ));
+    // Lambda_j : ---- Lambda_p : -----  Lambda_r : ----
+    ui.UAV0_UDE_lambda->setText("Laj : " + QString::number(param.lambdaj_x) + ", "
+                                         + QString::number(param.lambdaj_y) + ", "
+                                         + QString::number(param.lambdaj_z));
+    ui.UAV0_inter_drone->setText ("La_T: " + QString::number(param.lambda_T_x) + ", "
+                                  + QString::number(param.lambda_T_y) + ", "
+                                  + QString::number(param.lambda_T_z) + ", "
+                   +"La_R : " + QString::number(param.lambda_R_x) + ", "
+                                  + QString::number(param.lambda_R_y) + ", "
+                                  + QString::number(param.lambda_R_z));
 
     ui.UAV0_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
     ui.UAV0_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
@@ -591,7 +601,7 @@ void MainWindow::updateUAV1Param() {
         isAddonForce       = "Addon Force ON!";
     }
     if (param.isCrossFeedingTermsUsed) {
-        isCrossFeedingTerm = "Cross Feeding Term NO!";
+        isCrossFeedingTerm = "Cross Feeding Term ON!";
     }
 
     ui.UAV1_control_option->setText(isAddonForce + ", " + isCrossFeedingTerm);
@@ -605,6 +615,12 @@ void MainWindow::updateUAV1Param() {
 
     ui.UAV1_kv ->setText("kv: " + QString::number(param.kv_xy, 'f', 2) + ", " + QString::number(param.kv_xy, 'f', 2) + ", " +  QString::number(param.kv_z, 'f', 2 ));
     ui.UAV1_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " + QString::number(param.kR_xy, 'f', 2) + ", " +  QString::number(param.kR_z, 'f', 2 ));
+
+    // Lambda_j : ---- Lambda_p : -----  Lambda_r : ----
+    ui.UAV1_UDE_lambda->setText("Laj : " + QString::number(param.lambdaj_x) + ", "
+                                              + QString::number(param.lambdaj_y) + ", "
+                                              + QString::number(param.lambdaj_z));
+
     ui.UAV1_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
     ui.UAV1_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
     ui.UAV1_p_error_max->setText("p_error_max: " + QString::number(param.pxy_error_max, 'f', 2) + ", " + QString::number(param.pxy_error_max, 'f', 2) + ", " +  QString::number(param.pz_error_max, 'f', 2 ));
@@ -633,7 +649,7 @@ void MainWindow::updateUAV2Param() {
         isAddonForce       = "Addon Force ON!";
     }
     if (param.isCrossFeedingTermsUsed) {
-        isCrossFeedingTerm = "Cross Feeding Term NO!";
+        isCrossFeedingTerm = "Cross Feeding Term ON!";
     }
     ui.UAV2_control_option->setText(isAddonForce + ", " + isCrossFeedingTerm);
 
@@ -646,6 +662,12 @@ void MainWindow::updateUAV2Param() {
 
     ui.UAV2_kv ->setText("kv: " + QString::number(param.kv_xy, 'f', 2) + ", " + QString::number(param.kv_xy, 'f', 2) + ", " +  QString::number(param.kv_z, 'f', 2 ));
     ui.UAV2_kR ->setText("kR: " + QString::number(param.kR_xy, 'f', 2) + ", " + QString::number(param.kR_xy, 'f', 2) + ", " +  QString::number(param.kR_z, 'f', 2 ));
+
+    // Lambda_j : ---- Lambda_p : -----  Lambda_r : ----
+    ui.UAV2_UDE_lambda->setText("Laj : " + QString::number(param.lambdaj_x) + ", "
+                                              + QString::number(param.lambdaj_y) + ", "
+                                              + QString::number(param.lambdaj_z));
+
     ui.UAV2_kL ->setText("kL : " + QString::number(param.kL, 'f', 2));
     ui.UAV2_kphi->setText("kphi: " + QString::number(param.Kphi_xy, 'f', 2) + ", " + QString::number(param.Kphi_xy, 'f', 2) + ", " +  QString::number(param.Kphi_z, 'f', 2 ));
     ui.UAV2_p_error_max->setText("p_error_max: " + QString::number(param.pxy_error_max, 'f', 2) + ", " + QString::number(param.pxy_error_max, 'f', 2) + ", " +  QString::number(param.pz_error_max, 'f', 2 ));

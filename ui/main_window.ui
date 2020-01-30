@@ -719,6 +719,20 @@
            </widget>
           </item>
           <item>
+           <widget class="QLabel" name="UAV0_UDE_lambda">
+            <property name="text">
+             <string>Lambda_j : ---- </string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV0_inter_drone">
+            <property name="text">
+             <string>Lambda_p : -----  Lambda_r : ----</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QLabel" name="UAV0_a_j">
             <property name="text">
              <string>a_0: ----</string>
@@ -1523,6 +1537,13 @@
            <widget class="QLabel" name="UAV1_control_option">
             <property name="text">
              <string>Addon Force, Cross Feeding term</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV1_UDE_lambda">
+            <property name="text">
+             <string>Lambda_j : ----</string>
             </property>
            </widget>
           </item>
@@ -2357,6 +2378,13 @@
            <widget class="QLabel" name="UAV2_control_option">
             <property name="text">
              <string>Addon Force, Cross Feeding term</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="UAV2_UDE_lambda">
+            <property name="text">
+             <string>Lambda_j : ----</string>
             </property>
            </widget>
           </item>

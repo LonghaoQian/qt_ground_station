@@ -110,6 +110,15 @@ struct uav_para {
     float komega_x;
     float komega_y;
     float komega_z;
+    float lambdaj_x;
+    float lambdaj_y;
+    float lambdaj_z;
+    float lambda_T_x;
+    float lambda_T_y;
+    float lambda_T_z;
+    float lambda_R_x;
+    float lambda_R_y;
+    float lambda_R_z;
     float lambda1_x;
     float lambda1_y;
     float lambda1_z;

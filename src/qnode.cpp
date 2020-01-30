@@ -263,6 +263,15 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
     UavParaList[ID].komega_x  =req.komega_x;
     UavParaList[ID].komega_y  =req.komega_y;
     UavParaList[ID].komega_z  =req.komega_z;
+    UavParaList[ID].lambdaj_x = req.lambdaj_x;
+    UavParaList[ID].lambdaj_y = req.lambdaj_y;
+    UavParaList[ID].lambdaj_z = req.lambdaj_z;
+    UavParaList[ID].lambda_T_x = req.lambda_T_x;
+    UavParaList[ID].lambda_T_y = req.lambda_T_y;
+    UavParaList[ID].lambda_T_z = req.lambda_T_z;
+    UavParaList[ID].lambda_R_x = req.lambda_R_x;
+    UavParaList[ID].lambda_R_y = req.lambda_R_y;
+    UavParaList[ID].lambda_R_z = req.lambda_R_z;
     UavParaList[ID].lambda1_x  =req.lambda1_x;
     UavParaList[ID].lambda1_y  =req.lambda1_y;
     UavParaList[ID].lambda1_z  =req.lambda1_z;
