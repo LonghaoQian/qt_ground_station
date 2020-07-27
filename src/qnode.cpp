@@ -43,6 +43,9 @@ QNode::QNode(int argc, char** argv ) :
         ispayloadmocaprecieved = false;
         ispayloadcontrolactivated = false;
         comid = 1;
+        resetcommandlog(0);
+        resetcommandlog(1);
+        resetcommandlog(2);
 }
 
 QNode::~QNode() {
@@ -409,6 +412,105 @@ void QNode::payload_singleUAV(int ID,float pose_desired[4]) {
     Command_List[ID].header.stamp = ros::Time::now();
     Command_List[ID].Mode = Payload_Stabilization_SingleUAV;
     generate_com(0, pose_desired,Command_List[ID]);
+}
+
+void QNode::record_ENUCommand(int drone_ID, float target_state[4]){
+    // swtich to each drones based on drone ID
+    if(UavLogList[drone_ID].islogreceived){ // only log the 
+        command_log[drone_ID].position[0] = target_state[0];
+        command_log[drone_ID].position[1] = target_state[1];
+        command_log[drone_ID].position[2] = target_state[2];
+    }else{
+        resetcommandlog(drone_ID);
+    }
+}
+
+ENUCommandError QNode::command_safty_check(int drone_ID, float target_state[4]){
+    ENUCommandError error_msg;
+    // check whether the drone command is inside the box
+    // get the ID of the other 2 drones
+    int otherDroneID[2];
+
+    bool input_is_inside_box = true;
+
+    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
+        input_is_inside_box = false;
+    }
+
+    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
+        input_is_inside_box = false;
+    }
+
+    if(target_state[2]< 0|| target_state[2]> 2.1) {
+        input_is_inside_box = false;
+    }
+    // check whether the drone command is close to close to other drones (collsion radius = 0.3 m )
+    bool command_is_farway_from_others = true;
+  
+    switch (drone_ID)
+    {
+        case 0:{
+            otherDroneID[0] = 1;
+            otherDroneID[1] = 2;
+            break;
+        }
+        case 1:{
+            otherDroneID[0] = 2;
+            otherDroneID[1] = 0;
+            break;
+        }
+        case 2:{
+            otherDroneID[0] = 0;
+            otherDroneID[1] = 1;
+            break;
+        }
+    }
+    for(int i = 0;i<2;i++)
+    {
+        if(UavLogList[otherDroneID[i]].isconnected) // determine whether the other drones exists
+        {
+            double r_2 = pow((target_state[0]- mocap[otherDroneID[i]].position[0]),2) + 
+                         pow((target_state[1]- mocap[otherDroneID[i]].position[1]),2) +
+                         pow((target_state[2]- mocap[otherDroneID[i]].position[2]),2);
+            if(sqrt(r_2)<0.3) // too close
+            {
+                command_is_farway_from_others = false;
+            }
+        }
+    }
+    // check whether the drone command is close to other drone command positions
+    bool command_is_farway_from_othercommands = true;
+    for(int i=0; i < 2; i++){
+        if(UavLogList[otherDroneID[i]].isconnected) // determine whether the other drones exists
+        {
+            double r_2 = pow((target_state[0]- command_log[otherDroneID[i]].position[0]),2) + 
+                         pow((target_state[1]- command_log[otherDroneID[i]].position[1]),2) + 
+                         pow((target_state[2]- command_log[otherDroneID[i]].position[2]),2);
+            if(sqrt(r_2)<0.3) // too close
+            {
+                command_is_farway_from_othercommands  = false;
+            }
+        }
+    }
+
+    if(!input_is_inside_box) {
+        error_msg = DRONE_COMMAND_OUTOFBOUND;
+    } else if(!command_is_farway_from_others){ 
+        error_msg = DRONE_COMMAND_TOOCLOSETOOTHER;
+    } else if (!command_is_farway_from_othercommands) {
+        error_msg = DRONE_COMMAND_TOOCLOSETOOTHERCOMMAND;
+    } else {
+        error_msg = DRONE_COMMAND_NORM;
+    }
+
+    return error_msg;
+}
+
+void QNode::resetcommandlog(int drone_Id) {
+    command_log[drone_Id].position[0] = 0;
+    command_log[drone_Id].position[1] = 0;
+    command_log[drone_Id].position[2] = -1;
+    command_log[drone_Id].position[3] = 0;
 }
 
 Eigen::Vector3f QNode::UpdateHoverPosition(int ID, float height) {

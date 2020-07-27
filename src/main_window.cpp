@@ -120,34 +120,22 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
     target_state[2] =  ui.UAV0_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
-    bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
-        input_is_valid = false;
-    }
-
-    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
-        input_is_valid = false;
-    }
-
-    if(target_state[2]< 0|| target_state[2]> 2) {
-        input_is_valid = false;
-    }
+    qnode.record_ENUCommand(0, target_state); // push the command to ENU_log
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(0, target_state);
 
     /*----------------send input ------------------*/
 
-    if(input_is_valid){
+    if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){
         /*  update the ENU target label */
         ui.UAV0_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
         ui.UAV0_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
         ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
-
         qnode.move_ENU(0,target_state);
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Input position is out of range!!");
-        msgBox.exec();
+        // reject the command and display the error_msg
+        DisplayENUErrorMsg(error_msg);
     };
 }
 
@@ -160,34 +148,21 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
     target_state[2] =  ui.UAV1_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
-    bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
-        input_is_valid = false;
-    }
-
-    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
-        input_is_valid = false;
-    }
-
-    if(target_state[2]< 0|| target_state[2]> 2) {
-        input_is_valid = false;
-    }
+    qnode.record_ENUCommand(1, target_state); // push the command to ENU_log
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(1, target_state);
 
     /*----------------send input ------------------*/
-
-    if(input_is_valid){
+    if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){
         /*  update the ENU target label */
         ui.UAV1_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
         ui.UAV1_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
         ui.UAV1_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
-
         qnode.move_ENU(1,target_state);
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Input position is out of range!!");
-        msgBox.exec();
+        // reject the command and display the error_msg
+        DisplayENUErrorMsg(error_msg);
     };
 }
 
@@ -200,23 +175,13 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     target_state[2] =  ui.UAV2_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
-    bool input_is_valid = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
-        input_is_valid = false;
-    }
-
-    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
-        input_is_valid = false;
-    }
-
-    if(target_state[2]< 0|| target_state[2]> 2) {
-        input_is_valid = false;
-    }
+    qnode.record_ENUCommand(2, target_state); // push the command to ENU_log
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(2, target_state);
 
     /*----------------send input ------------------*/
 
-    if(input_is_valid){
+    if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){
         /*  update the ENU target label */
         ui.UAV2_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
         ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
@@ -225,9 +190,8 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
 
         qnode.move_ENU(2,target_state);
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Input position is out of range!!");
-        msgBox.exec();
+        // reject the command and display the error_msg
+        DisplayENUErrorMsg(error_msg);
     };
 }
 
@@ -367,6 +331,28 @@ void MainWindow::on_Payload_Land_Button_clicked(bool check) {
 }
 
 void MainWindow::on_Flush_MoveENU_Button_clicked(bool check) {
+    // record all the command first
+    float target_state[4];
+    // command for uav 0:
+    target_state[0] =  ui.UAV0_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV0_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV0_Target_z->text().toFloat();
+    target_state[3] = 0;
+    qnode.record_ENUCommand(0, target_state); // push the command to ENU_log
+    // command for uav 1:
+    target_state[0] =  ui.UAV1_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV1_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV1_Target_z->text().toFloat();
+    target_state[3] = 0;
+    qnode.record_ENUCommand(1, target_state); // push the command to ENU_log
+    // command for uav 2:
+    target_state[0] =  ui.UAV2_Target_x->text().toFloat();
+    target_state[1] =  ui.UAV2_Target_y->text().toFloat();
+    target_state[2] =  ui.UAV2_Target_z->text().toFloat();
+    target_state[3] = 0;
+    qnode.record_ENUCommand(2, target_state); // push the command to ENU_log
+    // then perform the actual command:
+
     on_UAV0_Button_moveENU_clicked(true);
     on_UAV1_Button_moveENU_clicked(true);
     on_UAV2_Button_moveENU_clicked(true);
@@ -1151,5 +1137,31 @@ Eigen::Vector3d MainWindow::quaternion_to_euler_w(const Eigen::Quaterniond &q)
     return ans;
 }
 
-}  // namespace qt_ground_station
+void MainWindow::DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg)
+{
+    QMessageBox msgBox;
+    QString msgbody;
+    switch (error_msg) 
+    {
+        case qt_ground_station::DRONE_COMMAND_TOOCLOSETOOTHER:
+        {
+            msgbody = "The command position is too close to the other drones! ";
+            break;
+        }
+        case qt_ground_station::DRONE_COMMAND_TOOCLOSETOOTHERCOMMAND:
+        {
+            msgbody = "The command position is too close to the command position to the other drones!";
+            break;
+        } 
+        case qt_ground_station::DRONE_COMMAND_OUTOFBOUND:
+        {
+            msgbody = "The command position is out of the safty bound ";
+            break;
+        } 
+    }
+    msgBox.setText(msgbody);
+    msgBox.exec();
+}
+}
+// namespace qt_ground_station
 

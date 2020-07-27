@@ -114,6 +114,8 @@ Q_SIGNALS:
 private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;
+    void DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg);
+    // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 
 };
 
 }  // namespace qt_ground_station

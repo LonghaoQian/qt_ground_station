@@ -38,12 +38,14 @@
 *****************************************************************************/
 
 namespace qt_ground_station {
-
-/*****************************************************************************
-** Class
-
-*****************************************************************************/
-
+// definition of command errors
+enum ENUCommandError{
+        DRONE_COMMAND_NORM = 0,
+        DRONE_COMMAND_TOOCLOSETOOTHER,
+        DRONE_COMMAND_TOOCLOSETOOTHERCOMMAND,
+        DRONE_COMMAND_OUTOFBOUND,
+};
+// TO DO: modifiy the logger to display commands
 enum LogLevel {
          Debug,
          Info,
@@ -51,7 +53,7 @@ enum LogLevel {
          Error,
          Fatal
  };
-
+// commmand type defined by px4_command
 enum Command_Type
 {
     Idle,
@@ -66,7 +68,7 @@ enum Command_Type
     Payload_Stabilization,
     Payload_Land,
 };
-
+// logging info from each drone
 struct uav_log {
     bool isconnected;
     bool islogreceived;
@@ -75,7 +77,11 @@ struct uav_log {
     Eigen::Vector3d    euler_fcu_target;
     float              Thrust_target;
 };
-
+// ENU command log
+struct ENU_command_log {
+    float position[4];
+};
+// parameter info from each drone at the start of the controller 
 struct uav_para {
     std::string controllername;
     float dronemass;
@@ -143,15 +149,14 @@ public:
 	virtual ~QNode();
 	bool init();
 	void run();
-
-
+        // TO DO: modify the list to display command history
 	QStringListModel* loggingModel() { return &logging_model; }
 	void log( const LogLevel &level, const std::string &msg);
 /*----------------------------Get states---------------------------------*/
         qt_ground_station::Mocap GetMocap(int ID);
         qt_ground_station::uav_log  GetUAVLOG(int ID);
         qt_ground_station::uav_para GetUAVPARA(int ID);
-
+        
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
         bool ispayloaddetected;
@@ -159,6 +164,9 @@ public:
         bool ispayloadcontrolactivated;
         bool isMultiDroneMode;
 /*----------------------------Send commands------------------------------*/
+        ENUCommandError command_safty_check(int drone_ID,float target_state[4]);
+        void record_ENUCommand(int drone_ID, float target_state[4]);
+        void resetcommandlog(int drone_Id);
         void move_ENU(int ID,float state_desired[4]);
         void takeoff(int ID);
         void land(int ID);
@@ -188,6 +196,7 @@ private:
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
         uav_para UavParaList[3];
+        ENU_command_log command_log[3];
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
         ros::Publisher moveUAV1;
