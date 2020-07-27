@@ -76,7 +76,6 @@ public Q_SLOTS:
     /******************************************
     ** Manual connections
     *******************************************/
-    void updateLoggingView(); // no idea why this can't connect automatically
 
     void updateUAV0mocap();
     void updateUAV1mocap();
@@ -115,6 +114,10 @@ private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;
     void DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg);
+    void UpdateListViewENU(int drone_ID,float target_state[4]);
+    void UpdateListViewMultiPayload(float pose_target[6]);
+    void UpdateListViewMoveToHoverPoint();
+    void UpdateListViewPrelift();
     // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 
 };
 

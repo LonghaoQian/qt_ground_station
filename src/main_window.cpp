@@ -133,6 +133,7 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
         ui.UAV0_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
         qnode.move_ENU(0,target_state);
+        UpdateListViewENU(0,target_state);
     } else {
         // reject the command and display the error_msg
         DisplayENUErrorMsg(error_msg);
@@ -160,6 +161,7 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
         ui.UAV1_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
         qnode.move_ENU(1,target_state);
+        UpdateListViewENU(1,target_state);
     } else {
         // reject the command and display the error_msg
         DisplayENUErrorMsg(error_msg);
@@ -187,7 +189,7 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
         ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
         ui.UAV2_Target_z_label->setText(QString::number(target_state[2], 'f', 2));
         /*-------------------- set move ENU to node --------------------------------*/
-
+        UpdateListViewENU(2,target_state);
         qnode.move_ENU(2,target_state);
     } else {
         // reject the command and display the error_msg
@@ -379,8 +381,6 @@ void MainWindow::on_Payload_Move_to_Start_clicked(bool check) {
             target_state[3] = 0;
             qnode.move_ENU(i,target_state);
         }
-
-
     }
 }
 
@@ -428,18 +428,6 @@ void MainWindow::on_UAV2_Copypos_clicked(bool check) {
     ui.UAV2_Target_x->setText(ui.UAV2_x->text());
     ui.UAV2_Target_y->setText(ui.UAV2_y->text());
     ui.UAV2_Target_z->setText(ui.UAV2_z->text());
-}
-/*****************************************************************************
-** Implemenation [Slots][manually connected]
-*****************************************************************************/
-
-/**
- * This function is signalled by the underlying model. When the model changes,
- * this will drop the cursor down to the last line in the QListview to ensure
- * the user can always see the latest log message.
- */
-void MainWindow::updateLoggingView() {
-        ui.view_logging->scrollToBottom();
 }
 
 /*****************************************************************************
@@ -1162,6 +1150,21 @@ void MainWindow::DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg
     msgBox.setText(msgbody);
     msgBox.exec();
 }
+
+void MainWindow::UpdateListViewENU(int drone_ID,float target_state[4])
+{
+    ui.logger1->scrollToBottom();
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "moveENU sent to #" + QString::number(drone_ID) + " drone.";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::blue);
+    QString position = " X: " + QString::number(target_state[0]) 
+                     + " m , Y: " + QString::number(target_state[1])
+                     + " m , Z: " + QString::number(target_state[2]) + " m. ";
+    ui.logger1->addItem(position);
+}
+
 }
 // namespace qt_ground_station
 
