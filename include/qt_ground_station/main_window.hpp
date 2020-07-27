@@ -73,6 +73,8 @@ public Q_SLOTS:
         void on_Payload_Land_Button_clicked(bool check);
         void on_Payload_Move_to_Start_clicked(bool check);
         void on_Payload_Prelift_clicked(bool check);
+
+        void on_ClearLog_Button_clicked(bool check);
     /******************************************
     ** Manual connections
     *******************************************/
@@ -118,6 +120,7 @@ private:
     void UpdateListViewMultiPayload(float pose_target[6]);
     void UpdateListViewMoveToHoverPoint();
     void UpdateListViewPrelift();
+    void UpdataListViewLand();
     // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 
 };
 

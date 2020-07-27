@@ -1490,17 +1490,6 @@
          <string>Land</string>
         </property>
        </widget>
-       <zorder>groupBox_14</zorder>
-       <zorder>groupBox_9</zorder>
-       <zorder>groupBox_15</zorder>
-       <zorder>groupBox_16</zorder>
-       <zorder>groupBox_17</zorder>
-       <zorder>groupBox_18</zorder>
-       <zorder>line_2</zorder>
-       <zorder>groupBox_19</zorder>
-       <zorder>UAV1_Button_Takeoff</zorder>
-       <zorder>UAV1_Button_Land</zorder>
-       <zorder>tabWidget_3</zorder>
       </widget>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
@@ -3377,6 +3366,13 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QListWidget" name="logger1"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ClearLog_Button">
+          <property name="text">
+           <string>Clear</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QPushButton" name="quit_button">

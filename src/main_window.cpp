@@ -321,6 +321,7 @@ void MainWindow::on_Payload_Pose_Button_clicked(bool check) {
         /*-------------------- send payload stabilization command --------------------------------*/
 
         qnode.payload_pose(pose_target);
+        UpdateListViewMultiPayload(pose_target);
     } else {
         QMessageBox msgBox;
         msgBox.setText("Input position is out of range!!");
@@ -330,6 +331,7 @@ void MainWindow::on_Payload_Pose_Button_clicked(bool check) {
 
 void MainWindow::on_Payload_Land_Button_clicked(bool check) {
       qnode.payload_land();
+      UpdataListViewLand();
 }
 
 void MainWindow::on_Flush_MoveENU_Button_clicked(bool check) {
@@ -381,6 +383,7 @@ void MainWindow::on_Payload_Move_to_Start_clicked(bool check) {
             target_state[3] = 0;
             qnode.move_ENU(i,target_state);
         }
+        UpdateListViewMoveToHoverPoint();
     }
 }
 
@@ -406,8 +409,7 @@ void MainWindow::on_Payload_Prelift_clicked(bool check){
             target_state[3] = 0;
             qnode.move_ENU(i,target_state);
         }
-
-
+        UpdateListViewPrelift();
     }
 
 }
@@ -428,6 +430,14 @@ void MainWindow::on_UAV2_Copypos_clicked(bool check) {
     ui.UAV2_Target_x->setText(ui.UAV2_x->text());
     ui.UAV2_Target_y->setText(ui.UAV2_y->text());
     ui.UAV2_Target_z->setText(ui.UAV2_z->text());
+}
+
+void MainWindow::on_ClearLog_Button_clicked(bool check) {
+    while(ui.logger1->count()>0) // clear all the items
+    {
+        ui.logger1->takeItem(0);
+    }
+
 }
 
 /*****************************************************************************
@@ -1153,7 +1163,6 @@ void MainWindow::DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg
 
 void MainWindow::UpdateListViewENU(int drone_ID,float target_state[4])
 {
-    ui.logger1->scrollToBottom();
     QString msgdrone = "@ " + QTime::currentTime().toString() 
                         + " : " + "moveENU sent to #" + QString::number(drone_ID) + " drone.";
     ui.logger1->addItem(msgdrone);
@@ -1163,6 +1172,86 @@ void MainWindow::UpdateListViewENU(int drone_ID,float target_state[4])
                      + " m , Y: " + QString::number(target_state[1])
                      + " m , Z: " + QString::number(target_state[2]) + " m. ";
     ui.logger1->addItem(position);
+    ui.logger1->scrollToBottom();
+}
+void MainWindow::UpdateListViewMultiPayload(float pose_target[6]){
+
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "payload control.";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::magenta);
+    QString position = " X: " + QString::number(pose_target[0]) 
+                     + " m , Y: " + QString::number(pose_target[1])
+                     + " m , Z: " + QString::number(pose_target[2]) + " m. ";
+    ui.logger1->addItem(position);
+    QString attitude = " R: " + QString::number(pose_target[3]) 
+                     + " DG , P: " + QString::number(pose_target[4])
+                     + " DG , Y: " + QString::number(pose_target[5]) + " DG. ";
+    ui.logger1->addItem(attitude);
+    ui.logger1->scrollToBottom();
+}
+
+void MainWindow::UpdateListViewMoveToHoverPoint(){
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "move to hover point sent:";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::darkGreen);
+    float height = ui.Payload_Hovering_Height->text().toFloat();
+    Eigen::Vector3f temp_position;
+    temp_position = qnode.UpdateHoverPosition(0,  height);    
+    QString position_0 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_0);
+    temp_position = qnode.UpdateHoverPosition(1,  height);    
+    QString position_1 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_1);
+    temp_position = qnode.UpdateHoverPosition(2,  height);    
+    QString position_2 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_2);
+    ui.logger1->scrollToBottom();                 
+             
+}
+
+void MainWindow::UpdateListViewPrelift(){
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "prelift sent:";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::darkGreen);
+    float height = ui.Payload_Prelift_Height ->text().toFloat();
+    Eigen::Vector3f temp_position;
+    temp_position = qnode.UpdateHoverPosition(0,  height);    
+    QString position_0 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_0);
+    temp_position = qnode.UpdateHoverPosition(1,  height);    
+    QString position_1 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_1);
+    temp_position = qnode.UpdateHoverPosition(2,  height);    
+    QString position_2 = " X: " + QString::number(temp_position [0]) 
+                     + " m , Y: " + QString::number(temp_position [1])
+                     + " m , Z: " + QString::number(temp_position [2]) + " m. ";
+    ui.logger1->addItem(position_2);
+    ui.logger1->scrollToBottom();
+}
+
+void MainWindow::UpdataListViewLand(){
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "payload land sent.";
+    ui.logger1->addItem(msgdrone);                  
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
+    ui.logger1->scrollToBottom();    
 }
 
 }
