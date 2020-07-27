@@ -416,7 +416,7 @@ void QNode::payload_singleUAV(int ID,float pose_desired[4]) {
 
 void QNode::record_ENUCommand(int drone_ID, float target_state[4]){
     // swtich to each drones based on drone ID
-    if(UavLogList[drone_ID].islogreceived){ // only log the 
+    if(UavLogList[drone_ID].isconnected){ // only log the 
         command_log[drone_ID].position[0] = target_state[0];
         command_log[drone_ID].position[1] = target_state[1];
         command_log[drone_ID].position[2] = target_state[2];

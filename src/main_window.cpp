@@ -180,7 +180,7 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
 
     qnode.record_ENUCommand(2, target_state); // push the command to ENU_log
     qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(2, target_state);
-
+                 
     /*----------------send input ------------------*/
 
     if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){

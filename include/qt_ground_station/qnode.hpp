@@ -164,6 +164,7 @@ public:
         bool ispayloadcontrolactivated;
         bool isMultiDroneMode;
 /*----------------------------Send commands------------------------------*/
+        ENU_command_log command_log[3];
         ENUCommandError command_safty_check(int drone_ID,float target_state[4]);
         void record_ENUCommand(int drone_ID, float target_state[4]);
         void resetcommandlog(int drone_Id);
@@ -196,7 +197,6 @@ private:
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
         uav_para UavParaList[3];
-        ENU_command_log command_log[3];
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
         ros::Publisher moveUAV1;
