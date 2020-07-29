@@ -75,24 +75,29 @@ public Q_SLOTS:
         void on_Payload_Prelift_clicked(bool check);
 
         void on_ClearLog_Button_clicked(bool check);
+        // action panel:
+        void on_action_single_clicked(bool check);
+        void on_stop_action_single_clicked(bool check);
+        void on_UAV2_Back_to_ENU_1_clicked(bool check);
+
     /******************************************
     ** Manual connections
     *******************************************/
 
-    void updateUAV0mocap();
+    void updateUAV0mocap();// action perfomed when recieving mocap data
     void updateUAV1mocap();
     void updateUAV2mocap();
     void updatePayloadmocap();
 
-    void updateUAV0attReference();
+    void updateUAV0attReference(); // // action perfomed when recieving attitude reference
     void updateUAV1attReference();
     void updateUAV2attReference();
 
     void updateUAV0log();
     void updateUAV1log();
-    void updateUAV2log();
+    void updateUAV2log(); // action perfomed when recieving log data from drones
 
-    void updateUAV0Param();
+    void updateUAV0Param(); // action performed when recieving parameter info from drones
     void updateUAV1Param();
     void updateUAV2Param();
     Eigen::Vector3d  quaternion_to_euler_w(const Eigen::Quaterniond &q);
@@ -121,7 +126,12 @@ private:
     void UpdateListViewMoveToHoverPoint();
     void UpdateListViewPrelift();
     void UpdataListViewLand();
+    void UpdateListViewSingleAction();
+    void UpdateListViewSingleStopAction();
+    void UpdateBacktoENU();
+    void UpdateSwitchToSinglePayloadMode(float pose_target[4]);
     // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 
+    bool IsPayloadModeCorrect();
 };
 
 }  // namespace qt_ground_station

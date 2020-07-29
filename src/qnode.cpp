@@ -86,6 +86,28 @@ bool QNode::init() {
         serUpdateParameterUAV0 = n.advertiseService("/uav0/px4_command/parameters", &QNode::loadUAV0para, this);
         serUpdateParameterUAV1 = n.advertiseService("/uav1/px4_command/parameters", &QNode::loadUAV1para, this);
         serUpdateParameterUAV2 = n.advertiseService("/uav2/px4_command/parameters", &QNode::loadUAV2para, this);
+        // service to command the drone to perform action
+        singleDroneActionClient = n.serviceClient<qt_ground_station::SinglePayloadAction>("/uav2/px4_command/action");
+        serUpdateGeneralInfoUAV0 = n.advertiseService("/uav0/px4_command/generalinfo", &QNode::loadUAV0generalinfo, this);
+        serUpdateGeneralInfoUAV1 = n.advertiseService("/uav1/px4_command/generalinfo", &QNode::loadUAV1generalinfo, this);
+        serUpdateGeneralInfoUAV2 = n.advertiseService("/uav2/px4_command/generalinfo", &QNode::loadUAV2generalinfo, this);
+
+        // 
+        GeneralInfoList[0].controllername = "---";
+        GeneralInfoList[0].TargetdroneID = 0;
+        GeneralInfoList[0].isMulti = false;
+
+        GeneralInfoList[1].controllername = "---";
+        GeneralInfoList[1].TargetdroneID = 0;
+        GeneralInfoList[1].isMulti = false;
+
+        GeneralInfoList[2].controllername = "---";
+        GeneralInfoList[2].TargetdroneID = 0;
+        GeneralInfoList[2].isMulti = false;
+
+        // 
+        action_msg.response.status_ok = false;
+        action_msg.response.trajectory_type = 0;
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -179,6 +201,21 @@ void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstP
     UavLogList[2].euler_fcu_target = quaternion_to_euler(UavLogList[2].q_fcu_target);
     UavLogList[2].Thrust_target= msg->thrust;
 
+}
+
+void QNode::perform_action_singleUAV(bool isperform){
+    if (isperform){
+        action_msg.request.perform_action = true;
+        action_msg.request.action_type = 0;
+    }else{
+        action_msg.request.perform_action = false;
+        action_msg.request.action_type = 0;
+    }
+    singleDroneActionClient.call(action_msg);
+}
+
+qt_ground_station::SinglePayloadAction QNode::GetSingleAction(){
+    return action_msg;
 }
 
 void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {
@@ -314,6 +351,67 @@ bool QNode::loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_g
     return true;
 }
 
+bool QNode::loadUAV0generalinfo(qt_ground_station::GeneralInfo::Request& req, 
+                                qt_ground_station::GeneralInfo::Response& res){
+    loadUAVXgeneralinfo(req, res, 0);
+    return true;
+}
+
+bool QNode::loadUAV1generalinfo(qt_ground_station::GeneralInfo::Request& req, 
+                                qt_ground_station::GeneralInfo::Response& res){
+    loadUAVXgeneralinfo(req, res, 1);
+    return true;
+}
+
+bool QNode::loadUAV2generalinfo(qt_ground_station::GeneralInfo::Request& req, 
+                                qt_ground_station::GeneralInfo::Response& res){
+    loadUAVXgeneralinfo(req, res, 2);
+    return true;
+}
+
+void QNode::loadUAVXgeneralinfo(qt_ground_station::GeneralInfo::Request& req, 
+                                qt_ground_station::GeneralInfo::Response& res, 
+                                int ID){
+
+    GeneralInfoList[ID].controllername = QString::fromStdString(req.controllername);
+    GeneralInfoList[ID].TargetdroneID = req.TargetdroneID;
+    GeneralInfoList[ID].isMulti = req.isMulti;
+    res.oktostart = true; // reply true back to quadrotor
+}
+
+bool QNode::isNumberofDronesConsistent(){
+    bool isconsistent = true;
+    if(UavLogList[0].isconnected) {
+        int num_of_drones = UavParaList[0].num_drone;
+    
+        if (num_of_drones>3){
+            isconsistent = false;
+        }else if(num_of_drones<1){
+            isconsistent = false;
+        }
+
+        for(int i = 1;i<num_of_drones;i++){
+            if(UavParaList[i].num_drone != num_of_drones) {
+                isconsistent = false;
+            }
+        }
+    }else{
+        isconsistent = false;
+    }
+    return isconsistent;
+}
+
+bool QNode::isCooperativeModeConsistent(){
+    bool isconsistent = true;
+    for(int i = 1;i<UavParaList[0].num_drone;i++) {
+        if(GeneralInfoList[i].isMulti = false ) {
+            isconsistent = false;
+        }        
+    }
+
+    return isconsistent;
+}
+
 /*---------------------------------------pub functions -----------------------------------------*/
 void QNode::pub_command() {
 
@@ -352,6 +450,8 @@ qt_ground_station::uav_para QNode::GetUAVPARA(int ID) {
 }
 
 bool QNode::IsPayloadDetected() {
+
+    // determinen whether the payload is detected
     return ispayloaddetected;
 }
 

@@ -42,6 +42,8 @@ add_message_files(
 add_service_files(
   FILES
   ControlParameter.srv
+  SinglePayloadAction.srv
+  GeneralInfo.srv
 )
 
 generate_messages(

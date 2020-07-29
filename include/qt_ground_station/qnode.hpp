@@ -26,6 +26,8 @@
 #include <string>
 #include <QThread>
 #include <QStringListModel>
+#include <qt_ground_station/SinglePayloadAction.h>
+#include <qt_ground_station/GeneralInfo.h>
 #include <qt_ground_station/Mocap.h>
 #include <qt_ground_station/ControlParameter.h>
 #include <qt_ground_station/Topic_for_log.h>
@@ -81,6 +83,13 @@ struct uav_log {
 struct ENU_command_log {
     float position[4];
 };
+// Drone general info
+struct Drone_GeneralInfo {
+    QString controllername;
+    int TargetdroneID;
+    bool isMulti;
+};
+
 // parameter info from each drone at the start of the controller 
 struct uav_para {
     std::string controllername;
@@ -156,13 +165,15 @@ public:
         qt_ground_station::Mocap GetMocap(int ID);
         qt_ground_station::uav_log  GetUAVLOG(int ID);
         qt_ground_station::uav_para GetUAVPARA(int ID);
-        
+        qt_ground_station::SinglePayloadAction GetSingleAction();
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
         bool ispayloaddetected;
         bool ispayloadmocaprecieved;
         bool ispayloadcontrolactivated;
         bool isMultiDroneMode;
+        bool isNumberofDronesConsistent();
+        bool isCooperativeModeConsistent();
 /*----------------------------Send commands------------------------------*/
         ENU_command_log command_log[3];
         ENUCommandError command_safty_check(int drone_ID,float target_state[4]);
@@ -175,6 +186,7 @@ public:
         void payload_pose(float pose_desired[6]);
         void payload_land();
         void payload_singleUAV(int ID,float pose_desired[4]);
+        void perform_action_singleUAV(bool isperform);
         Eigen::Vector3f UpdateHoverPosition(int ID, float height);
 Q_SIGNALS:
 	void loggingUpdated();
@@ -190,12 +202,14 @@ private:
         /*-----------------------------------------------------------*/
         int DroneNumber;
         int comid;
+        Drone_GeneralInfo GeneralInfoList[3];
         uav_log UavLogList[3];
         bool commandFlag[3];
         bool commandPayloadFlag;
         qt_ground_station::ControlCommand Command_List[3];
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
+        qt_ground_station::SinglePayloadAction action_msg;
         uav_para UavParaList[3];
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
@@ -204,7 +218,11 @@ private:
         ros::ServiceServer serUpdateParameterUAV0;
         ros::ServiceServer serUpdateParameterUAV1;
         ros::ServiceServer serUpdateParameterUAV2;
+        ros::ServiceServer serUpdateGeneralInfoUAV0;
+        ros::ServiceServer serUpdateGeneralInfoUAV1;
+        ros::ServiceServer serUpdateGeneralInfoUAV2;
         void pub_command();
+        ros::ServiceClient singleDroneActionClient;
         /*-------------------- Mocap from motive ---------------------*/
         ros::Subscriber mocapUAV0;
         ros::Subscriber mocapUAV1;
@@ -246,6 +264,11 @@ private:
         bool loadUAV1para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
         bool loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
         void loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res, int ID);
+
+        bool loadUAV0generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
+        bool loadUAV1generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
+        bool loadUAV2generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
+        void loadUAVXgeneralinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res, int ID);
 
 
 };

@@ -2526,37 +2526,58 @@
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_20">
          <item>
-          <widget class="QLabel" name="label_30">
+          <widget class="QLabel" name="action_command_state">
            <property name="text">
-            <string>Drone Position:</string>
+            <string>Not in payload mode!</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_34">
+          <widget class="QLabel" name="action_dron_pos">
            <property name="text">
-            <string>Payload Position:</string>
+            <string>Drone X: 0.000 m, Y: 0.000 m, Z: 0.000 m</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QLabel" name="action_payload_pos">
            <property name="text">
-            <string>PushButton</string>
+            <string>Payload X: 0.000m, Y: 0.000m , Z:0.000m</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_3">
+          <widget class="QLabel" name="action_trajectory_type">
            <property name="text">
-            <string>PushButton</string>
+            <string>Trajectory Type: -----</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton_4">
+          <widget class="QLabel" name="action_status">
            <property name="text">
-            <string>PushButton</string>
+            <string>Action Status: -----</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="action_single">
+           <property name="text">
+            <string>Perform Action</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="stop_action_single">
+           <property name="text">
+            <string>Stop Action</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="UAV2_Back_to_ENU_1">
+           <property name="text">
+            <string>Back to ENU</string>
            </property>
           </widget>
          </item>
@@ -2573,32 +2594,6 @@
         </property>
         <property name="text">
          <string>Perform Trajecotry Tracking </string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_36">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>430</y>
-          <width>67</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>TextLabel</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox">
-        <property name="geometry">
-         <rect>
-          <x>210</x>
-          <y>20</y>
-          <width>97</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>CheckBox</string>
         </property>
        </widget>
       </widget>
@@ -3226,6 +3221,19 @@
           </widget>
          </item>
         </layout>
+       </widget>
+       <widget class="QCheckBox" name="IsMultiDroneCheck">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>10</y>
+          <width>151</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Muti-Drone Mode</string>
+        </property>
        </widget>
       </widget>
       <widget class="QWidget" name="tab_9">
