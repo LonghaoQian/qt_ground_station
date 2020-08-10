@@ -79,7 +79,9 @@ public Q_SLOTS:
         void on_action_single_clicked(bool check);
         void on_stop_action_single_clicked(bool check);
         void on_UAV2_Back_to_ENU_1_clicked(bool check);
-
+        // multi-drone action
+        void on_Multi_action_clicked(bool check);
+        void on_Multi_stopaction_clicked(bool check);
     /******************************************
     ** Manual connections
     *******************************************/
@@ -127,7 +129,9 @@ private:
     void UpdateListViewPrelift();
     void UpdataListViewLand();
     void UpdateListViewSingleAction();
+    void UpdataListViewMultiAction();
     void UpdateListViewSingleStopAction();
+    void UpdateListViewMultiStopAction();
     void UpdateBacktoENU();
     void UpdateSwitchToSinglePayloadMode(float pose_target[4]);
     // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 

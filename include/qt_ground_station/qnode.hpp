@@ -27,6 +27,7 @@
 #include <QThread>
 #include <QStringListModel>
 #include <qt_ground_station/SinglePayloadAction.h>
+#include <qt_ground_station/MultiPayloadAction.h>
 #include <qt_ground_station/GeneralInfo.h>
 #include <qt_ground_station/Mocap.h>
 #include <qt_ground_station/ControlParameter.h>
@@ -166,6 +167,7 @@ public:
         qt_ground_station::uav_log  GetUAVLOG(int ID);
         qt_ground_station::uav_para GetUAVPARA(int ID);
         qt_ground_station::SinglePayloadAction GetSingleAction();
+        qt_ground_station::MultiPayloadAction GetMultiAction();
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
         bool ispayloaddetected;
@@ -187,6 +189,7 @@ public:
         void payload_land();
         void payload_singleUAV(int ID,float pose_desired[4]);
         void perform_action_singleUAV(bool isperform);
+        void perfrom_action_multiUAV(bool isperform);
         Eigen::Vector3f UpdateHoverPosition(int ID, float height);
 Q_SIGNALS:
 	void loggingUpdated();
@@ -210,6 +213,7 @@ private:
         qt_ground_station::Mocap mocap[3];
         qt_ground_station::Mocap mocap_payload;
         qt_ground_station::SinglePayloadAction action_msg;
+        qt_ground_station::MultiPayloadAction multi_action_msg;
         uav_para UavParaList[3];
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
@@ -221,7 +225,9 @@ private:
         ros::ServiceServer serUpdateGeneralInfoUAV0;
         ros::ServiceServer serUpdateGeneralInfoUAV1;
         ros::ServiceServer serUpdateGeneralInfoUAV2;
+        
         void pub_command();
+        ros::ServiceClient multiDroneActionClient;
         ros::ServiceClient singleDroneActionClient;
         /*-------------------- Mocap from motive ---------------------*/
         ros::Subscriber mocapUAV0;

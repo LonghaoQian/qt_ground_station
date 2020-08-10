@@ -88,6 +88,7 @@ bool QNode::init() {
         serUpdateParameterUAV2 = n.advertiseService("/uav2/px4_command/parameters", &QNode::loadUAV2para, this);
         // service to command the drone to perform action
         singleDroneActionClient = n.serviceClient<qt_ground_station::SinglePayloadAction>("/uav2/px4_command/action");
+        multiDroneActionClient  = n.serviceClient<qt_ground_station::MultiPayloadAction>("/uav0/px4_command/multi_action");
         serUpdateGeneralInfoUAV0 = n.advertiseService("/uav0/px4_command/generalinfo", &QNode::loadUAV0generalinfo, this);
         serUpdateGeneralInfoUAV1 = n.advertiseService("/uav1/px4_command/generalinfo", &QNode::loadUAV1generalinfo, this);
         serUpdateGeneralInfoUAV2 = n.advertiseService("/uav2/px4_command/generalinfo", &QNode::loadUAV2generalinfo, this);
@@ -108,6 +109,8 @@ bool QNode::init() {
         // 
         action_msg.response.status_ok = false;
         action_msg.response.trajectory_type = 0;
+        multi_action_msg.response.status_ok = false;
+         multi_action_msg.response.trajectory_type = 0;
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -214,8 +217,23 @@ void QNode::perform_action_singleUAV(bool isperform){
     singleDroneActionClient.call(action_msg);
 }
 
+void QNode::perfrom_action_multiUAV(bool isperform){
+    if(isperform){
+        multi_action_msg.request.perform_action = true;
+        multi_action_msg.request.action_type = 0;
+    }else{
+        multi_action_msg.request.perform_action = false;
+        multi_action_msg.request.action_type = 0;
+    }
+    multiDroneActionClient.call(multi_action_msg);
+}
+
 qt_ground_station::SinglePayloadAction QNode::GetSingleAction(){
     return action_msg;
+}
+
+qt_ground_station::MultiPayloadAction QNode::GetMultiAction(){
+    return multi_action_msg;
 }
 
 void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {

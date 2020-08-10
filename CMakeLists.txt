@@ -43,6 +43,7 @@ add_service_files(
   FILES
   ControlParameter.srv
   SinglePayloadAction.srv
+  MultiPayloadAction.srv
   GeneralInfo.srv
 )
 

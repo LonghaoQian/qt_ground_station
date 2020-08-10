@@ -2643,7 +2643,7 @@
           </rect>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_2">
           <attribute name="title">
@@ -2839,21 +2839,21 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <item>
-             <widget class="QLabel" name="label_9">
+             <widget class="QLabel" name="Multi_action_command">
               <property name="text">
                <string>Not in Cooperative Payload Mode</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_10">
+             <widget class="QLabel" name="Multi_action_status">
               <property name="text">
                <string>Action Status: ----</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="label_3">
+             <widget class="QLabel" name="Multi_trajecotry_type">
               <property name="text">
                <string>Trajectory Type: ----</string>
               </property>

@@ -442,6 +442,28 @@ void MainWindow::on_ClearLog_Button_clicked(bool check) {
 
 }
 
+void MainWindow::on_Multi_action_clicked(bool check){
+    qnode.perfrom_action_multiUAV(true);
+    if(qnode.GetMultiAction().response.status_ok){
+        ui.Multi_action_status->setText("Action Status: OK!");
+        ui.Multi_trajecotry_type->setText("Trajectory Type: " + QString::number(qnode.GetMultiAction().response.trajectory_type));
+    }else{
+        ui.Multi_action_status->setText("Action Status: NOT IN ACTION MODE!");
+    }
+    UpdataListViewMultiAction();
+}
+
+void MainWindow::on_Multi_stopaction_clicked(bool check){
+    qnode.perfrom_action_multiUAV(false);
+    if(qnode.GetMultiAction().response.status_ok){
+        ui.Multi_action_status->setText("Action Status: OK!");
+        ui.Multi_trajecotry_type->setText("Trajectory Type: " + QString::number(qnode.GetMultiAction().response.trajectory_type));
+    }else{
+        ui.Multi_action_status->setText("Action Status: NOT IN ACTION MODE!");
+    }
+    UpdateListViewMultiStopAction();
+}
+
 void MainWindow::on_action_single_clicked(bool check){
 
     qnode.perform_action_singleUAV(true);
@@ -972,6 +994,15 @@ void MainWindow::updateUAV0log() {
     } else {
         ui.UAV0_mocapFlag->setText("<font color='red'>No OptiTrack Feedback!!</font>");
     }
+    /*-------------------------update perform multi-drone action button and command state ----------------------------------*/
+    if((log.log.Control_Command.Mode == Payload_Stabilization)
+        &&log.isconnected&&log.log.Drone_State.armed){ // action feature is available when detected, armed, and in payload mode
+        ui.Multi_action_command->setText("<font color='green'>In payload mode!</font>");
+        ui.Multi_action->setEnabled(true);
+    } else{
+        ui.Multi_action_command->setText("<font color='red'>Not in payload mode!</font>");
+        ui.Multi_action->setEnabled(false);
+    }
 
 }
 
@@ -1315,6 +1346,25 @@ void MainWindow::UpdateListViewSingleAction() {
     ui.logger1->item(item_index)->setForeground(Qt::darkMagenta);
     ui.logger1->scrollToBottom(); 
 }
+
+void  MainWindow::UpdataListViewMultiAction(){
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + " multi-drone action sent.";
+    ui.logger1->addItem(msgdrone);                  
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::darkMagenta);
+    ui.logger1->scrollToBottom();     
+}
+
+void MainWindow::UpdateListViewMultiStopAction(){
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : " + "stop multi-drone action.";
+    ui.logger1->addItem(msgdrone);                  
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
+    ui.logger1->scrollToBottom(); 
+}
+
 void MainWindow::UpdateListViewSingleStopAction(){
     QString msgdrone = "@ " + QTime::currentTime().toString() 
                         + " : " + "stop single action.";
@@ -1344,6 +1394,7 @@ void MainWindow::UpdateSwitchToSinglePayloadMode(float pose_target[4]){
     ui.logger1->addItem(position);
     ui.logger1->scrollToBottom(); 
 }
+
 
 bool MainWindow::IsPayloadModeCorrect(){
     bool multi_flag = ui.IsMultiDroneCheck->isChecked();
