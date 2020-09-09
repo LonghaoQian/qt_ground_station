@@ -25,6 +25,7 @@
 #include <rosbag/bag.h>
 #include <string>
 #include <QThread>
+#include <functional>
 #include <QStringListModel>
 #include <qt_ground_station/SinglePayloadAction.h>
 #include <qt_ground_station/MultiPayloadAction.h>
@@ -257,6 +258,8 @@ private:
         void sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
         void sub_setpoint_rawUpdateUAV1(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
         void sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
+
+        void sub_setpoint_rawUpdate(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id);
 
         QStringListModel logging_model;
 

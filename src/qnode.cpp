@@ -65,6 +65,7 @@ bool QNode::init() {
 	ros::start(); // explicitly needed since our nodehandle is going out of scope.
 	ros::NodeHandle n;
         // Add ros publiser hand subscribers here
+        namespace arg = std::placeholders;
         /*-------------------------------------pubs-----------------------------------------------*/
         moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/uav0/px4_command/control_command",100);
         moveUAV1 = n.advertise<qt_ground_station::ControlCommand>("/uav1/px4_command/control_command",100);
@@ -79,9 +80,18 @@ bool QNode::init() {
         UAV1_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav1/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV1, this);
         UAV2_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav2/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV2, this);
 
-        UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
-        UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV1,this);
-        UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
+        //UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
+        //UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV1,this);
+        //UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
+        UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 
+                                                                            100,
+                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,0));
+        UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 
+                                                                            100,
+                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,1));
+        UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 
+                                                                            100,
+                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,2));
 
         serUpdateParameterUAV0 = n.advertiseService("/uav0/px4_command/parameters", &QNode::loadUAV0para, this);
         serUpdateParameterUAV1 = n.advertiseService("/uav1/px4_command/parameters", &QNode::loadUAV1para, this);
@@ -204,6 +214,13 @@ void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstP
     UavLogList[2].euler_fcu_target = quaternion_to_euler(UavLogList[2].q_fcu_target);
     UavLogList[2].Thrust_target= msg->thrust;
 
+}
+
+void QNode::sub_setpoint_rawUpdate(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id){
+    UavLogList[id].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
+    //Transform the Quaternion to euler Angles
+    UavLogList[id].euler_fcu_target = quaternion_to_euler(UavLogList[id].q_fcu_target);
+    UavLogList[id].Thrust_target= msg->thrust;
 }
 
 void QNode::perform_action_singleUAV(bool isperform){
