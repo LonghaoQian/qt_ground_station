@@ -11,7 +11,7 @@ The ground station app should be download and installed on the ground station co
 > 5. Sending command to drones to perform payload manipulation mission
 > 5. Displaying and recording command history
 
-<img src="image/qt_panel.PNG">
+<img src="image/panel.PNG">
 
 The app panel description is shown in the above picture.  The coordinate system used in the app is ENU frame. The x direction points away from the ground station desktop to the opposite wall. The positive y direction points to the left wall and the z direction points upwards.  
 
