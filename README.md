@@ -1,5 +1,7 @@
 # QT Ground Station App For Mult-drone Command and Control
 
+[![Generic badge](https://img.shields.io/badge/ground%20station-latest-brightgreen)](https://shields.io/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) 
+
 ## Panel description：
 
 The ground station app is responsible for sending commands for quadrotor experiments in [Flight System and Control Lab (FSC)](https://www.flight.utias.utoronto.ca/fsc/index.php/payload/). 
