@@ -127,9 +127,11 @@ private:
 	QNode qnode;
     bool IsOutDoor{false}; // display mode
     bool IsMulti{true};
+    qt_ground_station::CommandGeoFence DroneFence;
+    qt_ground_station::CommandGeoFence PayloadFence;
     void UpdateUAVPos(Eigen::Vector3f& Position, Eigen::Vector3f& Velocity, int ID);
     void DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg);
-    void UpdateListViewENU(int drone_ID,float target_state[4]);
+    void UpdateListViewENU(int rone_ID,float target_state[4]);
     void UpdateListViewMultiPayload(float pose_target[6]);
     void UpdateListViewMoveToHoverPoint();
     void UpdateListViewPrelift();

@@ -1,0 +1,23 @@
+# Geo-fence parameter for ground station
+
+IndoorGeoFence:
+  XMAX: 1.6
+  XMIN: -1.5
+  YMAX: 1.2
+  YMIN: -1.2
+  ZMAX: 2.1
+  ZMIN: 0.0
+  RMIN: 0.3
+
+OutdoorGeoFence:
+  XMAX: 50.0
+  XMIN: -50.0
+  YMAX: 50.0
+  YMIN: -50.0
+  ZMAX: 20.0
+  ZMIN: 0.0
+  RMIN: 0.3
+
+
+
+

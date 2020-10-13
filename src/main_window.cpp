@@ -82,6 +82,8 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     ui.UAV2_detection->setText("<font color='red'>UAV2 Undetected!</font>");
 
     ui.Payload_detection->setText("<font color='red'>Payload Undetected!</font>");
+
+    DroneFence = qnode.GetDroneGeoFence();
 }
 
 MainWindow::~MainWindow() {}
@@ -122,7 +124,7 @@ void MainWindow::on_UAV0_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
 
     qnode.record_ENUCommand(0, target_state); // push the command to ENU_log
-    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(0, target_state);
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(0,  target_state,  IsOutDoor);
 
     /*----------------send input ------------------*/
 
@@ -151,7 +153,7 @@ void MainWindow::on_UAV1_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
 
     qnode.record_ENUCommand(1, target_state); // push the command to ENU_log
-    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(1, target_state);
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(1, target_state, IsOutDoor);
 
     /*----------------send input ------------------*/
     if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){
@@ -179,7 +181,7 @@ void MainWindow::on_UAV2_Button_moveENU_clicked(bool check){
     /*----------------determine whether the input is in safe range ------------------*/
 
     qnode.record_ENUCommand(2, target_state); // push the command to ENU_log
-    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(2, target_state);
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(2, target_state, IsOutDoor);
                  
     /*----------------send input ------------------*/
 
@@ -207,23 +209,10 @@ void  MainWindow::on_UAV2_Move_with_payload_clicked(bool check) {
     target_state[2] =  ui.UAV2_Target_z->text().toFloat();
     target_state[3] = 0;
     /*----------------determine whether the input is in safe range ------------------*/
-    bool input_is_valid = true;
-
-    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
-        input_is_valid = false;
-    }
-
-    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
-        input_is_valid = false;
-    }
-
-    if(target_state[2]< 0|| target_state[2]> 2) {
-        input_is_valid = false;
-    }
-
+    qt_ground_station::ENUCommandError error_msg = qnode.command_safty_check(2, target_state, IsOutDoor);
     /*----------------send input ------------------*/
 
-    if(input_is_valid){
+    if(error_msg == qt_ground_station::DRONE_COMMAND_NORM){
         /*  update the ENU target label */
         ui.UAV2_Target_x_label->setText(QString::number(target_state[0], 'f', 2));
         ui.UAV2_Target_y_label->setText(QString::number(target_state[1], 'f', 2));
@@ -232,9 +221,8 @@ void  MainWindow::on_UAV2_Move_with_payload_clicked(bool check) {
         qnode.payload_singleUAV(2,target_state);
         UpdateSwitchToSinglePayloadMode(target_state);
     } else {
-        QMessageBox msgBox;
-        msgBox.setText("Input position is out of range!!");
-        msgBox.exec();
+        // reject the command and display the error_msg
+        DisplayENUErrorMsg(error_msg);
     };
 }
 
@@ -437,9 +425,27 @@ void MainWindow::on_UAV2_Copypos_clicked(bool check) {
 void MainWindow::on_Toggledisplaymode_Button_clicked(bool check) {
     IsOutDoor = !IsOutDoor;
     QString dispmode;
+    QString dronefenceX;
+    QString dronefenceY;
+    QString dronefenceZ;
+    QString dronefenceR;
     if(IsOutDoor){
         dispmode = "Outdoor Mode";
+        dronefenceX = "XMAX: " +  QString::number(DroneFence.Outdoor.XMAX) + " m, XMIN: " 
+        + QString::number(DroneFence.Outdoor.XMIN) + " m.";
+        dronefenceY = "YMAX: " +  QString::number(DroneFence.Outdoor.YMAX) + " m, YMIN: " 
+        + QString::number(DroneFence.Outdoor.YMIN) + " m.";
+        dronefenceZ = "ZMAX: " +  QString::number(DroneFence.Outdoor.ZMAX) + " m, ZMIN: " 
+        + QString::number(DroneFence.Outdoor.ZMIN) + " m.";
+        dronefenceR = "RMIN: " + QString::number(DroneFence.Outdoor.RMIN) + " m.";
     } else {
+        dronefenceX = "XMAX: " +  QString::number(DroneFence.Indoor.XMAX) + " m, XMIN: " 
+        +  QString::number(DroneFence.Indoor.XMIN) + " m.";
+        dronefenceY = "YMAX: " +  QString::number(DroneFence.Indoor.YMAX) + " m, YMIN: " 
+        +  QString::number(DroneFence.Indoor.YMIN) + " m.";
+        dronefenceZ = "ZMAX: " +  QString::number(DroneFence.Indoor.ZMAX) + " m, ZMIN: " 
+        +  QString::number(DroneFence.Indoor.ZMIN) + " m.";
+        dronefenceR = "RMIN: " +  QString::number(DroneFence.Indoor.RMIN) + " m.";
         dispmode = "Indoor Mode";
     }
 
@@ -448,6 +454,11 @@ void MainWindow::on_Toggledisplaymode_Button_clicked(bool check) {
     ui.logger1->addItem(msgdrone);
     int item_index = ui.logger1->count()- 1;
     ui.logger1->item(item_index)->setForeground(Qt::red);
+    // notify the new geo fence
+    ui.logger1->addItem(dronefenceX);
+    ui.logger1->addItem(dronefenceY);
+    ui.logger1->addItem(dronefenceZ);
+    ui.logger1->addItem(dronefenceR);
 }
 
 void MainWindow::on_Togglecontrolmode_Button_clicked(bool check) {
@@ -955,7 +966,7 @@ void MainWindow::updateUAV0log() {
         ui.UAV0_detection->setText("<font color='green'>UAV0 Detected</font>");
     } else {
         ui.UAV0_detection->setText("<font color='red'>UAV0 Undetected!</font>");
-     }
+    }
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");

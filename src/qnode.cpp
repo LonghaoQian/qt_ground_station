@@ -150,7 +150,23 @@ bool QNode::init() {
         action_msg.response.trajectory_type = 0;
         multi_action_msg.response.status_ok = false;
         multi_action_msg.response.trajectory_type = 0;
-        //
+        // load the geo-fence parameter
+        n.param<float> ("IndoorGeoFence/XMAX", DroneFence.Indoor.XMAX, 1.6);
+        n.param<float> ("IndoorGeoFence/XMIN", DroneFence.Indoor.XMIN, -1.5);
+        n.param<float> ("IndoorGeoFence/YMAX", DroneFence.Indoor.YMAX, 1.2);
+        n.param<float> ("IndoorGeoFence/YMIN", DroneFence.Indoor.YMIN, -1.2);
+        n.param<float> ("IndoorGeoFence/ZMAX", DroneFence.Indoor.ZMAX, 2.1);
+        n.param<float> ("IndoorGeoFence/ZMIN", DroneFence.Indoor.ZMIN, 0.0);
+        n.param<float> ("IndoorGeoFence/RMIN", DroneFence.Indoor.RMIN, 0.3);           
+
+        n.param<float> ("OutdoorGeoFence/XMAX", DroneFence.Outdoor.XMAX, 50.0);
+        n.param<float> ("OutdoorGeoFence/XMIN", DroneFence.Outdoor.XMIN, -50.0);
+        n.param<float> ("OutdoorGeoFence/YMAX", DroneFence.Outdoor.YMAX, 50.0);
+        n.param<float> ("OutdoorGeoFence/YMIN", DroneFence.Outdoor.YMIN, -50.0);
+        n.param<float> ("OutdoorGeoFence/ZMAX", DroneFence.Outdoor.ZMAX, 20.0);
+        n.param<float> ("OutdoorGeoFence/ZMIN", DroneFence.Outdoor.ZMIN, 0.0);
+        n.param<float> ("OutdoorGeoFence/RMIN", DroneFence.Outdoor.RMIN, 0.3);
+
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -164,8 +180,7 @@ void QNode::run() {
 		ros::spinOnce();
        /*---------------------emit signals to tigger label update --------------------------*/
 
-                for (int i = 0; i <DroneNumber; i++)
-                {
+                for (int i = 0; i <DroneNumber; i++) {
                     if(UavLogList[i].islogreceived)
                     {
                         UavLogList[i].isconnected =true;
@@ -241,6 +256,10 @@ qt_ground_station::SinglePayloadAction QNode::GetSingleAction(){
 
 qt_ground_station::MultiPayloadAction QNode::GetMultiAction(){
     return multi_action_msg;
+}
+
+qt_ground_station::CommandGeoFence  QNode::GetDroneGeoFence() {
+    return DroneFence;
 }
 
 void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res,int ID) {
@@ -535,7 +554,7 @@ void QNode::record_ENUCommand(int drone_ID, float target_state[4]){
     }
 }
 
-ENUCommandError QNode::command_safty_check(int drone_ID, float target_state[4]){
+ENUCommandError QNode::command_safty_check(int drone_ID, float target_state[4], bool IsOutdoor){
     ENUCommandError error_msg;
     // check whether the drone command is inside the box
     // get the ID of the other 2 drones
@@ -543,22 +562,37 @@ ENUCommandError QNode::command_safty_check(int drone_ID, float target_state[4]){
 
     bool input_is_inside_box = true;
 
-    if(target_state[0]<-1.5 || target_state[0]> 1.6) {
-        input_is_inside_box = false;
+    if(IsOutdoor){// for outdoor case, (maximum height, 20 m, X, Y 50 m)
+        if(target_state[Vector_X] < DroneFence.Outdoor.XMIN || target_state[Vector_X] > DroneFence.Outdoor.XMAX) {
+            input_is_inside_box = false;
+        }
+
+        if(target_state[Vector_Y] < DroneFence.Outdoor.YMIN || target_state[Vector_Y] > DroneFence.Outdoor.YMAX) {
+            input_is_inside_box = false;
+        }
+
+        if(target_state[Vector_Z] < DroneFence.Outdoor.ZMIN || target_state[Vector_Z] > DroneFence.Outdoor.ZMAX) {
+            input_is_inside_box = false;
+        } 
+    }else{// for indoor case, check the command in all directions (fsc lab)
+        if(target_state[Vector_X] < DroneFence.Indoor.XMIN || target_state[Vector_X] > DroneFence.Indoor.XMAX) {
+            input_is_inside_box = false;
+        }
+
+        if(target_state[Vector_Y] < DroneFence.Indoor.YMIN || target_state[Vector_Y] > DroneFence.Indoor.YMAX) {
+            input_is_inside_box = false;
+        }
+
+        if(target_state[Vector_Z] < DroneFence.Indoor.ZMIN || target_state[Vector_Z] > DroneFence.Indoor.ZMAX) {
+            input_is_inside_box = false;
+        }        
     }
 
-    if(target_state[1]< -1.2 || target_state[1]> 1.2) {
-        input_is_inside_box = false;
-    }
 
-    if(target_state[2]< 0|| target_state[2]> 2.1) {
-        input_is_inside_box = false;
-    }
     // check whether the drone command is close to close to other drones (collsion radius = 0.3 m )
     bool command_is_farway_from_others = true;
   
-    switch (drone_ID)
-    {
+    switch (drone_ID) {
         case 0:{
             otherDroneID[0] = 1;
             otherDroneID[1] = 2;
@@ -575,28 +609,41 @@ ENUCommandError QNode::command_safty_check(int drone_ID, float target_state[4]){
             break;
         }
     }
-    for(int i = 0;i<2;i++)
-    {
-        if(UavLogList[otherDroneID[i]].isconnected) // determine whether the other drones exists
-        {
-            double r_2 = pow((target_state[0]- mocap[otherDroneID[i]].position[0]),2) + 
-                         pow((target_state[1]- mocap[otherDroneID[i]].position[1]),2) +
-                         pow((target_state[2]- mocap[otherDroneID[i]].position[2]),2);
-            if(sqrt(r_2)<0.3) // too close
-            {
+
+    float min_r = 0.0;
+    if(IsOutdoor) {
+        min_r  = DroneFence.Outdoor.RMIN;
+    } else {
+        min_r  = DroneFence.Indoor.RMIN;
+    }
+
+    for(int i = 0;i<2;i++) {
+        if(UavLogList[otherDroneID[i]].isconnected) { // determine whether the other drones exists
+            float r_2 = 0.0;
+            if(IsOutdoor){// if outdoor, use log data as position feedback
+                r_2 = pow((target_state[Vector_X] - UavLogList[otherDroneID[i]].log.Drone_State.position[Vector_X]),2) + 
+                      pow((target_state[Vector_Y] - UavLogList[otherDroneID[i]].log.Drone_State.position[Vector_Y]),2) +
+                      pow((target_state[Vector_Z] - UavLogList[otherDroneID[i]].log.Drone_State.position[Vector_Z]),2);
+            } else { // if indoor, use mocap as position feedback
+                r_2 = pow((target_state[Vector_X]- mocap[otherDroneID[i]].position[Vector_X]),2) + 
+                      pow((target_state[Vector_Y]- mocap[otherDroneID[i]].position[Vector_Y]),2) +
+                      pow((target_state[Vector_Z]- mocap[otherDroneID[i]].position[Vector_Z]),2);
+            }
+            if(sqrt(r_2)< min_r ) {// too close
                 command_is_farway_from_others = false;
             }
         }
     }
+
     // check whether the drone command is close to other drone command positions
     bool command_is_farway_from_othercommands = true;
-    for(int i=0; i < 2; i++){
-        if(UavLogList[otherDroneID[i]].isconnected) // determine whether the other drones exists
-        {
-            double r_2 = pow((target_state[0]- command_log[otherDroneID[i]].position[0]),2) + 
-                         pow((target_state[1]- command_log[otherDroneID[i]].position[1]),2) + 
-                         pow((target_state[2]- command_log[otherDroneID[i]].position[2]),2);
-            if(sqrt(r_2)<0.3) // too close
+    for(int i=0; i < 2; i++) {
+        if(UavLogList[otherDroneID[i]].isconnected) { // determine whether the other drones exists
+        
+            float r_2 = pow((target_state[Vector_X] - command_log[otherDroneID[i]].position[Vector_X]),2) + 
+                        pow((target_state[Vector_Y] - command_log[otherDroneID[i]].position[Vector_Y]),2) + 
+                        pow((target_state[Vector_Z] - command_log[otherDroneID[i]].position[Vector_Z]),2);
+            if(sqrt(r_2) < min_r) // too close
             {
                 command_is_farway_from_othercommands  = false;
             }

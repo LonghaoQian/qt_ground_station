@@ -37,12 +37,32 @@
 #include <mavros_msgs/AttitudeTarget.h>
 #include <mavros_msgs/PositionTarget.h>
 #include <Eigen/Eigen>
+
 /*****************************************************************************
 ** Namespaces
 *****************************************************************************/
 
 namespace qt_ground_station {
 // definition of command errors
+
+
+enum vector_component{
+    Vector_X = 0,
+    Vector_Y = 1,
+    Vector_Z = 2
+};
+enum quaternion_component{
+    QUAT_W = 0,
+    QUAT_X = 1,
+    QUAT_Y = 2,
+    QUAT_Z = 3
+};
+
+enum euler_component{
+    EULER_ROLL = 0,
+    EULER_PITCH,
+    EULER_YAW
+};
 
 enum UAVindex{
         DRONE_UAV0 = 0,
@@ -97,6 +117,28 @@ struct Drone_GeneralInfo {
     QString controllername;
     int TargetdroneID{0};
     bool isMulti{false};
+};
+// command geofence
+
+struct CommandGeoFence{
+    struct{
+        float XMAX{1.6};
+        float XMIN{-1.5};
+        float YMAX{1.2};
+        float YMIN{-1.2};
+        float ZMAX{2.1};
+        float ZMIN{0.0};
+        float RMIN{0.3};
+    }Indoor;
+    struct{
+        float XMAX{50.0};
+        float XMIN{-50.0};
+        float YMAX{50.0};
+        float YMIN{-50.0};
+        float ZMAX{20.0};
+        float ZMIN{0.0};
+        float RMIN{0.3};
+    }Outdoor;
 };
 
 // parameter info from each drone at the start of the controller 
@@ -177,17 +219,17 @@ public:
         qt_ground_station::uav_para GetUAVPARA(int ID);
         qt_ground_station::SinglePayloadAction GetSingleAction();
         qt_ground_station::MultiPayloadAction GetMultiAction();
+        qt_ground_station::CommandGeoFence    GetDroneGeoFence();
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
-        bool ispayloaddetected;
-        bool ispayloadmocaprecieved;
-        bool ispayloadcontrolactivated;
-        bool isMultiDroneMode;
         bool isNumberofDronesConsistent();
         bool isCooperativeModeConsistent();
+        bool ispayloaddetected{false};
+        bool ispayloadmocaprecieved{false};
+        bool ispayloadcontrolactivated{false};
 /*----------------------------Send commands------------------------------*/
         ENU_command_log command_log[3];
-        ENUCommandError command_safty_check(int drone_ID,float target_state[4]);
+        ENUCommandError command_safty_check(int drone_ID,float target_state[4],bool IsOutdoor);
         void record_ENUCommand(int drone_ID, float target_state[4]);
         void resetcommandlog(int drone_Id);
         void move_ENU(int ID,float state_desired[4]);
@@ -224,6 +266,8 @@ private:
         qt_ground_station::SinglePayloadAction action_msg;
         qt_ground_station::MultiPayloadAction multi_action_msg;
         uav_para UavParaList[3];
+        CommandGeoFence DroneFence;
+        CommandGeoFence PayloadFence;
         /*------------------- motion pubs   ------------------------*/
         ros::Publisher moveUAV0;
         ros::Publisher moveUAV1;

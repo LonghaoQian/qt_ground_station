@@ -461,14 +461,6 @@
           </widget>
          </widget>
         </widget>
-        <zorder>UAV0_Button_Takeoff</zorder>
-        <zorder>UAV0_Button_moveENU</zorder>
-        <zorder>UAV0_Button_Land</zorder>
-        <zorder>Flush_MoveENU_Button</zorder>
-        <zorder>layoutWidget</zorder>
-        <zorder>UAV0_Copypos</zorder>
-        <zorder>UAV0_Target_x</zorder>
-        <zorder>UAV0_Button_Disarm</zorder>
        </widget>
        <widget class="QGroupBox" name="groupBox_5">
         <property name="geometry">
@@ -612,10 +604,6 @@
           <string>---</string>
          </property>
         </widget>
-        <zorder>UAV0_Target_x_label</zorder>
-        <zorder>UAV0_Target_y_label</zorder>
-        <zorder>UAV0_Target_z_label</zorder>
-        <zorder>groupBox_7</zorder>
        </widget>
        <widget class="QSplitter" name="splitter_2">
         <property name="geometry">
