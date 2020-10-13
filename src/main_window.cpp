@@ -52,16 +52,16 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1log()));
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2log()));
 
-    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0mocap()));
-    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1mocap()));
-    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2mocap()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0pos()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1pos()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2pos()));
 
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV0attReference()));
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV1attReference()));
     QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateUAV2attReference()));
 
-    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updatePayloadmocap()));
-
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updatePayloadpos()));
+    QObject::connect(&qnode, SIGNAL(rosLoopUpdate()), this, SLOT(updateMode()));
     QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV0()), this, SLOT(updateUAV0Param()));
     QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV1()), this, SLOT(updateUAV1Param()));
     QObject::connect(&qnode, SIGNAL(rosParamServiceCallUAV2()), this, SLOT(updateUAV2Param()));
@@ -434,6 +434,37 @@ void MainWindow::on_UAV2_Copypos_clicked(bool check) {
     ui.UAV2_Target_z->setText(ui.UAV2_z->text());
 }
 
+void MainWindow::on_Toggledisplaymode_Button_clicked(bool check) {
+    IsOutDoor = !IsOutDoor;
+    QString dispmode;
+    if(IsOutDoor){
+        dispmode = "Outdoor Mode";
+    } else {
+        dispmode = "Indoor Mode";
+    }
+
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : switched to " + dispmode + ".";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
+}
+
+void MainWindow::on_Togglecontrolmode_Button_clicked(bool check) {
+    IsMulti = !IsMulti;
+    QString controlmode;
+    if(IsMulti){
+        controlmode = "MultiDrone Mode";
+    } else {
+        controlmode = "SingleDrone Mode";
+    }
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + " : switched to " + controlmode + ".";
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
+}
+
 void MainWindow::on_ClearLog_Button_clicked(bool check) {
     while(ui.logger1->count()>0) // clear all the items
     {
@@ -524,43 +555,54 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 /******************************SLOTS************************************/
-void MainWindow::updateUAV0mocap() {
-    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(0);
-    ui.UAV0_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
-    ui.UAV0_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
-    ui.UAV0_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
+void MainWindow::updateUAV0pos() {
+    Eigen::Vector3f Position;
+    Eigen::Vector3f Velocity;
+    
+    UpdateUAVPos(Position, Velocity, 0);
 
-    ui.UAV0_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
-    ui.UAV0_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
-    ui.UAV0_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
+    ui.UAV0_x->setText(QString::number(Position(0), 'f', 3));
+    ui.UAV0_y->setText(QString::number(Position(1), 'f', 3));
+    ui.UAV0_z->setText(QString::number(Position(2), 'f', 3));
+
+    ui.UAV0_vx->setText(QString::number(Velocity(0), 'f', 3));
+    ui.UAV0_vy->setText(QString::number(Velocity(1), 'f', 3));
+    ui.UAV0_vz->setText(QString::number(Velocity(2), 'f', 3));
+}
+
+void MainWindow::updateUAV1pos() {
+    Eigen::Vector3f Position;
+    Eigen::Vector3f Velocity;
+    
+    UpdateUAVPos(Position, Velocity, 1);
+
+    ui.UAV1_x->setText(QString::number(Position(0), 'f', 3));
+    ui.UAV1_y->setText(QString::number(Position(1), 'f', 3));
+    ui.UAV1_z->setText(QString::number(Position(2), 'f', 3));
+
+    ui.UAV1_vx->setText(QString::number(Velocity(0), 'f', 3));
+    ui.UAV1_vy->setText(QString::number(Velocity(1), 'f', 3));
+    ui.UAV1_vz->setText(QString::number(Velocity(2), 'f', 3));
 
 }
 
-void MainWindow::updateUAV1mocap() {
-    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(1);
-    ui.UAV1_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
-    ui.UAV1_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
-    ui.UAV1_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
+void MainWindow::updateUAV2pos() {
+    Eigen::Vector3f Position;
+    Eigen::Vector3f Velocity;
+    
+    UpdateUAVPos(Position, Velocity, 2);
 
-    ui.UAV1_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
-    ui.UAV1_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
-    ui.UAV1_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
+    ui.UAV2_x->setText(QString::number(Position(0), 'f', 3));
+    ui.UAV2_y->setText(QString::number(Position(1), 'f', 3));
+    ui.UAV2_z->setText(QString::number(Position(2), 'f', 3));
 
-}
+    ui.UAV2_vx->setText(QString::number(Velocity(0), 'f', 3));
+    ui.UAV2_vy->setText(QString::number(Velocity(1), 'f', 3));
+    ui.UAV2_vz->setText(QString::number(Velocity(2), 'f', 3));
 
-void MainWindow::updateUAV2mocap() {
-    qt_ground_station::Mocap temp_mocap = qnode.GetMocap(2);
-    ui.UAV2_x->setText(QString::number(temp_mocap.position[0], 'f', 3));
-    ui.UAV2_y->setText(QString::number(temp_mocap.position[1], 'f', 3));
-    ui.UAV2_z->setText(QString::number(temp_mocap.position[2], 'f', 3));
-
-    ui.UAV2_vx->setText(QString::number(temp_mocap.velocity[0], 'f', 3));
-    ui.UAV2_vy->setText(QString::number(temp_mocap.velocity[1], 'f', 3));
-    ui.UAV2_vz->setText(QString::number(temp_mocap.velocity[2], 'f', 3));
-
-    ui.action_dron_pos->setText("Drone X: " + QString::number(temp_mocap.position[0], 'f', 3) + " m, Y: "
-                                + QString::number(temp_mocap.position[1], 'f', 3) + " m, Z: "
-                                + QString::number(temp_mocap.position[2], 'f', 3) + " m");
+    ui.action_dron_pos->setText("Drone X: " + QString::number(Position(0), 'f', 3) + " m, Y: "
+                                            + QString::number(Position(1), 'f', 3) + " m, Z: "
+                                            + QString::number(Position(2), 'f', 3) + " m");
 }
 
 void MainWindow::updateUAV0Param() {
@@ -717,7 +759,7 @@ void MainWindow::updateUAV2Param() {
     ui.UAV2_int_start_error->setText("int_start_error : " + QString::number(param.int_start_error, 'f', 2));
 }
 
-void MainWindow::updatePayloadmocap() {
+void MainWindow::updatePayloadpos() {
     // TO DO: safty check for this part:
     bool ispayloaddetected = qnode.IsPayloadDetected();
     // check if the drone parameter is set to multi-drone mode
@@ -755,7 +797,7 @@ void MainWindow::updatePayloadmocap() {
         /*----turn on button----------------*/
 
         // update the hovering place
-        if(IsPayloadModeCorrect()&&ui.IsMultiDroneCheck->isChecked()){// do the hover point and prelift update only if the mode is correct
+        if(IsPayloadModeCorrect()&&IsMulti){// do the hover point and prelift update only if the mode is correct
             ui.Payload_Prelift->setEnabled(true);
             ui.Payload_Pose_Button->setEnabled(true);
             ui.Payload_Move_to_Start->setEnabled(true);        
@@ -1204,6 +1246,23 @@ QString MainWindow::GenerateBatteryInfo(qt_ground_station::uav_log& log, float V
     return TX;
 }
 
+void MainWindow::updateMode(){
+    if(IsOutDoor){
+        ui.displaymode->setText("Outdoor Mode");
+        ui.Toggledisplaymode_Button->setText(" Switch To Indoor Mode");
+    } else {
+        ui.displaymode->setText("Indoor Mode");
+        ui.Toggledisplaymode_Button->setText("Switch To Outdoor Mode");
+    }
+    if(IsMulti){
+        ui.controlmode->setText("MultiDrone Mode");
+        ui.Togglecontrolmode_Button->setText("Switch To Single-Drone Mode");
+    } else {
+        ui.controlmode->setText("SingleDrone Mode");
+        ui.Togglecontrolmode_Button->setText("Switch To Multi-Drone Mode");
+    }
+}
+
 Eigen::Vector3d MainWindow::quaternion_to_euler_w(const Eigen::Quaterniond &q)
 {
     float quat[4];
@@ -1245,6 +1304,28 @@ void MainWindow::DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg
     msgBox.exec();
 }
 
+ void MainWindow::UpdateUAVPos(Eigen::Vector3f& Position, Eigen::Vector3f& Velocity, int ID){
+    if(IsOutDoor){
+        qt_ground_station::Topic_for_log templog = qnode.GetLog(ID);
+        Position(0) = templog.Drone_State.position[0];
+        Position(1) = templog.Drone_State.position[1];
+        Position(2) = templog.Drone_State.position[2];
+
+        Velocity(0) = templog.Drone_State.velocity[0];
+        Velocity(1) = templog.Drone_State.velocity[1];
+        Velocity(2) = templog.Drone_State.velocity[2];
+    } else {
+        qt_ground_station::Mocap temp_mocap = qnode.GetMocap(ID);
+        Position(0) = temp_mocap.position[0];
+        Position(1) = temp_mocap.position[1];
+        Position(2) = temp_mocap.position[2];
+
+        Velocity(0) = temp_mocap.velocity[0];
+        Velocity(1) = temp_mocap.velocity[1];
+        Velocity(2) = temp_mocap.velocity[2];
+    }
+ }
+
 void MainWindow::UpdateListViewENU(int drone_ID,float target_state[4])
 {
     QString msgdrone = "@ " + QTime::currentTime().toString() 
@@ -1275,6 +1356,8 @@ void MainWindow::UpdateListViewMultiPayload(float pose_target[6]){
     ui.logger1->addItem(attitude);
     ui.logger1->scrollToBottom();
 }
+
+
 
 void MainWindow::UpdateListViewMoveToHoverPoint(){
     QString msgdrone = "@ " + QTime::currentTime().toString() 
@@ -1397,11 +1480,10 @@ void MainWindow::UpdateSwitchToSinglePayloadMode(float pose_target[4]){
 
 
 bool MainWindow::IsPayloadModeCorrect(){
-    bool multi_flag = ui.IsMultiDroneCheck->isChecked();
     // logic: if multi_flag is true, then use para of drone #0 to determine whether the num_of_drones and mode are correct
     // if multi_flag is false, then use para of drone #2 and check check its mode, disable prelift and move to hover point 
     bool isCorrect = true;
-    if(multi_flag) {
+    if(IsMulti) {
         bool isNumofDronesCorrect = qnode.isNumberofDronesConsistent();
         bool isCooperativeModeCorrecrt = qnode.isCooperativeModeConsistent();
         isCorrect = isNumofDronesCorrect&&isCooperativeModeCorrecrt;

@@ -66,61 +66,91 @@ bool QNode::init() {
 	ros::NodeHandle n;
         // Add ros publiser hand subscribers here
         namespace arg = std::placeholders;
-        /*-------------------------------------pubs-----------------------------------------------*/
+        /*-------------------------------------ros pubs-----------------------------------------------*/
+
         moveUAV0 = n.advertise<qt_ground_station::ControlCommand>("/uav0/px4_command/control_command",100);
         moveUAV1 = n.advertise<qt_ground_station::ControlCommand>("/uav1/px4_command/control_command",100);
         moveUAV2 = n.advertise<qt_ground_station::ControlCommand>("/uav2/px4_command/control_command",100);
+       /*-------------------------------------ros subs-----------------------------------------------*/
 
-        mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, &QNode::sub_mocapUAV0, this);
-        mocapUAV1 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV1", 1000, &QNode::sub_mocapUAV1, this);
-        mocapUAV2 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV2", 1000, &QNode::sub_mocapUAV2, this);
-        mocapPayload = n.subscribe<qt_ground_station::Mocap>("/mocap/Payload", 1000, &QNode::sub_mocapPayload, this);
-        /*-------------------------------------subs-----------------------------------------------*/
-        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav0/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV0, this);
-        UAV1_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav1/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV1, this);
-        UAV2_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav2/px4_command/topic_for_log", 100, &QNode::sub_topic_for_logUpdateUAV2, this);
+        mocapUAV0 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV0", 1000, 
+                                                          std::bind(&QNode::SubMocapUAV,this,arg::_1,DRONE_UAV0));
+        mocapUAV1 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV1", 1000, 
+                                                          std::bind(&QNode::SubMocapUAV,this,arg::_1,DRONE_UAV1));
+        mocapUAV2 = n.subscribe<qt_ground_station::Mocap>("/mocap/UAV2", 1000, 
+                                                          std::bind(&QNode::SubMocapUAV,this,arg::_1,DRONE_UAV2));
 
-        //UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV0,this);
-        //UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV1,this);
-        //UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 100,&QNode::sub_setpoint_rawUpdateUAV2,this);
+        mocapPayload = n.subscribe<qt_ground_station::Mocap>("/mocap/Payload", 1000, &QNode::SubMocapPayload, this);
+ 
+        UAV0_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav0/px4_command/topic_for_log", 100, 
+                                                                     std::bind(&QNode::SubTopicForLog,this,arg::_1,DRONE_UAV0));
+        UAV1_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav1/px4_command/topic_for_log", 100, 
+                                                                     std::bind(&QNode::SubTopicForLog,this,arg::_1,DRONE_UAV1));
+        UAV2_log_sub = n.subscribe<qt_ground_station::Topic_for_log>("/uav2/px4_command/topic_for_log", 100, 
+                                                                     std::bind(&QNode::SubTopicForLog,this,arg::_1,DRONE_UAV2));
+
+
         UAV0_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav0/mavros/setpoint_raw/target_attitude", 
                                                                             100,
-                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,0));
+                                                                            std::bind(&QNode::SubThrustSetpointRaw,this,arg::_1,DRONE_UAV0));
         UAV1_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav1/mavros/setpoint_raw/target_attitude", 
                                                                             100,
-                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,1));
+                                                                            std::bind(&QNode::SubThrustSetpointRaw,this,arg::_1,DRONE_UAV1));
         UAV2_attitude_target_sub =n.subscribe<mavros_msgs::AttitudeTarget>("/uav2/mavros/setpoint_raw/target_attitude", 
                                                                             100,
-                                                                            std::bind(&QNode::sub_setpoint_rawUpdate,this,arg::_1,2));
-
+                                                                            std::bind(&QNode::SubThrustSetpointRaw,this,arg::_1,DRONE_UAV2));
+        /*-------------------------------------ros service-----------------------------------------------*/
+        // service to get the parameters from each drone
         serUpdateParameterUAV0 = n.advertiseService("/uav0/px4_command/parameters", &QNode::loadUAV0para, this);
         serUpdateParameterUAV1 = n.advertiseService("/uav1/px4_command/parameters", &QNode::loadUAV1para, this);
         serUpdateParameterUAV2 = n.advertiseService("/uav2/px4_command/parameters", &QNode::loadUAV2para, this);
         // service to command the drone to perform action
         singleDroneActionClient = n.serviceClient<qt_ground_station::SinglePayloadAction>("/uav2/px4_command/action");
         multiDroneActionClient  = n.serviceClient<qt_ground_station::MultiPayloadAction>("/uav0/px4_command/multi_action");
-        serUpdateGeneralInfoUAV0 = n.advertiseService("/uav0/px4_command/generalinfo", &QNode::loadUAV0generalinfo, this);
-        serUpdateGeneralInfoUAV1 = n.advertiseService("/uav1/px4_command/generalinfo", &QNode::loadUAV1generalinfo, this);
-        serUpdateGeneralInfoUAV2 = n.advertiseService("/uav2/px4_command/generalinfo", &QNode::loadUAV2generalinfo, this);
+        // serice to get the general info from each drone
+
+        serUpdateGeneralInfoUAV0 = n.advertiseService<qt_ground_station::GeneralInfo::Request, qt_ground_station::GeneralInfo::Response>("/uav0/px4_command/generalinfo", 
+                                                      std::bind(&QNode::LoadUAVGeneralInfo,this,arg::_1, arg::_2, DRONE_UAV0));
+        serUpdateGeneralInfoUAV1 = n.advertiseService<qt_ground_station::GeneralInfo::Request, qt_ground_station::GeneralInfo::Response>("/uav1/px4_command/generalinfo", 
+                                                      std::bind(&QNode::LoadUAVGeneralInfo,this,arg::_1, arg::_2, DRONE_UAV1));
+        serUpdateGeneralInfoUAV2 = n.advertiseService<qt_ground_station::GeneralInfo::Request, qt_ground_station::GeneralInfo::Response>("/uav2/px4_command/generalinfo", 
+                                                      std::bind(&QNode::LoadUAVGeneralInfo,this,arg::_1, arg::_2, DRONE_UAV2));
 
         // 
-        GeneralInfoList[0].controllername = "---";
-        GeneralInfoList[0].TargetdroneID = 0;
-        GeneralInfoList[0].isMulti = false;
+        GeneralInfoList[DRONE_UAV0].controllername = "---";
+        GeneralInfoList[DRONE_UAV0].TargetdroneID = 0;
+        GeneralInfoList[DRONE_UAV0].isMulti = false;
 
-        GeneralInfoList[1].controllername = "---";
-        GeneralInfoList[1].TargetdroneID = 0;
-        GeneralInfoList[1].isMulti = false;
+        GeneralInfoList[DRONE_UAV1].controllername = "---";
+        GeneralInfoList[DRONE_UAV1].TargetdroneID = 0;
+        GeneralInfoList[DRONE_UAV1].isMulti = false;
 
-        GeneralInfoList[2].controllername = "---";
-        GeneralInfoList[2].TargetdroneID = 0;
-        GeneralInfoList[2].isMulti = false;
+        GeneralInfoList[DRONE_UAV2].controllername = "---";
+        GeneralInfoList[DRONE_UAV2].TargetdroneID = 0;
+        GeneralInfoList[DRONE_UAV2].isMulti = false;
+
+        for (int i = 0; i<3 ; i++){
+            UavLogList[i].log.Drone_State.position[0] = 0.0;
+            UavLogList[i].log.Drone_State.position[1] = 0.0;
+            UavLogList[i].log.Drone_State.position[2] = 0.0;
+            UavLogList[i].log.Drone_State.velocity[0] = 0.0;
+            UavLogList[i].log.Drone_State.velocity[1] = 0.0;
+            UavLogList[i].log.Drone_State.velocity[2] = 0.0;
+            UavLogList[i].q_fcu_target.w() = 0.0;
+            UavLogList[i].q_fcu_target.x() = 1.0;
+            UavLogList[i].q_fcu_target.y() = 0.0;
+            UavLogList[i].q_fcu_target.z() = 0.0;
+            UavLogList[i].euler_fcu_target(0) = 0.0;
+            UavLogList[i].euler_fcu_target(1) = 0.0;
+            UavLogList[i].euler_fcu_target(2) = 0.0;
+        }
 
         // 
         action_msg.response.status_ok = false;
         action_msg.response.trajectory_type = 0;
         multi_action_msg.response.status_ok = false;
-         multi_action_msg.response.trajectory_type = 0;
+        multi_action_msg.response.trajectory_type = 0;
+        //
         /*---------------------------------------------------------------------------------------*/
 	start();
 	return true;
@@ -162,61 +192,21 @@ void QNode::run() {
 	Q_EMIT rosShutdown(); // used to signal the gui for a shutdown (useful to roslaunch)
 }
 /*---------------------------------------sub callbacks   ------------------------------------------*/
-void QNode::sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg) {
-   mocap[0] = *msg;
+void QNode::SubMocapUAV(const qt_ground_station::Mocap::ConstPtr& msg, int id) {
+    mocap[id] = *msg;
 }
-void QNode::sub_mocapUAV1(const qt_ground_station::Mocap::ConstPtr& msg) {
-   mocap[1] = *msg;
-}
-void QNode::sub_mocapUAV2(const qt_ground_station::Mocap::ConstPtr& msg) {
-   mocap[2] = *msg;
-}
-void QNode::sub_mocapPayload(const qt_ground_station::Mocap::ConstPtr &msg) {
+
+void QNode::SubMocapPayload(const qt_ground_station::Mocap::ConstPtr &msg) {
     mocap_payload = *msg;
     ispayloadmocaprecieved = true;
 }
-void QNode::sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
 
-    UavLogList[0].log = *msg;
-    UavLogList[0].islogreceived = true;
-}
-void QNode::sub_topic_for_logUpdateUAV1(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
-
-    UavLogList[1].log = *msg;
-    UavLogList[1].islogreceived = true;
-}
-void QNode::sub_topic_for_logUpdateUAV2(const qt_ground_station::Topic_for_log::ConstPtr &msg) {
-
-    UavLogList[2].log = *msg;
-    UavLogList[2].islogreceived = true;
+void QNode::SubTopicForLog(const qt_ground_station::Topic_for_log::ConstPtr &msg, int id) {
+    UavLogList[id].log = *msg;
+    UavLogList[id].islogreceived = true;
 }
 
-void QNode::sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
-
-    UavLogList[0].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-    //Transform the Quaternion to euler Angles
-    UavLogList[0].euler_fcu_target = quaternion_to_euler(UavLogList[0].q_fcu_target);
-    UavLogList[0].Thrust_target= msg->thrust;
-
-}
-void QNode::sub_setpoint_rawUpdateUAV1(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
-
-    UavLogList[1].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-    //Transform the Quaternion to euler Angles
-    UavLogList[1].euler_fcu_target = quaternion_to_euler(UavLogList[1].q_fcu_target);
-    UavLogList[1].Thrust_target= msg->thrust;
-
-}
-void QNode::sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstPtr& msg) {
-
-    UavLogList[2].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
-    //Transform the Quaternion to euler Angles
-    UavLogList[2].euler_fcu_target = quaternion_to_euler(UavLogList[2].q_fcu_target);
-    UavLogList[2].Thrust_target= msg->thrust;
-
-}
-
-void QNode::sub_setpoint_rawUpdate(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id){
+void QNode::SubThrustSetpointRaw(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id) {
     UavLogList[id].q_fcu_target = Eigen::Quaterniond(msg->orientation.w, msg->orientation.x, msg->orientation.y, msg->orientation.z);
     //Transform the Quaternion to euler Angles
     UavLogList[id].euler_fcu_target = quaternion_to_euler(UavLogList[id].q_fcu_target);
@@ -367,51 +357,32 @@ void QNode::loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_g
 
 bool QNode::loadUAV0para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
 
-    loadUAVXpara(req,res,0);
+    loadUAVXpara(req,res,DRONE_UAV0);
     Q_EMIT rosParamServiceCallUAV0();
     return true;
 }
 
 bool QNode::loadUAV1para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
 
-    loadUAVXpara(req,res,1);
+    loadUAVXpara(req,res,DRONE_UAV1);
     Q_EMIT rosParamServiceCallUAV1();
     return true;
 }
 
 bool QNode::loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res){
 
-    loadUAVXpara(req,res,2);
+    loadUAVXpara(req,res,DRONE_UAV2);
     Q_EMIT rosParamServiceCallUAV2();
     return true;
 }
 
-bool QNode::loadUAV0generalinfo(qt_ground_station::GeneralInfo::Request& req, 
-                                qt_ground_station::GeneralInfo::Response& res){
-    loadUAVXgeneralinfo(req, res, 0);
-    return true;
-}
-
-bool QNode::loadUAV1generalinfo(qt_ground_station::GeneralInfo::Request& req, 
-                                qt_ground_station::GeneralInfo::Response& res){
-    loadUAVXgeneralinfo(req, res, 1);
-    return true;
-}
-
-bool QNode::loadUAV2generalinfo(qt_ground_station::GeneralInfo::Request& req, 
-                                qt_ground_station::GeneralInfo::Response& res){
-    loadUAVXgeneralinfo(req, res, 2);
-    return true;
-}
-
-void QNode::loadUAVXgeneralinfo(qt_ground_station::GeneralInfo::Request& req, 
-                                qt_ground_station::GeneralInfo::Response& res, 
-                                int ID){
+bool QNode::LoadUAVGeneralInfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res, int ID) {
 
     GeneralInfoList[ID].controllername = QString::fromStdString(req.controllername);
     GeneralInfoList[ID].TargetdroneID = req.TargetdroneID;
     GeneralInfoList[ID].isMulti = req.isMulti;
     res.oktostart = true; // reply true back to quadrotor
+    return true;
 }
 
 bool QNode::isNumberofDronesConsistent(){
@@ -465,6 +436,10 @@ void QNode::pub_command() {
 }
 /*---------------------------------get values --------------------------------*/
 
+qt_ground_station::Topic_for_log  QNode::GetLog(int ID) {
+    return UavLogList[ID].log;
+}
+
 qt_ground_station::Mocap QNode::GetMocap(int ID) {
 
     if( ID == -1) {
@@ -493,7 +468,7 @@ bool QNode::IsPayloadDetected() {
 bool QNode::IsPayloadControlSwitched() {
     return ispayloadcontrolactivated;
 }
-/*--------------------------- sent commands ----------------------------------------*/
+/*--------------------------- send commands ----------------------------------------*/
 void QNode::takeoff(int ID) {
     commandFlag[ID] = true;
     Command_List[ID].header.stamp = ros::Time::now();

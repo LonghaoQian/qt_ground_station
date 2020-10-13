@@ -43,13 +43,20 @@
 
 namespace qt_ground_station {
 // definition of command errors
+
+enum UAVindex{
+        DRONE_UAV0 = 0,
+        DRONE_UAV1,
+        DRONE_UAV2
+};
+
 enum ENUCommandError{
         DRONE_COMMAND_NORM = 0,
         DRONE_COMMAND_TOOCLOSETOOTHER,
         DRONE_COMMAND_TOOCLOSETOOTHERCOMMAND,
         DRONE_COMMAND_OUTOFBOUND,
 };
-// TO DO: modifiy the logger to display commands
+
 enum LogLevel {
          Debug,
          Info,
@@ -74,12 +81,12 @@ enum Command_Type
 };
 // logging info from each drone
 struct uav_log {
-    bool isconnected;
-    bool islogreceived;
+    bool isconnected{false};
+    bool islogreceived{false};
     qt_ground_station::Topic_for_log log;
     Eigen::Quaterniond q_fcu_target;
     Eigen::Vector3d    euler_fcu_target;
-    float              Thrust_target;
+    float              Thrust_target{0.0};
 };
 // ENU command log
 struct ENU_command_log {
@@ -88,8 +95,8 @@ struct ENU_command_log {
 // Drone general info
 struct Drone_GeneralInfo {
     QString controllername;
-    int TargetdroneID;
-    bool isMulti;
+    int TargetdroneID{0};
+    bool isMulti{false};
 };
 
 // parameter info from each drone at the start of the controller 
@@ -164,6 +171,7 @@ public:
 	QStringListModel* loggingModel() { return &logging_model; }
 	void log( const LogLevel &level, const std::string &msg);
 /*----------------------------Get states---------------------------------*/
+        qt_ground_station::Topic_for_log GetLog(int ID);
         qt_ground_station::Mocap GetMocap(int ID);
         qt_ground_station::uav_log  GetUAVLOG(int ID);
         qt_ground_station::uav_para GetUAVPARA(int ID);
@@ -245,21 +253,10 @@ private:
         ros::Subscriber UAV1_attitude_target_sub;
         ros::Subscriber UAV2_attitude_target_sub;
 
-        void sub_mocapUAV0(const qt_ground_station::Mocap::ConstPtr& msg);
-        void sub_mocapUAV1(const qt_ground_station::Mocap::ConstPtr& msg);
-        void sub_mocapUAV2(const qt_ground_station::Mocap::ConstPtr& msg);
-        void sub_mocapPayload(const qt_ground_station::Mocap::ConstPtr& msg);
-        /*-------------------- UAV log subs ---------------------*/
-
-        void sub_topic_for_logUpdateUAV0(const qt_ground_station::Topic_for_log::ConstPtr &msg);
-        void sub_topic_for_logUpdateUAV1(const qt_ground_station::Topic_for_log::ConstPtr &msg);
-        void sub_topic_for_logUpdateUAV2(const qt_ground_station::Topic_for_log::ConstPtr &msg);
-
-        void sub_setpoint_rawUpdateUAV0(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
-        void sub_setpoint_rawUpdateUAV1(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
-        void sub_setpoint_rawUpdateUAV2(const mavros_msgs::AttitudeTarget::ConstPtr& msg);
-
-        void sub_setpoint_rawUpdate(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id);
+        void SubMocapUAV(const qt_ground_station::Mocap::ConstPtr& msg, int id);
+        void SubMocapPayload(const qt_ground_station::Mocap::ConstPtr& msg);
+        void SubTopicForLog(const qt_ground_station::Topic_for_log::ConstPtr &msg, int id);
+        void SubThrustSetpointRaw(const mavros_msgs::AttitudeTarget::ConstPtr& msg,int id);
 
         QStringListModel logging_model;
 
@@ -274,11 +271,7 @@ private:
         bool loadUAV2para(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res);
         void loadUAVXpara(qt_ground_station::ControlParameter::Request& req, qt_ground_station::ControlParameter::Response& res, int ID);
 
-        bool loadUAV0generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
-        bool loadUAV1generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
-        bool loadUAV2generalinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res);
-        void loadUAVXgeneralinfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res, int ID);
-
+        bool LoadUAVGeneralInfo(qt_ground_station::GeneralInfo::Request& req, qt_ground_station::GeneralInfo::Response& res, int ID);
 
 };
 

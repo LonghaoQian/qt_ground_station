@@ -74,6 +74,8 @@ public Q_SLOTS:
         void on_Payload_Move_to_Start_clicked(bool check);
         void on_Payload_Prelift_clicked(bool check);
 
+        void on_Toggledisplaymode_Button_clicked(bool check);
+        void on_Togglecontrolmode_Button_clicked(bool check);
         void on_ClearLog_Button_clicked(bool check);
         // action panel:
         void on_action_single_clicked(bool check);
@@ -86,10 +88,10 @@ public Q_SLOTS:
     ** Manual connections
     *******************************************/
 
-    void updateUAV0mocap();// action perfomed when recieving mocap data
-    void updateUAV1mocap();
-    void updateUAV2mocap();
-    void updatePayloadmocap();
+    void updateUAV0pos();// action perfomed when recieving mocap data
+    void updateUAV1pos();
+    void updateUAV2pos();
+    void updatePayloadpos();
 
     void updateUAV0attReference(); // // action perfomed when recieving attitude reference
     void updateUAV1attReference();
@@ -104,6 +106,7 @@ public Q_SLOTS:
     void updateUAV2Param();
     Eigen::Vector3d  quaternion_to_euler_w(const Eigen::Quaterniond &q);
     QString GenerateBatteryInfo(qt_ground_station::uav_log& log, float Voltage_High, float Voltage_Low);
+    void updateMode();
 Q_SIGNALS:
     void send_TakeoffUAV0();
     void send_TakeoffUAV1();
@@ -122,6 +125,9 @@ Q_SIGNALS:
 private:
 	Ui::MainWindowDesign ui;
 	QNode qnode;
+    bool IsOutDoor{false}; // display mode
+    bool IsMulti{true};
+    void UpdateUAVPos(Eigen::Vector3f& Position, Eigen::Vector3f& Velocity, int ID);
     void DisplayENUErrorMsg(qt_ground_station::ENUCommandError error_msg);
     void UpdateListViewENU(int drone_ID,float target_state[4]);
     void UpdateListViewMultiPayload(float pose_target[6]);
