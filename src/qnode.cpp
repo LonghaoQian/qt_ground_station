@@ -115,7 +115,13 @@ bool QNode::init() {
                                                       std::bind(&QNode::LoadUAVGeneralInfo,this,arg::_1, arg::_2, DRONE_UAV1));
         serUpdateGeneralInfoUAV2 = n.advertiseService<qt_ground_station::GeneralInfo::Request, qt_ground_station::GeneralInfo::Response>("/uav2/px4_command/generalinfo", 
                                                       std::bind(&QNode::LoadUAVGeneralInfo,this,arg::_1, arg::_2, DRONE_UAV2));
+        // advertise the client for set gps home
 
+        for (int i = DRONE_UAV0; i<DRONE_UAV2+1; i++){
+
+            clientSetGPSHome[i] = n.serviceClient<qt_ground_station::SetHome>("/uav" + std::to_string(i) + "/px4_command/globalhome");         
+        }
+         
         // 
         GeneralInfoList[DRONE_UAV0].controllername = "---";
         GeneralInfoList[DRONE_UAV0].TargetdroneID = 0;
@@ -694,6 +700,17 @@ Eigen::Vector3f QNode::UpdateHoverPosition(int ID, float height) {
     output = h + R_IP * t_j + Xp;
 
     return output;
+}
+
+void QNode::UseDroneLocationToSetGPSHome(int ID) {
+    // get the global position of the drone based on ID    
+    sethome_msg.request.longitude = UavLogList[ID].log.Drone_State.longitude;
+    sethome_msg.request.latitude = UavLogList[ID].log.Drone_State.latitude;
+    sethome_msg.request.altitude = UavLogList[ID].log.Drone_State.position[Vector_Z];
+    // then call the client request
+    for(int i = DRONE_UAV0; i < DRONE_UAV2 + 1; i ++){
+        clientSetGPSHome[i].call(sethome_msg);
+    }
 }
 
 /*------------------------------------- Utility Functions --------------------------------------*/

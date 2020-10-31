@@ -617,9 +617,9 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QPushButton" name="UAV0_Button_Disarm">
+        <widget class="QPushButton" name="UAV0_Button_SetHome">
          <property name="text">
-          <string>Disarm</string>
+          <string>Set As Home</string>
          </property>
         </widget>
         <widget class="QPushButton" name="UAV0_Button_Takeoff">
@@ -1425,9 +1425,9 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QPushButton" name="UAV1_Button_Disarm">
+        <widget class="QPushButton" name="UAV1_Button_SetHome">
          <property name="text">
-          <string>Disarm</string>
+          <string>Set As Home</string>
          </property>
         </widget>
         <widget class="QPushButton" name="UAV1_Button_Takeoff">
@@ -2246,9 +2246,9 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <widget class="QPushButton" name="UAV2_Button_Disarm">
+        <widget class="QPushButton" name="UAV2_Button_SetHome">
          <property name="text">
-          <string>Disarm</string>
+          <string>Set As Home</string>
          </property>
         </widget>
         <widget class="QPushButton" name="UAV2_Button_Takeoff">

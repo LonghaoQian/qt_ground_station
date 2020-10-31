@@ -27,13 +27,19 @@
 #include <QThread>
 #include <functional>
 #include <QStringListModel>
-#include <qt_ground_station/SinglePayloadAction.h>
-#include <qt_ground_station/MultiPayloadAction.h>
-#include <qt_ground_station/GeneralInfo.h>
+// custom msg
 #include <qt_ground_station/Mocap.h>
 #include <qt_ground_station/ControlParameter.h>
 #include <qt_ground_station/Topic_for_log.h>
 #include <qt_ground_station/ControlCommand.h>
+#include <qt_ground_station/DroneState.h>
+#include <qt_ground_station/HomePosition.h>
+// custom srv
+#include <qt_ground_station/SetHome.h>
+#include <qt_ground_station/SinglePayloadAction.h>
+#include <qt_ground_station/MultiPayloadAction.h>
+#include <qt_ground_station/GeneralInfo.h>
+// ros class and msgs
 #include <mavros_msgs/AttitudeTarget.h>
 #include <mavros_msgs/PositionTarget.h>
 #include <Eigen/Eigen>
@@ -214,12 +220,12 @@ public:
 	void log( const LogLevel &level, const std::string &msg);
 /*----------------------------Get states---------------------------------*/
         qt_ground_station::Topic_for_log GetLog(int ID);
-        qt_ground_station::Mocap GetMocap(int ID);
+        qt_ground_station::Mocap    GetMocap(int ID);
         qt_ground_station::uav_log  GetUAVLOG(int ID);
         qt_ground_station::uav_para GetUAVPARA(int ID);
         qt_ground_station::SinglePayloadAction GetSingleAction();
-        qt_ground_station::MultiPayloadAction GetMultiAction();
-        qt_ground_station::CommandGeoFence    GetDroneGeoFence();
+        qt_ground_station::MultiPayloadAction  GetMultiAction();
+        qt_ground_station::CommandGeoFence     GetDroneGeoFence();
         bool IsPayloadDetected();
         bool IsPayloadControlSwitched();
         bool isNumberofDronesConsistent();
@@ -242,6 +248,7 @@ public:
         void perform_action_singleUAV(bool isperform);
         void perfrom_action_multiUAV(bool isperform);
         Eigen::Vector3f UpdateHoverPosition(int ID, float height);
+        void UseDroneLocationToSetGPSHome(int ID);
 Q_SIGNALS:
 	void loggingUpdated();
         void rosLoopUpdate();
@@ -252,7 +259,7 @@ Q_SIGNALS:
 private:
         /*-------------------input arguments-----------------------*/
         int init_argc;
-	char** init_argv;
+	    char** init_argv;
         /*-----------------------------------------------------------*/
         int DroneNumber;
         int comid;
@@ -265,6 +272,7 @@ private:
         qt_ground_station::Mocap mocap_payload;
         qt_ground_station::SinglePayloadAction action_msg;
         qt_ground_station::MultiPayloadAction multi_action_msg;
+        qt_ground_station::SetHome sethome_msg;
         uav_para UavParaList[3];
         CommandGeoFence DroneFence;
         CommandGeoFence PayloadFence;
@@ -278,7 +286,7 @@ private:
         ros::ServiceServer serUpdateGeneralInfoUAV0;
         ros::ServiceServer serUpdateGeneralInfoUAV1;
         ros::ServiceServer serUpdateGeneralInfoUAV2;
-        
+        ros::ServiceClient clientSetGPSHome[3];
         void pub_command();
         ros::ServiceClient multiDroneActionClient;
         ros::ServiceClient singleDroneActionClient;

@@ -37,6 +37,7 @@ add_message_files(
   Topic_for_log.msg
   Trajectory.msg
   TrajectoryPoint.msg
+  HomePosition.msg
 )
 
 add_service_files(
@@ -45,6 +46,7 @@ add_service_files(
   SinglePayloadAction.srv
   MultiPayloadAction.srv
   GeneralInfo.srv
+  SetHome.srv
 )
 
 generate_messages(
@@ -52,6 +54,7 @@ generate_messages(
   geometry_msgs
   sensor_msgs
   std_msgs
+  geographic_msgs
 )
 
 catkin_package(

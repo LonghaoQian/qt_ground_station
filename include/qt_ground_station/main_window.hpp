@@ -50,19 +50,19 @@ public Q_SLOTS:
         void on_UAV0_Button_Takeoff_clicked(bool check);
         void on_UAV0_Button_Land_clicked(bool check);
         void on_UAV0_Button_moveENU_clicked(bool check);
-        void on_UAV0_Button_Disarm_clicked(bool check);
+        void on_UAV0_Button_SetHome_clicked(bool check);
         void on_UAV0_Copypos_clicked(bool check);
 
         void on_UAV1_Button_Takeoff_clicked(bool check);
         void on_UAV1_Button_Land_clicked(bool check);
         void on_UAV1_Button_moveENU_clicked(bool check);
-        void on_UAV1_Button_Disarm_clicked(bool check);
+        void on_UAV1_Button_SetHome_clicked(bool check);
         void on_UAV1_Copypos_clicked(bool check);
 
         void on_UAV2_Button_Takeoff_clicked(bool check);
         void on_UAV2_Button_Land_clicked(bool check);
         void on_UAV2_Button_moveENU_clicked(bool check);
-        void on_UAV2_Button_Disarm_clicked(bool check);
+        void on_UAV2_Button_SetHome_clicked(bool check);
         void on_UAV2_Copypos_clicked(bool check);
         void on_UAV2_Move_with_payload_clicked(bool check);
         void on_UAV2_Back_to_ENU_clicked(bool check);

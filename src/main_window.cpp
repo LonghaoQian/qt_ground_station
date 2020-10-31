@@ -245,16 +245,34 @@ void MainWindow::on_UAV2_Button_Land_clicked(bool check) {
     qnode.land(2);
 }
 
-void MainWindow::on_UAV0_Button_Disarm_clicked(bool check) {
-    qnode.disarm(0);
+void MainWindow::on_UAV0_Button_SetHome_clicked(bool check) {
+    qnode.UseDroneLocationToSetGPSHome(0);
+    QString homeID = " set GPS home using UAV" +  QString::number(0) + " position ";
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + homeID;
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
 }
 
-void MainWindow::on_UAV1_Button_Disarm_clicked(bool check) {
-    qnode.disarm(1);
+void MainWindow::on_UAV1_Button_SetHome_clicked(bool check) {
+    qnode.UseDroneLocationToSetGPSHome(1);
+    QString homeID = " set GPS home using UAV" +  QString::number(1) + " position ";
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + homeID;
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
 }
 
-void MainWindow::on_UAV2_Button_Disarm_clicked(bool check) {
-    qnode.disarm(2);
+void MainWindow::on_UAV2_Button_SetHome_clicked(bool check) {
+    qnode.UseDroneLocationToSetGPSHome(2);
+    QString homeID = " set GPS home using UAV" +  QString::number(2) + " position ";
+    QString msgdrone = "@ " + QTime::currentTime().toString() 
+                        + homeID;
+    ui.logger1->addItem(msgdrone);
+    int item_index = ui.logger1->count()- 1;
+    ui.logger1->item(item_index)->setForeground(Qt::red);
 }
 
 void MainWindow::on_Button_DisarmALL_clicked(bool check) {
@@ -970,16 +988,22 @@ void MainWindow::updateUAV0log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV0_connection->setText("<font color='green'>CONNECTED</font>");
-        ui.UAV0_Button_Disarm->setEnabled(true);
         //ui.UAV0_Button_Takeoff->setEnabled(true);
         //ui.UAV0_Button_Land->setEnabled(true);
         ui.UAV0_Button_moveENU->setEnabled(true);
         ui.UAV0_voltage->setText(GenerateBatteryInfo(log, 16.8, 14));
 
+        if(IsOutDoor){
+            ui.UAV0_Button_SetHome->setEnabled(true);
+        } else {
+            ui.UAV0_Button_SetHome->setEnabled(false);
+        }
+
+
     } else {
         ui.UAV0_connection->setText("<font color='red'>UNCONNECTED</font>");
         /*------------disable all the buttons -------------------*/
-        ui.UAV0_Button_Disarm->setEnabled(false);
+        ui.UAV0_Button_SetHome->setEnabled(false);
         ui.UAV0_Button_Takeoff->setEnabled(false);
         ui.UAV0_Button_Land->setEnabled(false);
         ui.UAV0_Button_moveENU->setEnabled(false);
@@ -1071,15 +1095,20 @@ void MainWindow::updateUAV1log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV1_connection->setText("<font color='green'>CONNECTED</font>");
-        ui.UAV1_Button_Disarm->setEnabled(true);
         //ui.UAV1_Button_Takeoff->setEnabled(true);
         //ui.UAV1_Button_Land->setEnabled(true);
         ui.UAV1_Button_moveENU->setEnabled(true);
         ui.UAV1_voltage->setText(GenerateBatteryInfo(log, 16.8, 14));
 
+        if(IsOutDoor){
+            ui.UAV1_Button_SetHome->setEnabled(true);
+        } else {
+            ui.UAV2_Button_SetHome->setEnabled(false);
+        }
+
     } else {
         ui.UAV1_connection->setText("<font color='red'>UNCONNECTED</font>");
-        ui.UAV1_Button_Disarm->setEnabled(false);
+        ui.UAV1_Button_SetHome->setEnabled(false);
         ui.UAV1_Button_Takeoff->setEnabled(false);
         ui.UAV1_Button_Land->setEnabled(false);
         ui.UAV1_Button_moveENU->setEnabled(false);
@@ -1156,14 +1185,20 @@ void MainWindow::updateUAV2log() {
 
     if (log.log.Drone_State.connected && log.isconnected) {
         ui.UAV2_connection->setText("<font color='green'>CONNECTED</font>");
-        ui.UAV2_Button_Disarm->setEnabled(true);
         //ui.UAV2_Button_Takeoff->setEnabled(true);
         //ui.UAV2_Button_Land->setEnabled(true);
         ui.UAV2_Button_moveENU->setEnabled(true);
         ui.UAV2_voltage->setText(GenerateBatteryInfo(log, 16.8, 14));
+
+        if(IsOutDoor){
+            ui.UAV2_Button_SetHome->setEnabled(true);
+        } else {
+            ui.UAV2_Button_SetHome->setEnabled(false);
+        }
+
     } else {
         ui.UAV2_connection->setText("<font color='red'>UNCONNECTED</font>");
-        ui.UAV2_Button_Disarm->setEnabled(false);
+        ui.UAV2_Button_SetHome->setEnabled(false);
         ui.UAV2_Button_Takeoff->setEnabled(false);
         ui.UAV2_Button_Land->setEnabled(false);
         ui.UAV2_Button_moveENU->setEnabled(false);
