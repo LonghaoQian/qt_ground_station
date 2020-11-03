@@ -3,7 +3,7 @@
 
 # Don't track content of these folders
 node_modules/
-msg/
+ # msg/ why ignore the messages files ??
 
 # Compiled source #
 ###################
