@@ -2,9 +2,9 @@
 
 [![Generic badge](https://img.shields.io/badge/ground%20station-latest-brightgreen)](https://shields.io/) [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity) 
 
-## Panel description：
+## General description：
 
-The ground station app is responsible for sending commands for quadrotor experiments in [Flight System and Control Lab (FSC)](https://www.flight.utias.utoronto.ca/fsc/index.php/payload/). 
+The ground station app is used for sending commands for quadrotor-payload experiments in [Flight System and Control Lab (FSC)](https://www.flight.utias.utoronto.ca/fsc/index.php/payload/). 
 The ground station app should be download and installed on the ground station computer.  The ground station app supports max three control channels, ranging from uav0 to uav2. The list of  functions of the ground station app are:
 > 1. Inspecting wifi connection and battery status of every connected drone
 > 2. Sending Move ENU command to every connected drone to a given position
@@ -17,16 +17,29 @@ The ground station app should be download and installed on the ground station co
 
 The app panel description is shown in the above picture.  The coordinate system used in the app is ENU frame. The x direction points away from the ground station desktop to the opposite wall. The positive y direction points to the left wall and the z direction points upwards.  
 
-## How to use:
+## Dependencies
+- [px4_command](https://github.com/LonghaoQian/px4_command): the primary repository containing the flight control system.
+- [optitrack_broadcast](https://github.com/LonghaoQian/optitrack_broadcast): the reopository containing the optitrack process and gazebo emulator.
 
-This qt-based app needs [Qt-ROS package](http://wiki.ros.org/qt_ros?distro=kinetic). Read and build the [tutorial](http://wiki.ros.org/qt_ros/Tutorials) first to make sure that `qt_build` and `qt_create` works properly.  (Or you can use [another useful tutorial](https://www.cnblogs.com/casperwin/p/6206193.html))
+## Code download and compilation
 
-After you can successfully create and build the [default ros-qt project](http://wiki.ros.org/qt_create/Tutorials/Qt%20App%20Templates), you may install the ground station app using the following common commands:
+1. This ground station app requires Qt5 support. Use ``qmake --version
+`` to check. If Qt5 is installed, you will see output similar to:
+
+    > QMake version 3.1
+
+    > Using Qt version 5.x.x in /path/to/qt
+
+2. install ``px4_command`` and ``optitrack_broadcast`` package first. Ensure that optitrack_broadcast is checked out to ``tags/v1.1``.
+
+3. install the ground station app using the following common commands:
 
 > 1. $ cd yourws/src/
 > 2. $ git clone https://github.com/LonghaoQian/qt_ground_station
 > 3. $ cd ../..
 > 4. $ catkin build
+
+
 
 ## Preflight check:
 
@@ -102,3 +115,9 @@ The following issues may happen during the experiment:
 >2. walk into the net with radio transmitter turned on.
 >3. get close to the drone when the radio transmitter is on and the battery is plugged in. If the drone needs testing, take the propeller off before plugging in the battery.
 >4. plug the battery in without taking the propeller off outside the net.
+
+## Future development:
+
+- This qt-based app needs [Qt-ROS package](http://wiki.ros.org/qt_ros?distro=kinetic). Read and build the [tutorial](http://wiki.ros.org/qt_ros/Tutorials) first to make sure that `qt_build` and `qt_create` works properly.  (Or you can use [another useful tutorial](https://www.cnblogs.com/casperwin/p/6206193.html))
+
+- After you can successfully create and build the [default ros-qt project](http://wiki.ros.org/qt_create/Tutorials/Qt%20App%20Templates)
