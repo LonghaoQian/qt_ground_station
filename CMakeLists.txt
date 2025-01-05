@@ -12,7 +12,6 @@ project(qt_ground_station)
 # qt_build provides the qt cmake glue, roscpp the comms for a default talker
 find_package(catkin REQUIRED COMPONENTS
 message_generation 
-qt_build 
 roscpp
 geometry_msgs
 sensor_msgs
@@ -24,6 +23,7 @@ tf2_ros
 tf2_eigen
 mavros_msgs
 )
+find_package(Qt5 REQUIRED COMPONENTS Widgets Core Gui)
 
 ## Generate messages in the 'msg' folder
 add_message_files(
@@ -74,7 +74,6 @@ include_directories(${catkin_INCLUDE_DIRS})
 
 # this comes from qt_build's qt-ros.cmake which is automatically 
 # included via the dependency call in package.xml
-rosbuild_prepare_qt4(QtCore QtGui) # Add the appropriate components to the component list here
 
 ##############################################################################
 # Sections
@@ -84,9 +83,15 @@ file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
 file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
 file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/qt_ground_station/*.hpp)
 
-QT4_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
-QT4_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
-QT4_WRAP_CPP(QT_MOC_HPP ${QT_MOC})
+QT5_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
+QT5_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
+QT5_WRAP_CPP(QT_MOC_HPP ${QT_MOC})
+
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${catkin_INCLUDE_DIRS}
+)
 
 ##############################################################################
 # Sources
@@ -100,9 +105,21 @@ file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINK
 
 set(CMAKE_CXX_FLAGS "-std=c++11 ${CMAKE_CXX_FLAGS}")
 
-add_executable(qt_ground_station ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+add_executable(qt_ground_station
+  src/main.cpp
+  ${QT_FORMS_HPP}
+  ${QT_SOURCES}
+  ${QT_MOC_HPP}
+)
+
 add_dependencies(qt_ground_station qt_ground_station_generate_messages_cpp)
 
-target_link_libraries(qt_ground_station ${QT_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(qt_ground_station
+  Qt5::Widgets
+  Qt5::Core
+  Qt5::Gui
+  ${catkin_LIBRARIES}
+)
+
 install(TARGETS qt_ground_station RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 

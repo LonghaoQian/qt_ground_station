@@ -11,7 +11,7 @@
 /*****************************************************************************
 ** Includes
 *****************************************************************************/
-#include <QtGui/QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include "ui_main_window.h"
 #include "qnode.hpp"
 /*****************************************************************************
@@ -142,7 +142,6 @@ private:
     void UpdateListViewMultiStopAction();
     void UpdateBacktoENU();
     void UpdateSwitchToSinglePayloadMode(float pose_target[4]);
-    // TO DO: std::map<qt_ground_station::ENUCommandError, QString> error_msg_list = 
     bool IsPayloadModeCorrect();
 };
 
